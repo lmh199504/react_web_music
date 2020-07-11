@@ -29,13 +29,9 @@ class Login extends React.Component{
 	
 	render(){
 		const { username } = this.props.user
-		const koaSess = Cookies.get('koa:sess')
-		console.log(username,koaSess)
+		const koaSess = Cookies.get('userKey')
 		if(username && koaSess){
 			return <Redirect to='/'/>
-		}else if(koaSess && !username){
-			
-			console.log("登陆了但是没有用户信息")
 		}
 		
 		return (

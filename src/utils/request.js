@@ -13,7 +13,7 @@ const Service = axios.create({
 
 // 添加请求拦截器
 Service.interceptors.request.use(config => {
-    const koaSess = Cookies.get('koa:sess')
+    const koaSess = Cookies.get('userKey')
 	if(koaSess){
 		console.log("已经登陆")
 	}else{

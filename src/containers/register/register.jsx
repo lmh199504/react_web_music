@@ -2,8 +2,12 @@
 import React  from 'react'
 import { Input,Space,Button } from 'antd'
 import { UserOutlined,LockOutlined  } from '@ant-design/icons';
+import { Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
+import Cookies from 'js-cookie'
+import { register } from '../../redux/actions'
 import './register.less'
-import { reqRegister } from '../../api/index'
+
 class Register extends React.Component{
 	
 	state = {
@@ -18,8 +22,8 @@ class Register extends React.Component{
 		})
 	}
 	onSubmit = () => {
-		console.log(this.state)
-		reqRegister(this.state)
+		
+		this.props.register(this.state)
 	}
 	toLogin = () => {
 		this.props.history.replace('/login')
@@ -27,7 +31,12 @@ class Register extends React.Component{
 	
 	
 	render(){
-	
+		const { username } = this.props.user
+		const koaSess = Cookies.get('userKey')
+		if(username && koaSess){
+			return <Redirect to='/'/>
+		}
+		
 		return(
 			<div className="register">
 				<div className="register_box">
@@ -45,4 +54,7 @@ class Register extends React.Component{
 	}
 }
 
-export default Register
+export default connect(
+	state=>({user:state.user}),
+	{register}
+)(Register) 

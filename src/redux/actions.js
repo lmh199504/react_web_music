@@ -1,8 +1,9 @@
 
 
 import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH } from './action-types.js'
-import { reqLogin,reqGetUserInfo } from '../api/index'
- 
+import Cookies from 'js-cookie'
+import { reqLogin,reqGetUserInfo,reqLogout,reqRegister } from '../api/index'
+
 //登陆成功的同步action
 const authSuccess = (data) => ({type:AUTH_SUCCESS,data})
 
@@ -32,8 +33,25 @@ export const getUserInfo = (data) => {
 		if(response.code === 0){
 			dispatch(authSuccess(response.data))
 		}else{
+			Cookies.remove('userKey')
 			dispatch(resetAuth(response.msg))
 		}
 	}
 }
 
+export const logout = () => {
+	return async dispatch => {
+		const response = await reqLogout()
+		Cookies.remove('userKey')
+		dispatch(resetAuth(response.msg))
+	}
+}
+
+export const register = (data) => {
+	return async dispatch => {
+		const response = await reqRegister(data)
+		if(response.code === 0){
+			dispatch(authSuccess(response.data))
+		}
+	}
+}
