@@ -7,7 +7,7 @@ export default class MusicHall extends Component{
 	render(){
 		return(
 			<div>
-				<div>
+				<div className="section_inner">
 					<ul className="mod_top_subnav" >
 						<li className="top_subnav__item">
 							<NavLink className="top_subnav__link" activeClassName="top_subnav__link--current" to='/musichall/home'>首页</NavLink>
