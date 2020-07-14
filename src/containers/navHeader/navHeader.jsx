@@ -19,7 +19,7 @@ export default class NavHeader extends Component{
 						</a>
 					</h1>
 					
-					<ul className="mod_top_nav" role="nav">
+					<ul className="mod_top_nav" >
 						<li className="top_nav__item">
 							<NavLink className="top_nav__link" activeClassName="top_nav__link--current" to='/musichall'>音乐馆</NavLink>
 						</li>
@@ -52,35 +52,35 @@ export default class NavHeader extends Component{
 											<dt className="search_hot__tit">热门搜索</dt>
 											<dd>
 												
-												<a href="javascript:void(0)" className="search_hot__link js_smartbox_search js_left" data-name="我们的歌">
+												<p  className="search_hot__link js_smartbox_search js_left" data-name="我们的歌">
 													<span className="search_hot__number">1</span>
 													<span className="search_hot__name">我们的歌</span>
 													<span className="search_hot__listen">76.6万</span>
-												</a>
+												</p>
 												
-												<a href="javascript:void(0)" className="search_hot__link js_smartbox_search js_left" data-name="冰雪奇缘2">
+												<p  className="search_hot__link js_smartbox_search js_left" data-name="冰雪奇缘2">
 													<span className="search_hot__number">2</span>
 													<span className="search_hot__name">冰雪奇缘2</span>
 													<span className="search_hot__listen">58.7万</span>
-												</a>
+												</p>
 												
-												<a href="javascript:void(0)" className="search_hot__link js_smartbox_search js_left" data-name="张杰">
+												<p  className="search_hot__link js_smartbox_search js_left" data-name="张杰">
 													<span className="search_hot__number">3</span>
 													<span className="search_hot__name">张杰</span>
 													<span className="search_hot__listen">32.4万</span>
-												</a>
+												</p>
 												
-												<a href="javascript:void(0)" className="search_hot__link js_smartbox_search js_left" data-name="桥边姑娘">
+												<p className="search_hot__link js_smartbox_search js_left" data-name="桥边姑娘">
 													<span className="search_hot__number">4</span>
 													<span className="search_hot__name">桥边姑娘</span>
 													<span className="search_hot__listen">28.8万</span>
-												</a>
+												</p>
 												
-												<a href="javascript:void(0)" className="search_hot__link js_smartbox_search js_left" data-name="星辰大海">
+												<p className="search_hot__link js_smartbox_search js_left" data-name="星辰大海">
 													<span className="search_hot__number">5</span>
 													<span className="search_hot__name">星辰大海</span>
 													<span className="search_hot__listen">20.3万</span>
-												</a>
+												</p>
 												
 											</dd>
 										</dl>
@@ -115,31 +115,31 @@ export default class NavHeader extends Component{
 										<ul className="search_result__list">
 
 											<li>
-												<a href="javascript:;" className="search_result__link js_smartbox_song" data-docid="101813361" data-id="101813361" data-mid="004Gq0xE1YC8xp" data-name="素颜">
+												<p className="search_result__link js_smartbox_song">
 													<span className="search_result__name">素颜</span>-
 													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span>/何曼婷</span>
-												</a>
+												</p>
 											</li>
 
 											<li>
-												<a href="javascript:;" className="search_result__link js_smartbox_song" data-docid="102296985" data-id="102296985" data-mid="002mZevo3wHvsc" data-name="有何不可">
+												<p className="search_result__link js_smartbox_song">
 													<span className="search_result__name">有何不可</span>-
 													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span></span>
-												</a>
+												</p>
 											</li>
 
 											<li>
-												<a href="javascript:;" className="search_result__link js_smartbox_song" data-docid="106034300" data-id="106034300" data-mid="001FGQba3i10mw" data-name="雅俗共赏">
+												<p className="search_result__link js_smartbox_song" >
 													<span className="search_result__name">雅俗共赏</span>-
 													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span></span>
-												</a>
+												</p>
 											</li>
 
 											<li>
-												<a href="javascript:;" className="search_result__link js_smartbox_song" data-docid="436088" data-id="436088" data-mid="004ENQPZ0dHaqy" data-name="断桥残雪">
+												<p className="search_result__link js_smartbox_song" >
 													<span className="search_result__name">断桥残雪</span>-
 													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span></span>
-												</a>
+												</p>
 											</li>
 
 										</ul>
@@ -153,9 +153,9 @@ export default class NavHeader extends Component{
 										<ul className="search_result__list">
 
 											<li>
-												<a href="javascript:;" className="search_result__link js_smartbox_singer" data-docid="7221" data-id="7221" data-mid="000CK5xN3yZDJt" data-name="许嵩">
+												<p className="search_result__link js_smartbox_singer" >
 													<span className="search_result__name"><span className="search_result__keyword">许嵩</span></span>
-												</a>
+												</p>
 											</li>
 
 										</ul>
@@ -169,17 +169,17 @@ export default class NavHeader extends Component{
 										<ul className="search_result__list">
 
 											<li>
-												<a href="javascript:;" className="search_result__link js_smartbox_album" data-docid="37333" data-id="37333" data-mid="002KSDg90IaScI" data-name="自定义">
+												<p className="search_result__link js_smartbox_album">
 													<span className="search_result__name">自定义</span>
 													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span></span>
-												</a>
+												</p>
 											</li>
 
 											<li>
-												<a href="javascript:;" className="search_result__link js_smartbox_album" data-docid="35485" data-id="35485" data-mid="001jmC6x1RMfh0" data-name="Vae新歌+精选珍藏合辑">
+												<p className="search_result__link js_smartbox_album" >
 													<span className="search_result__name">Vae新歌+精选珍藏合辑</span>
 													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span></span>
-												</a>
+												</p>
 											</li>
 
 										</ul>
@@ -190,17 +190,17 @@ export default class NavHeader extends Component{
 										<ul className="search_result__list">
 
 											<li>
-												<a href="javascript:;" className="search_result__link js_smartbox_mv" data-docid="695289" data-id="695289" data-mid="0035LQ6o25exGz" data-name="雅俗共赏" data-vid="f0020p4j0m1">
+												<p className="search_result__link js_smartbox_mv" >
 													<span className="search_result__name">雅俗共赏</span>-
 													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span></span>
-												</a>
+												</p>
 											</li>
 
 											<li>
-												<a href="javascript:;" className="search_result__link js_smartbox_mv" data-docid="1373619" data-id="1373619" data-mid="0016NHzA1rH5us" data-name="素颜" data-vid="i00247i8v7b">
+												<p className="search_result__link js_smartbox_mv" >
 													<span className="search_result__name">素颜</span>-
 													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span>/何曼婷</span>
-												</a>
+												</p>
 											</li>
 
 										</ul>
@@ -212,7 +212,7 @@ export default class NavHeader extends Component{
 					</div>
 					<div className="header__opt">
 						<div className="top_login__link js_logined">
-							<img src="http://thirdqq.qlogo.cn/g?b=sdk&k=5GvhCOicBXrBf50u3StdLRw&s=140&t=1550910887" className="top_login__cover js_user_img"/>	
+							<img src="http://thirdqq.qlogo.cn/g?b=sdk&k=5GvhCOicBXrBf50u3StdLRw&s=140&t=1550910887" alt="头像" className="top_login__cover js_user_img"/>	
 						</div>	
 						<div className="mod_btn_green top_login__btn_vip js_openvip" >开通绿钻豪华版</div>	
 						<div className="mod_btn top_login__btn_vip js_openmusic">开通付费包</div>

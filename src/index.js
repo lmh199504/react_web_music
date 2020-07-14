@@ -9,6 +9,9 @@ import Main from './containers/main/main'
 import 'antd/dist/antd.less'
 import './assets/styles/index.less'
 import store from './redux/store'
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 
 console.log(`
                                                            .                     

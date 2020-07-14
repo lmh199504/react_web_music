@@ -3,7 +3,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Cookies from 'js-cookie'
-import { Button } from 'antd'
 import { Redirect,Switch,Route } from 'react-router-dom'
 import MusicHall from '../musichall/musichall'
 import MyMusic from '../mymusic/mymusic'
