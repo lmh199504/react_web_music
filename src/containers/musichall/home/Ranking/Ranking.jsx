@@ -3,7 +3,7 @@
 
 
 import React,{ Component } from 'react'
-
+import './ranking.less'
 export default class Ranking extends Component{
 	
 	
@@ -17,7 +17,7 @@ export default class Ranking extends Component{
 						<h2 className="index__tit"><i className="icon_txt">精彩推荐</i></h2>
 					</div>
 					
-					<div className="mod_toplist">
+					<div className="mod_toplist" style={{marginLeft:'auto' }}>
 						<ul className="toplist__list js_list">
 							<li className="toplist__item item1 mod_cover">
 								<div className="toplist__box">
@@ -25,7 +25,7 @@ export default class Ranking extends Component{
 									<i className="mod_cover__icon_play js_play_toplist"></i>
 									<i className="toplist__line"></i>
 									<h3 className="toplist__hd">
-										<p className="toplist__tit">热歌</p>
+										<p className="toplist__tit" style={{ float:'unset' }}>热歌</p>
 									</h3>
 									<ul className="toplist__songlist">
 										<li className="toplist__song">
@@ -54,7 +54,7 @@ export default class Ranking extends Component{
 									<i className="mod_cover__icon_play js_play_toplist"></i>
 									<i className="toplist__line"></i>
 									<h3 className="toplist__hd">
-										<p className="toplist__tit">新歌</p>
+										<p className="toplist__tit" style={{ float:'unset' }}>新歌</p>
 									</h3>
 									<ul className="toplist__songlist">
 										<li className="toplist__song">
@@ -83,7 +83,7 @@ export default class Ranking extends Component{
 									<i className="mod_cover__icon_play js_play_toplist"></i>
 									<i className="toplist__line"></i>
 									<h3 className="toplist__hd">
-										<p className="toplist__tit">流行指数</p>
+										<p className="toplist__tit" style={{ float:'unset' }}>流行指数</p>
 									</h3>
 									<ul className="toplist__songlist">
 										<li className="toplist__song">
@@ -111,7 +111,7 @@ export default class Ranking extends Component{
 									<i className="mod_cover__icon_play js_play_toplist"></i>
 									<i className="toplist__line"></i>
 									<h3 className="toplist__hd">
-										<p className="toplist__tit">欧美</p>
+										<p className="toplist__tit" style={{ float:'unset' }}>欧美</p>
 									</h3>
 									<ul className="toplist__songlist">
 										<li className="toplist__song">
@@ -139,7 +139,7 @@ export default class Ranking extends Component{
 									<i className="mod_cover__icon_play js_play_toplist"></i>
 									<i className="toplist__line"></i>
 									<h3 className="toplist__hd">
-										<p className="toplist__tit">韩国</p>
+										<p className="toplist__tit" style={{ float:'unset' }}>韩国</p>
 									</h3>
 									<ul className="toplist__songlist">
 										<li className="toplist__song">

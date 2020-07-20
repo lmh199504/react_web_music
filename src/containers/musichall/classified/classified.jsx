@@ -2,6 +2,7 @@
 
 import React,{ Component } from 'react'
 import Slider from "react-slick";
+import { Button, Radio } from 'antd';
 import { Popover } from 'antd'
 import './classified.less'
 import '../home/home.less'
@@ -30,7 +31,12 @@ function SamplePrevArrow(props) {
 }
 export default class Classified extends Component{
 	
-	
+	state = {
+		active:'1'
+	}
+	handleSizeChange(){
+		this.setState({ size: e.target.value });
+	}
 	
 	render(){
 		const content = (
@@ -54,9 +60,9 @@ export default class Classified extends Component{
 			nextArrow: <SampleNextArrow />,
 			prevArrow: <SamplePrevArrow />
 		};
-		const arr6 = [1,2,3,4,5,6]
-		const arr9 = [1,2,3,4,5,6,7,8,9]
-		const arr1 = [1,2,3,4,5,6,7,8,9,10]
+		const arr6 = [1,2,3,4,5]
+		const arr9 = [1,2,3,4,5,6,7,8]
+		const arr1 = [1,2,3,4,5,6,7,8,9,10,11]
 		return (
 			<div className="main">
 				<div className="mod_playlist_tag" id="taglist">
@@ -96,12 +102,20 @@ export default class Classified extends Component{
 				<div style={{ clear:'both'}}>
 					
 				</div>
-				
+				<div className="part_detail__hd">
+					<div>全部歌单</div>
+					<div>
+						<Radio.Group value={active} onChange={this.handleSizeChange}>
+							<Radio.Button value="1">全部</Radio.Button>
+							<Radio.Button value="2">最新</Radio.Button>
+						</Radio.Group>
+					</div>	
+				</div>
 				<div style={{ position:'relative',width:'100%' }}>
-					<Slider {...settings}>
+					
 					    {
 							arr1.map(item => (
-								<div className="playlist__item slide__item" key={item}>
+								<div className="playlist__item slide__item classified" key={item}>
 									<div className="playlist__item_inner">
 										<div className="playlist__cover ">
 											<img className="playlist__pic" src="https://qpic.y.qq.com/music_cover/gqs4lLM0dbcR4icSZlj2SWJbQVbvq3YSfUlGFMnmpxAIHK9yO82g4aicicvZZls99ha/300?n=1" alt="封面"/>
@@ -118,7 +132,7 @@ export default class Classified extends Component{
 								</div>
 							))
 						}
-					</Slider>
+					
 				</div>
 			</div>
 		)
