@@ -1,44 +1,25 @@
 
 
 import React,{ Component } from 'react'
-import Slider from "react-slick";
 import { Button, Radio } from 'antd';
 import { Popover } from 'antd'
 import './classified.less'
 import '../home/home.less'
 
 
-function SampleNextArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-	<div
-	  className={className}
-	  style={{ ...style, display: "none", background: "white" }}
-	  onClick={onClick}
-	/>
-  );
-}
 
-function SamplePrevArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-	<div
-	  className={className}
-	  style={{ ...style, display: "none", background: "white"}}
-	  onClick={onClick}
-	/>
-  );
-}
 export default class Classified extends Component{
 	
 	state = {
 		active:'1'
 	}
-	handleSizeChange(){
-		this.setState({ size: e.target.value });
+	handleSizeChange = (e) => {
+		this.setState({ active: e.target.value });
 	}
 	
 	render(){
+		const { active } = this.state
+		
 		const content = (
 		  <div>
 		    <ul className="playlist_tag__tags" style={{ position:'relative',height:10 }}>
@@ -51,15 +32,7 @@ export default class Classified extends Component{
 		  </div>
 		)
 		const arr = [1,2,3,4,5]
-		const settings = {
-			dots: true,
-			infinite: true,
-			speed: 500,
-			slidesToShow: 5,
-			slidesToScroll:5,
-			nextArrow: <SampleNextArrow />,
-			prevArrow: <SamplePrevArrow />
-		};
+
 		const arr6 = [1,2,3,4,5]
 		const arr9 = [1,2,3,4,5,6,7,8]
 		const arr1 = [1,2,3,4,5,6,7,8,9,10,11]
@@ -75,11 +48,11 @@ export default class Classified extends Component{
 									<ul className="playlist_tag__tags">
 										{
 											item === 1? arr6.map(item => (
-												<li className="playlist_tag__itembox">
+												<li className="playlist_tag__itembox" key={item}>
 													<p className="playlist_tag__item js_tag">国语</p>
 												</li>
 											)):arr9.map(item => (
-												<li className="playlist_tag__itembox">
+												<li className="playlist_tag__itembox" key={item}>
 													<p className="playlist_tag__item js_tag">国语</p>
 												</li>
 											))
@@ -103,7 +76,7 @@ export default class Classified extends Component{
 					
 				</div>
 				<div className="part_detail__hd">
-					<div>全部歌单</div>
+					<div className="all_classified_title">全部歌单</div>
 					<div>
 						<Radio.Group value={active} onChange={this.handleSizeChange}>
 							<Radio.Button value="1">全部</Radio.Button>
