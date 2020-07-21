@@ -50,6 +50,7 @@ export default class MusicHall extends Component{
 						</ul>
 					</div>
 				</div>
+				<div style={{ clear:"both" }}></div>
 				
 				<Switch>
 					<Route path='/musichall/home' component={Home}/>
@@ -61,7 +62,6 @@ export default class MusicHall extends Component{
 					<Route path='/musichall/mv' component={Mv}/>
 					<Route path='/musichall/digital' component={Digital}/>
 					<Route path='/musichall/ticketing' component={Ticketing}/>
-					
 					<Redirect to='/musichall/home'/>
 				</Switch>
 				

@@ -1,7 +1,7 @@
 
 
 import React,{ Component } from 'react'
-import { Button, Radio } from 'antd';
+import {  Radio } from 'antd';
 import { Popover } from 'antd'
 import './classified.less'
 import '../home/home.less'
@@ -72,9 +72,7 @@ export default class Classified extends Component{
 				
 					
 				</div>
-				<div style={{ clear:'both'}}>
-					
-				</div>
+				<div style={{ clear:'both'}}></div>
 				<div className="part_detail__hd">
 					<div className="all_classified_title">全部歌单</div>
 					<div>
