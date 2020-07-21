@@ -1,0 +1,153 @@
+
+.mod_slide_box {
+    position: relative;
+}
+.center{
+	margin-top: 60px;
+}
+.imgContainer{
+	padding: 10px;
+}
+.imgContainer img{
+	width: 100%;
+	transition: all .8s ease;
+}
+.slick-list{
+	min-height: 300px;
+}
+.slick-track{
+	margin-top: 60px;
+}
+.slick-center .imgContainer img{
+	width: 180%!important;
+	position: relative;
+	transform: translate(-25%,-25%);
+	z-index: 10;
+}
+.slick-dots{
+	top: 300px;
+}
+
+
+.part__tit, .part_detail__tit {
+    float: left;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 58px;
+}
+
+.mod_album_list {
+    overflow: hidden;
+}
+.mod_album_list:last-child{
+	margin-bottom: 60px;
+}
+
+.mod_album_list .album_list__list {
+    margin-right: -20px;
+}
+
+.mod_album_list .album_list__item {
+    float: left;
+    width: 20%;
+    // padding-bottom: 44px;
+    overflow: hidden;
+	padding-bottom: 0;
+	margin-bottom: 10px;
+}
+
+
+.mod_album_list .album_list__item_box {
+    position: relative;
+    margin-right: 20px;
+}
+
+
+.mod_album_list .album_list__cover {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    padding-top: 100%;
+    margin-bottom: 15px;
+}
+
+.mod_album_list .album_list__pic {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    -webkit-transform: scale(1) translateZ(0);
+    -webkit-transition: -webkit-transform .75s;
+    transform: scale(1) translateZ(0);
+    transition: transform .75s;
+	height: 100%;
+	object-fit: cover;
+}
+.mod_album_list .album_list__title {
+    overflow: hidden;
+	cursor: pointer;
+}
+.album_list__title:hover{
+	color: #31c27c;
+}
+.mod_album_list .album_list__title_txt {
+    float: left;
+    max-width: 100%;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 22px;
+}
+
+.mod_album_list .album_list__author, .mod_album_list .album_list__author a, .mod_album_list .album_list__other {
+    color: #999;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 22px;
+}
+.album_list__author span{
+	cursor: pointer;
+}
+.album_list__author:hover span{
+	color: #31c27c;
+}
+.album_list__price {
+    position: relative;
+}
+
+.c_tx_thin {
+    color: #999;
+}
+.album_list__price_numb {
+    font-weight: 400;
+    line-height: 28px;
+}
+
+.album_list__item .album_list__btn_buy {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-right: 0;
+    font-size: 12px;
+    line-height: 28px;
+    height: 28px;
+    width: 80px;
+    padding: 0;
+    text-align: center;
+	cursor: pointer;
+}
+.album_list__item .album_list__btn_buy:hover{
+	background-color: #ececec;
+}
+
+.mod_cover{
+	cursor: pointer;
+}
+.mod_cover:hover .mod_cover__mask{
+	opacity: 0.5;
+}
+.mod_cover:hover .album_list__pic{
+	transform: scale(1.2);
+}
