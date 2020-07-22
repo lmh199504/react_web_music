@@ -5,7 +5,7 @@
  */
 
 import { combineReducers } from 'redux'
-import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH } from './action-types.js'
+import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME } from './action-types.js'
 
 
 const initUser = {
@@ -25,6 +25,19 @@ function user(state=initUser,action){
 	}
 }
 
+
+const initHome = {}
+
+function homeData(state=initHome,action){
+	switch(action.type){
+		case GET_HOME:
+			return action.data
+		default:
+			return state
+	}
+}
+
 export default combineReducers({
-	user
+	user,
+	homeData
 })

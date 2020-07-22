@@ -2,50 +2,57 @@
 
 import React,{ Component } from 'react'
 import Slider from "react-slick";
+import { reqGetHomeNewSong } from '../../../../api'
+import { SampleNextArrow,SamplePrevArrow } from '../../../../utils/slide'
+import { formatSongTime } from '../../../../utils'
+import { Spin } from 'antd' 
 
-
-function SampleNextArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-	<div
-	  className={className}
-	  style={{ ...style, display: "none", background: "white" }}
-	  onClick={onClick}
-	/>
-  );
-}
-
-function SamplePrevArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-	<div
-	  className={className}
-	  style={{ ...style, display: "none", background: "white"}}
-	  onClick={onClick}
-	/>
-  );
-}
 export default class NewSong extends Component{
 	
 	
 	state = {
-		suggestionIndex:0
+		suggestionIndex:0,
+		songList:[],
+		loading:false
 	}
 	
-	getData = (index) => {
-		console.log(index)
+	getData = (index,item) => {
+
 		this.setState({
-			suggestionIndex:index
+			suggestionIndex:index,
+			loading:true
+		})
+		const data = {
+			type:item.type
+		}
+		reqGetHomeNewSong(data).then(res => {
+			if(res.data.code === 0 && res.data.new_song.code === 0){
+				this.setState({
+					songList:res.data.new_song.data.songlist
+				})
+			}
+			this.setState({
+				loading:false
+			})
+		}).catch(() => {
+			this.setState({
+				loading:false
+			})
 		})
 	}
+	
+	componentDidMount = () => {
+		this.getData(0,{type:5})
+	}
+	
 	render(){
 		const suggestionNav = [
-			{name:'最新'},
-			{name:'内地'},
-			{name:'港台'},
-			{name:'欧美'},
-			{name:'韩国'},
-			{name:'日本'}
+			{name:'最新',type:5},
+			{name:'内地',type:1},
+			{name:'港台',type:6},
+			{name:'欧美',type:2},
+			{name:'韩国',type:4},
+			{name:'日本',type:3}
 		]
 		
 		const settings = {
@@ -58,8 +65,7 @@ export default class NewSong extends Component{
 			nextArrow: <SampleNextArrow/>,
 			prevArrow: <SamplePrevArrow/>
 		};
-		const { suggestionIndex } = this.state
-		const arr = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
+		const { suggestionIndex,songList,loading } = this.state
 		return (
 			<div className="mod_index mod_index--song  mod_slide_box mod_bg">
 				<div className="section_inner">
@@ -69,37 +75,41 @@ export default class NewSong extends Component{
 					<div className="mod_index_tab">
 						{
 							suggestionNav.map((item,index) => (
-								<li key={index} className={ `index_tab__item js_tag ${suggestionIndex === index?'index_tab__item--current':'' }`  } onClick={ () =>  this.getData(index) }>{item.name}</li>
+								<li key={index} className={ `index_tab__item js_tag ${suggestionIndex === index?'index_tab__item--current':'' }`  } onClick={ () =>  this.getData(index,item) }>{item.name}</li>
 							))
 						}
 					</div>
-					<Slider {...settings}>
-						{
-							arr.map(item => (
-							<div  key={item}>
-								<div className="songlist__item_box">
-								
-									<div className="songlist__link album_name  mod_cover">
-										<img src="https://y.gtimg.cn/music/photo_new/T002R90x90M000000Gp3ld08nrfX_1.jpg?max_age=2592000" className="songlist__pic" alt="封面"/>
-										<i className="mod_cover__mask"></i>
-										<i className="mod_cover__icon_play js_play"></i>
-									</div>
+					<Spin spinning={loading}>
+						<Slider {...settings}>
+							{
+								songList.map((item,index) => (
+								<div  key={index}>
+									<div className="songlist__item_box">
 									
-									<div className="songlist__cont">
-										<h3 className="songlist__song">
-											<span className="js_song">忘不了</span>
-										</h3>
-										<p className="songlist__author" title="陈楚生">
-											陈楚生
-										</p>
+										<div className="songlist__link album_name  mod_cover">
+																										
+											<img src={`https://y.gtimg.cn/music/photo_new/T002R90x90M000${item.album.pmid}.jpg?max_age=2592000`} className="songlist__pic" alt="封面"/>
+											<i className="mod_cover__mask"></i>
+											<i className="mod_cover__icon_play js_play"></i>
+										</div>
+										
+										<div className="songlist__cont">
+											<h3 className="songlist__song">
+												<span className="js_song">{item.title}</span>
+											</h3>
+											<p className="songlist__author" title={item.singer[0].name}>
+												{item.singer[0].name}
+											</p>
+										</div>
+										<div className="songlist__time c_tx_thin">{ formatSongTime(item.interval) }</div>
 									</div>
-									<div className="songlist__time c_tx_thin">05:14</div>
 								</div>
-							</div>
-								
-							))
-						}
-					</Slider>
+									
+								))
+							}
+						</Slider>
+					</Spin>
+					
 				</div>
 			</div>
 		)

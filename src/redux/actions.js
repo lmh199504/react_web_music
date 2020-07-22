@@ -1,8 +1,8 @@
 
 
-import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH } from './action-types.js'
+import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME } from './action-types.js'
 import Cookies from 'js-cookie'
-import { reqLogin,reqGetUserInfo,reqLogout,reqRegister } from '../api/index'
+import { reqLogin,reqGetUserInfo,reqLogout,reqRegister,reqGetHome } from '../api/index'
 
 //登陆成功的同步action
 const authSuccess = (data) => ({type:AUTH_SUCCESS,data})
@@ -52,6 +52,20 @@ export const register = (data) => {
 		const response = await reqRegister(data)
 		if(response.code === 0){
 			dispatch(authSuccess(response.data))
+		}
+	}
+}
+
+// 首页信息获取的同步action
+export const getHome = (data) => ({type:GET_HOME,data})
+
+// 首页信息获取的异步action 
+export const getHomeData = () => {
+	return async dispatch => {
+		const response = await reqGetHome()
+		console.log(response)
+		if(response.response.code === 0){
+			dispatch(getHome(response.response))
 		}
 	}
 }

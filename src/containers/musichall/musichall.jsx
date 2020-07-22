@@ -1,6 +1,7 @@
 
 import React,{ Component } from 'react'
 import { NavLink,Switch,Route,Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
 import './musichall.less'
 import Home from './home/home'
 import Singer from './singer/singer'
@@ -11,8 +12,12 @@ import RadioStation from './radioStation/radioStation'
 import Mv from './mv/mv'
 import Digital from './digital/digital'
 import Ticketing from './ticketing/ticketing'
-
-export default class MusicHall extends Component{
+import { getHomeData } from '../../redux/actions'
+class MusicHall extends Component{
+	
+	componentDidMount= () => {
+		this.props.getHomeData()
+	}
 	
 	render(){
 		return(
@@ -69,3 +74,8 @@ export default class MusicHall extends Component{
 		)
 	}
 }
+
+export default connect(
+	state=>({homeData:state.homeData}),
+	{getHomeData}
+)(MusicHall)

@@ -1,11 +1,93 @@
 
 import React,{ Component } from 'react'
+import Toolbar from '../../components/toolbar/toolbar'
+
+import { Button,Space,Table } from 'antd';
+import { VerticalAlignBottomOutlined,CaretRightOutlined,PlusOutlined,ShareAltOutlined } from '@ant-design/icons';
 import './mymusic.less'
+
+
+
+const columns = [
+  {
+    title: '歌曲',
+    dataIndex: 'name',
+	render:(text, record, index) => {
+		return (
+			
+			<div className="song_msg">
+				<div className="mod_songlist--edit songlist__number" style={{ color: index<3 ?'red' :'' }}>{ index+1 }</div>
+				<div className="songlist__rank" style={{ display:'none' }}>
+					<i className="icon_rank_popular"></i>
+					168%
+				</div>
+				<img src="https://y.gtimg.cn/music/photo_new/T002R90x90M000002RspIW36U4Nn.jpg?max_age=2592000" alt="封面" className="song_cover"/>
+				<div className="song_name">
+					{text}
+				</div>
+				<div className="mod_list_menu">
+					<Space>
+						<Button shape="circle" icon={<CaretRightOutlined />}></Button>
+						<Button shape="circle" icon={<PlusOutlined />}></Button>
+						<Button shape="circle" icon={<VerticalAlignBottomOutlined />}></Button>
+						<Button shape="circle" icon={<ShareAltOutlined />}></Button>
+					</Space>
+				</div>
+				
+			</div>
+		)
+	}
+
+  },
+  {
+    title: '歌手',
+    dataIndex: 'age',
+	width:300
+  },
+  {
+    title: '时长',
+    dataIndex: 'address',
+	width:100
+  },
+];
+const data = [];
+for (let i = 0; i < 20; i++) {
+  data.push({
+    key: i,
+    name: `爱，存在`,
+    age: '林小珂',
+    address: `05:30`,
+  });
+}
+
+
 export default class MusicHall extends Component{
 	
+	state = {
+		selectedRowKeys: [], // Check here to configure the default column
+		showRowSelection:false
+	}
+	onSelectChange = selectedRowKeys => {
+	    console.log('selectedRowKeys changed: ', selectedRowKeys);
+	    this.setState({ selectedRowKeys });
+	}
+	
+	setShowRow = () => {
+		const { showRowSelection } = this.state
+		
+		this.setState({
+			showRowSelection:!showRowSelection
+		})
+	}
+	
 	render(){
+		const { showRowSelection,selectedRowKeys } = this.state
+		const rowSelection = {
+		    selectedRowKeys,
+		    onChange: this.onSelectChange,
+		};
 		return(
-			<div className="mod_profile js_user_data">
+			<div className="mod_profile js_user_data" style={{ height:380 }}>
 				<div className="section_inner">
 					<div className="profile__cover_link">
 						<img className="profile__cover" src="https://thirdqq.qlogo.cn/g?b=sdk&k=5GvhCOicBXrBf50u3StdLRw&s=140&t=1550910887" alt="头像"/>
@@ -39,16 +121,27 @@ export default class MusicHall extends Component{
 						<li className="mod_tab__item ">粉丝</li>
 						<li className="mod_tab__item ">我上传的视频</li>
 					</div>
+					
+					<div className="js_box" id="like_box">
+						<div className="mod_tab">
+							<li className="mod_tab__item mod_tab__current">歌曲 0</li>
+							<li className="mod_tab__item ">歌单 0</li>
+							<li className="mod_tab__item ">专辑 0</li>
+							<li className="mod_tab__item ">视频 0</li>
+						</div>
+					</div>
+
+					<div className="profile_cont">
+						<div className="js_sub" id="like_song_box">
+							<Toolbar setShowRow={this.setShowRow} showRowSelection={showRowSelection}></Toolbar>
+							<div className="mod_songlist mod_songlist--edit">
+								<Table rowSelection={ showRowSelection ? rowSelection:false } columns={columns} dataSource={data}  pagination={false} rowClassName={'rowClassName'}/>
+							</div>
+						</div>
+					</div>
+					
 				</div>
 				
-				<div className="js_box" id="like_box">
-					<div className="mod_tab">
-						<li className="mod_tab__item mod_tab__current">歌曲 0</li>
-						<li className="mod_tab__item ">歌单 0</li>
-						<li className="mod_tab__item ">专辑 0</li>
-						<li className="mod_tab__item ">视频 0</li>
-					</div>
-				</div>
 				
 			</div>
 		)

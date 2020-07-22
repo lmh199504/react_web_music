@@ -22,7 +22,7 @@ export default class Digital extends Component{
 		const arr = [1,2,3,4,5]
 		
 		return (
-			<div className="js_wrap">
+			<div className="js_wrap digitals">
 				<div style={{ clear:'both'}}></div>
 				<div className="section_inner" style={{ minHeight:'360px' }}>
 					<div style={{ clear:'both'}}></div>

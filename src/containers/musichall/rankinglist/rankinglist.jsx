@@ -1,10 +1,10 @@
 
 import React,{ Component } from 'react'
-import { Button,Space,Popover,Table } from 'antd';
-import { PlayCircleOutlined,PlusSquareOutlined,VerticalAlignBottomOutlined,FormOutlined,CaretRightOutlined,PlusOutlined,ShareAltOutlined } from '@ant-design/icons';
+import { Button,Space,Table } from 'antd';
+import { VerticalAlignBottomOutlined,CaretRightOutlined,PlusOutlined,ShareAltOutlined } from '@ant-design/icons';
 import './ranking.less'
 
-
+import Toolbar from '../../../components/toolbar/toolbar'
 
 const columns = [
   {
@@ -84,8 +84,12 @@ export default class RankingList extends Component{
 		console.log("点我干什么")
 	}
 	
-	
-	
+	setShowRow = () => {
+		const { showRowSelection } = this.state
+		this.setState({
+			showRowSelection:!showRowSelection
+		})
+	}	
 	
 	render(){
 		
@@ -94,15 +98,7 @@ export default class RankingList extends Component{
 		    selectedRowKeys,
 		    onChange: this.onSelectChange,
 		};
-		const content = (
-		  <div onClick={ () => this.handleClick() }>
-		    <ul className="addMenu">
-				<li>播放队列</li>
-				<li>我喜欢</li>
-				<li><PlusSquareOutlined style={{ position:'absolute' ,left:6,top:12}}/>添加到新歌单</li>
-			</ul>
-		  </div>
-		);
+
 		
 		
 		return (
@@ -205,18 +201,8 @@ export default class RankingList extends Component{
 						</span>
 						<p className="toplist__rule js_desc">榜单规则</p>
 					</div>
-					<div className="mod_songlist_toolbar">
-						<Space>
-							<Button type="primary" size="large" icon={<PlayCircleOutlined />}>播放全部</Button>
-							<Popover content={content} title="" trigger="click" placement="rightBottom">
-								<Button size="large" icon={<PlusSquareOutlined />}>添加到</Button>
-							</Popover>
-							<Button size="large" icon={<VerticalAlignBottomOutlined />}>下载</Button>
-							<Button size="large" icon={<FormOutlined />} onClick={ () => this.setState({
-								showRowSelection:!showRowSelection
-							}) }>{ showRowSelection? '取消批量操作':'批量操作' }</Button>
-						</Space>
-					</div>
+					<Toolbar showRowSelection={showRowSelection} setShowRow={this.setShowRow}></Toolbar>
+
 					<div className="mod_songlist mod_songlist--edit">
 						<Table rowSelection={ showRowSelection ? rowSelection:false } columns={columns} dataSource={data}  pagination={false} rowClassName={'rowClassName'}/>
 					</div>
