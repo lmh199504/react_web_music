@@ -2,24 +2,47 @@
 import React,{ Component } from 'react'
 import Slider from "react-slick";
 import { connect } from 'react-redux'
-
+import { Spin } from 'antd' 
 import { SampleNextArrow,SamplePrevArrow } from '../../../../utils/slide'
-
+import { reqGetHomeNewAblum } from '../../../../api'
 
 
 
 class Newdisc extends Component{
 	state = {
-		suggestionIndex:0
+		suggestionIndex:0,
+		newAblumArr:[],
+		loading:false
 	}
 	
-	getData = (index) => {
-		console.log(index)
+	getData = (index,item) => {
+		// console.log(index)
 		this.setState({
-			suggestionIndex:index
+			suggestionIndex:index,
+			loading:true
+		})
+		
+		
+		reqGetHomeNewAblum({
+			area:item.id
+		}).then(res => {
+			this.setState({
+				newAblumArr:res.data.new_album.data.albums
+			})
+			
+			this.setState({
+				loading:false
+			})
+		}).catch(() => {
+			this.setState({
+				loading:false
+			})
 		})
 	}
-
+	componentDidMount = () => {
+		this.getData(0,{area:1})
+	}
+	
 	
 	render(){
 		const { homeData } = this.props
@@ -27,10 +50,13 @@ class Newdisc extends Component{
 
 		if(homeData.new_album_tag){
 			suggestionNav = homeData.new_album_tag.data.area
+
 		}
 		if(!suggestionNav){
 			return null
 		}
+		
+		
 		const settings = {
 			dots: true,
 			infinite: true,
@@ -41,8 +67,8 @@ class Newdisc extends Component{
 			nextArrow: <SampleNextArrow />,
 			prevArrow: <SamplePrevArrow />
 		};
-		const {suggestionIndex} = this.state
-		const arr = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+		const {suggestionIndex,newAblumArr,loading} = this.state
+
 		return (
 			<div className="mod_index mod_index--album mod_slide_box mod_bg" style={{paddingBottom: '60px'}}>
 				<div className="section_inner">
@@ -52,32 +78,35 @@ class Newdisc extends Component{
 					<div className="mod_index_tab">
 						{
 							suggestionNav.map((item,index) => (
-								<li key={index} className={ `index_tab__item js_tag ${suggestionIndex === index?'index_tab__item--current':'' }`  } onClick={ () =>  this.getData(index) }>{item.name}</li>
+								<li key={index} className={ `index_tab__item js_tag ${suggestionIndex === index?'index_tab__item--current':'' }`  } onClick={ () =>  this.getData(index,item) }>{item.name}</li>
 							))
 						}
 					
 					</div>
-					<Slider {...settings}>
-					    {
-							arr.map(item => (
-								<div className="playlist__item slide__item" key={item}>
-									<div className="playlist__item_inner">
-										<div className="playlist__cover ">
-											<img className="playlist__pic" src="https://qpic.y.qq.com/music_cover/gqs4lLM0dbcR4icSZlj2SWJbQVbvq3YSfUlGFMnmpxAIHK9yO82g4aicicvZZls99ha/300?n=1" alt="封面"/>
-											<i className="mod_cover__mask"></i>
-											<i className="mod_cover__icon_play js_play"></i>
-										</div>
-										<h4 className="playlist__title">
-											<span className="playlist__title_txt">吃鸡神曲丨这单在手，天下我有</span>	
-										</h4>
-										<div className="playlist__other">
-											播放量：45.6万
+					<Spin spinning={loading}>
+						<Slider {...settings}>
+							{
+								newAblumArr.map((item,index) => (
+									<div className="playlist__item slide__item" key={index}>
+										<div className="playlist__item_inner">
+											<div className="playlist__cover ">
+												<img className="playlist__pic" src={ `https://y.gtimg.cn/music/photo_new/T002R300x300M000${item.photo.pic_mid}.jpg?max_age=2592000` } alt="封面"/>
+												<i className="mod_cover__mask"></i>
+												<i className="mod_cover__icon_play js_play"></i>
+											</div>
+											<h4 className="playlist__title">
+												<span className="playlist__title_txt">{item.name}</span>	
+											</h4>
+											<div className="playlist__other">
+												{item.singers[0].name}
+											</div>
 										</div>
 									</div>
-								</div>
-							))
-						}
-					</Slider>
+								))
+							}
+						</Slider>
+					</Spin>
+					
 				</div>
 			</div>
 		)

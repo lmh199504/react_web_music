@@ -3,12 +3,17 @@
 
 
 import React,{ Component } from 'react'
+import { connect } from 'react-redux'
 import './ranking.less'
-export default class Ranking extends Component{
+class Ranking extends Component{
 	
 	
 	render(){
-
+		const { homeData } = this.props
+		if(!homeData.toplist){
+			return null
+		}
+		const topList = homeData.toplist.data.group[0].toplist
 		
 		return (
 			<div className="mod_index mod_index--top  mod_slide_box mod_bg">
@@ -19,148 +24,33 @@ export default class Ranking extends Component{
 					
 					<div className="mod_toplist" style={{marginLeft:'auto' }}>
 						<ul className="toplist__list js_list">
-							<li className="toplist__item item1 mod_cover">
-								<div className="toplist__box">
-									<div className="toplist__bg"></div>
-									<i className="mod_cover__icon_play js_play_toplist"></i>
-									<i className="toplist__line"></i>
-									<h3 className="toplist__hd">
-										<p className="toplist__tit" style={{ float:'unset' }}>热歌</p>
-									</h3>
-									<ul className="toplist__songlist">
-										<li className="toplist__song">
-											<div className="toplist__number">1</div>
-											<div className="toplist__songname"><span className="js_song">爱，存在</span></div>
-											<div className="toplist__artist"><span>王靖雯不胖</span></div>
-										</li>
-										<li className="toplist__song">
-											<div className="toplist__number">2</div>
-											<div className="toplist__songname"><span className="js_song">爱，存在</span></div>
-											<div className="toplist__artist"><span>王靖雯不胖</span></div>
-										</li>
-										<li className="toplist__song">
-											<div className="toplist__number">3</div>
-											<div className="toplist__songname"><span className="js_song">爱，存在</span></div>
-											<div className="toplist__artist"><span>王靖雯不胖</span></div>
-										</li>
-									</ul>
-									
-								</div>
-							</li>
-							
-							<li className="toplist__item item2 mod_cover">
-								<div className="toplist__box">
-									<div className="toplist__bg"></div>
-									<i className="mod_cover__icon_play js_play_toplist"></i>
-									<i className="toplist__line"></i>
-									<h3 className="toplist__hd">
-										<p className="toplist__tit" style={{ float:'unset' }}>新歌</p>
-									</h3>
-									<ul className="toplist__songlist">
-										<li className="toplist__song">
-											<div className="toplist__number">1</div>
-											<div className="toplist__songname"><span className="js_song">爱，存在</span></div>
-											<div className="toplist__artist"><span>王靖雯不胖</span></div>
-										</li>
-										<li className="toplist__song">
-											<div className="toplist__number">2</div>
-											<div className="toplist__songname"><span className="js_song">爱，存在</span></div>
-											<div className="toplist__artist"><span>王靖雯不胖</span></div>
-										</li>
-										<li className="toplist__song">
-											<div className="toplist__number">3</div>
-											<div className="toplist__songname"><span className="js_song">爱，存在</span></div>
-											<div className="toplist__artist"><span>王靖雯不胖</span></div>
-										</li>
-									</ul>
-									
-								</div>
-							</li>
-							
-							<li className="toplist__item item3 mod_cover">
-								<div className="toplist__box">
-									<div className="toplist__bg"></div>
-									<i className="mod_cover__icon_play js_play_toplist"></i>
-									<i className="toplist__line"></i>
-									<h3 className="toplist__hd">
-										<p className="toplist__tit" style={{ float:'unset' }}>流行指数</p>
-									</h3>
-									<ul className="toplist__songlist">
-										<li className="toplist__song">
-											<div className="toplist__number">1</div>
-											<div className="toplist__songname"><span className="js_song">爱，存在</span></div>
-											<div className="toplist__artist"><span>王靖雯不胖</span></div>
-										</li>
-										<li className="toplist__song">
-											<div className="toplist__number">2</div>
-											<div className="toplist__songname"><span className="js_song">爱，存在</span></div>
-											<div className="toplist__artist"><span>王靖雯不胖</span></div>
-										</li>
-										<li className="toplist__song">
-											<div className="toplist__number">3</div>
-											<div className="toplist__songname"><span className="js_song">爱，存在</span></div>
-											<div className="toplist__artist"><span>王靖雯不胖</span></div>
-										</li>
-									</ul>
-									
-								</div>
-							</li>
-							<li className="toplist__item item4 mod_cover">
-								<div className="toplist__box">
-									<div className="toplist__bg"></div>
-									<i className="mod_cover__icon_play js_play_toplist"></i>
-									<i className="toplist__line"></i>
-									<h3 className="toplist__hd">
-										<p className="toplist__tit" style={{ float:'unset' }}>欧美</p>
-									</h3>
-									<ul className="toplist__songlist">
-										<li className="toplist__song">
-											<div className="toplist__number">1</div>
-											<div className="toplist__songname"><span className="js_song">爱，存在</span></div>
-											<div className="toplist__artist"><span>王靖雯不胖</span></div>
-										</li>
-										<li className="toplist__song">
-											<div className="toplist__number">2</div>
-											<div className="toplist__songname"><span className="js_song">爱，存在</span></div>
-											<div className="toplist__artist"><span>王靖雯不胖</span></div>
-										</li>
-										<li className="toplist__song">
-											<div className="toplist__number">3</div>
-											<div className="toplist__songname"><span className="js_song">爱，存在</span></div>
-											<div className="toplist__artist"><span>王靖雯不胖</span></div>
-										</li>
-									</ul>
-									
-								</div>
-							</li>
-							<li className="toplist__item item5 mod_cover">
-								<div className="toplist__box">
-									<div className="toplist__bg"></div>
-									<i className="mod_cover__icon_play js_play_toplist"></i>
-									<i className="toplist__line"></i>
-									<h3 className="toplist__hd">
-										<p className="toplist__tit" style={{ float:'unset' }}>韩国</p>
-									</h3>
-									<ul className="toplist__songlist">
-										<li className="toplist__song">
-											<div className="toplist__number">1</div>
-											<div className="toplist__songname"><span className="js_song">爱，存在</span></div>
-											<div className="toplist__artist"><span>王靖雯不胖</span></div>
-										</li>
-										<li className="toplist__song">
-											<div className="toplist__number">2</div>
-											<div className="toplist__songname"><span className="js_song">爱，存在</span></div>
-											<div className="toplist__artist"><span>王靖雯不胖</span></div>
-										</li>
-										<li className="toplist__song">
-											<div className="toplist__number">3</div>
-											<div className="toplist__songname"><span className="js_song">爱，存在</span></div>
-											<div className="toplist__artist"><span>王靖雯不胖</span></div>
-										</li>
-									</ul>
-									
-								</div>
-							</li>
+							{
+								topList.map((item,index) => (
+									<li className= {`toplist__item item${index+1} mod_cover`} key={item.topId}>
+										<div className="toplist__box">
+											<div className="toplist__bg"></div>
+											<i className="mod_cover__icon_play js_play_toplist"></i>
+											<i className="toplist__line"></i>
+											<h3 className="toplist__hd">
+												<p className="toplist__tit" style={{ float:'unset' }}>热歌</p>
+											</h3>
+											<ul className="toplist__songlist">
+												{
+													item.song.map(item => (
+													<li className="toplist__song" key={item.songId}>
+														<div className="toplist__number">{item.rank}</div>
+														<div className="toplist__songname"><span className="js_song">{item.title}</span></div>
+														<div className="toplist__artist"><span>{item.singerName}</span></div>
+													</li>
+													))
+												}
+
+											</ul>
+											
+										</div>
+									</li>
+								))
+							}
 						</ul>
 					</div>
 				</div>
@@ -168,3 +58,7 @@ export default class Ranking extends Component{
 		)
 	}
 }
+
+export default connect(
+	state=>({homeData:state.homeData})
+)(Ranking)

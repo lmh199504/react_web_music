@@ -1,9 +1,76 @@
 
 import React,{ Component } from 'react'
-import { Pagination } from 'antd';
+import { Pagination,Spin } from 'antd';
+import { reqGetSingerList } from '../../../api'
+
 import './singer.less'
+
 export default class Singer extends Component{
+	state = {
+		param:{
+			"area":-100,
+			"sex":-100,
+			"genre":-100,
+			"index":-100,
+			"sin":0,
+			"page":1
+		},
+		tags:{},
+		total:0,
+		singerlist:[],
+		loading:false
+	}
+	
+	componentDidMount = () => {
+		this.getData()
+	}
+	getData = () => {
+		const {param} = this.state
+		this.setState({
+			loading:true
+		})
+		reqGetSingerList(param).then(res => {
+			this.setState({
+				tags:res.response.singerList.data.tags,
+				total:res.response.singerList.data.total,
+				singerlist:res.response.singerList.data.singerlist,
+				loading:false
+			})
+		}).catch(() => {
+			this.setState({
+				loading:false
+			})
+		})
+	}
+	
+	setParam = (name,value) => {
+		const { param } = this.state
+		param[name] = value
+		this.setState({
+			param
+		})
+		this.getData()
+	}
+	
+	setPage = (page,pageSize) => {
+		const { param } = this.state
+		param.page = page
+		this.setState({
+			param
+		})
+		this.getData()
+	}
+	replaceImg = (e) => {
+		e.target.src = require('../../../assets/images/timg.jpg')
+	}
+
 	render(){
+		
+		const { tags,param,total,singerlist,loading } = this.state
+		if(!tags.area){
+			return null
+		}
+		
 		return (
 			<div>
 				<div className="mod_singer_push js_my_singers_nologin mod_singer_push--nofocus">
@@ -17,103 +84,64 @@ export default class Singer extends Component{
 				<div className="main">
 					<div className="mod_singer_tag" id="tag_box">
 						<div className="singer_tag__list js_index">
-							<p className="singer_tag__item singer_tag__item--all singer_tag__item--select" >热门</p>
-							<p className="singer_tag__item">B</p>
-							<p className="singer_tag__item">C</p>
+							
+
+							{
+								tags.index.map(item => (
+									<p key={item.id} className={`singer_tag__item ${item.id === -100?'singer_tag__item--all':''} ${ item.id ===param.index? 'singer_tag__item--select':''}` } onClick={ () => this.setParam('index',item.id) }>{item.name}</p>
+								))
+							}
+
 						</div>
 						<div className="singer_tag__list js_area">
-							<p className="singer_tag__item singer_tag__item--all singer_tag__item--select" >全部</p>
-							<p className="singer_tag__item">内地</p>
-							<p className="singer_tag__item">港台</p>
+							{
+								tags.area.map(item => (
+									<p key={item.id}  className={`singer_tag__item ${item.id === -100?'singer_tag__item--all':''} ${ item.id ===param.area? 'singer_tag__item--select':''}` } onClick={ () => this.setParam('area',item.id) }>{item.name}</p>
+								))
+							}
 						</div>
 						<div className="singer_tag__list js_sex">
-							<p className="singer_tag__item singer_tag__item--all singer_tag__item--select" >全部</p>
-							<p className="singer_tag__item">男</p>
-							<p className="singer_tag__item">女</p>
-							<p className="singer_tag__item">组合</p>
+							{
+								tags.sex.map(item => (
+									<p key={item.id}  className={`singer_tag__item ${item.id === -100?'singer_tag__item--all':''} ${ item.id ===param.sex? 'singer_tag__item--select':''}` }  onClick={ () => this.setParam('sex',item.id) }>{item.name}</p>
+								))
+							}
 						</div>
 						<div className="singer_tag__list js_genre">
-							<p className="singer_tag__item singer_tag__item--all singer_tag__item--select" >全部</p>
-							<p className="singer_tag__item">流行</p>
-							<p className="singer_tag__item">嘻哈</p>
-							<p className="singer_tag__item">摇滚</p>
+							{
+								tags.genre.map(item => (
+									<p key={item.id}  className={`singer_tag__item ${item.id === -100?'singer_tag__item--all':''} ${ item.id ===param.genre? 'singer_tag__item--select':''}` }  onClick={ () => this.setParam('genre',item.id) }>{item.name}</p>
+								))
+							}
 						</div>
 					</div>
 					
 					
 					<div id="mod-singerlist">
 						<div className="mod_singer_list">
-							<ul className="singer_list__list js_avtar_list">
-								<li className="singer_list__item">
-									<div className="singer_list__item_box">
-										<div className="singer_list__cover js_singer">
-											<img className="singer_list__pic" src="//y.gtimg.cn/music/photo_new/T001R150x150M000004Be55m1SJaLk.jpg?max_age=2592000" alt="张学友"/>
-										</div>
-										<h3 className="singer_list__title">
-											<p className="js_singer">张学友</p>	
-										</h3>
-									</div>
-								</li>
-								
-								<li className="singer_list__item">
-									<div className="singer_list__item_box">
-										<div className="singer_list__cover js_singer">
-											<img className="singer_list__pic" src="//y.gtimg.cn/music/photo_new/T001R150x150M000004Be55m1SJaLk.jpg?max_age=2592000" alt="张学友"/>
-										</div>
-										<h3 className="singer_list__title">
-											<p className="js_singer">张学友</p>	
-										</h3>
-									</div>
-								</li>
-								
-								<li className="singer_list__item">
-									<div className="singer_list__item_box">
-										<div className="singer_list__cover js_singer">
-											<img className="singer_list__pic" src="//y.gtimg.cn/music/photo_new/T001R150x150M000004Be55m1SJaLk.jpg?max_age=2592000" alt="张学友"/>
-										</div>
-										<h3 className="singer_list__title">
-											<p className="js_singer">张学友</p>	
-										</h3>
-									</div>
-								</li>
-								
-								<li className="singer_list__item">
-									<div className="singer_list__item_box">
-										<div className="singer_list__cover js_singer">
-											<img className="singer_list__pic" src="//y.gtimg.cn/music/photo_new/T001R150x150M000004Be55m1SJaLk.jpg?max_age=2592000" alt="张学友"/>
-										</div>
-										<h3 className="singer_list__title">
-											<p className="js_singer">张学友</p>	
-										</h3>
-									</div>
-								</li>
-								
-								<li className="singer_list__item">
-									<div className="singer_list__item_box">
-										<div className="singer_list__cover js_singer">
-											<img className="singer_list__pic" src="//y.gtimg.cn/music/photo_new/T001R150x150M000004Be55m1SJaLk.jpg?max_age=2592000" alt="张学友"/>
-										</div>
-										<h3 className="singer_list__title">
-											<p className="js_singer">张学友</p>	
-										</h3>
-									</div>
-								</li>
-								
-								<li className="singer_list__item">
-									<div className="singer_list__item_box">
-										<div className="singer_list__cover js_singer">
-											<img className="singer_list__pic" src="//y.gtimg.cn/music/photo_new/T001R150x150M000004Be55m1SJaLk.jpg?max_age=2592000" alt="张学友"/>
-										</div>
-										<h3 className="singer_list__title">
-											<p className="js_singer">张学友</p>	
-										</h3>
-									</div>
-								</li>
-							</ul>
+							<Spin spinning={loading}>
+								<ul className="singer_list__list js_avtar_list">
+									{
+										singerlist.map(item => (
+											<li className="singer_list__item" key={item.singer_id}>
+												<div className="singer_list__item_box">
+													<div className="singer_list__cover js_singer">
+														<img className="singer_list__pic" src={ item.singer_pic } alt={item.singer_name} onError={ $event => this.replaceImg($event) } />
+													</div>
+													<h3 className="singer_list__title">
+														<p className="js_singer">{item.singer_name}</p>	
+													</h3>
+												</div>
+											</li>
+										))
+									}
+								</ul>
+							</Spin>
+							
 						</div>
 					</div>
 				
-					<Pagination defaultCurrent={6} total={500}  style={{marginBottom:60,textAlign:'center'}}/>
+					<Pagination defaultCurrent={param.page} total={total}  style={{marginBottom:60,textAlign:'center'}} pageSize={80} showSizeChanger={false} onChange={ (page,pageSize) => this.setPage(page,pageSize)}/>
 				</div>
 				
 			</div>

@@ -15,4 +15,12 @@ export const reqGetHomeClass = (data) => request('/getHomeClassifid',data,"GET")
 export const reqGetHomeNewSong = (data) => request('/getHomeNewSong',data,"GET")
 //获取首页信息
 export const reqGetHome = (data) => request('/getRecommend',data,"GET")
+//获取首页新碟
+export const reqGetHomeNewAblum = (data) => request('/getHomeNewAblum',data,"GET")
+//获取mv
+export const reqGetMvByTag = (data) => request('/getMvByTag',data,"GET")
+//获取歌手列表
+export const reqGetSingerList = (data) => request('/getSingerList',data,"GET")
 
+//音乐馆新碟
+export const reqGetNewDisks = (data) => request('/getNewDisks',data,"GET")

@@ -3,9 +3,9 @@ import React,{ Component } from 'react'
 import { Button,Space,Table } from 'antd';
 import { VerticalAlignBottomOutlined,CaretRightOutlined,PlusOutlined,ShareAltOutlined } from '@ant-design/icons';
 import './ranking.less'
+import {tags} from './tags.js'
 
 import Toolbar from '../../../components/toolbar/toolbar'
-
 const columns = [
   {
     title: '歌曲',
@@ -62,7 +62,8 @@ export default class RankingList extends Component{
 	
 	state = {
 		selectedRowKeys: [], // Check here to configure the default column
-		showRowSelection:false
+		showRowSelection:false,
+		topId:4
 	};
 		
 	start = () => {
@@ -90,10 +91,15 @@ export default class RankingList extends Component{
 			showRowSelection:!showRowSelection
 		})
 	}	
-	
+	setTopId = (item) => {
+		const topId = item.topId
+		this.setState({
+			topId
+		})
+	}
 	render(){
 		
-		const { selectedRowKeys,showRowSelection } = this.state;
+		const { selectedRowKeys,showRowSelection,topId } = this.state;
 		const rowSelection = {
 		    selectedRowKeys,
 		    onChange: this.onSelectChange,
@@ -106,91 +112,49 @@ export default class RankingList extends Component{
 				<div className="toplist_nav">
 					<dl className="toplist_nav__list">
 						<dt className="toplist_nav__tit">巅峰榜</dt>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link toplist_nav__link--current">飙升榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">热歌榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">新歌榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">流行指数</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">听歌识曲榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">MV榜</p>
-						</dd>
+						
+						{
+							tags.dianfeng.map(item => (
+								<dd className="toplist_nav__item" key={item.topId} onClick={ () => this.setTopId(item)}>
+									<p className={`toplist_nav__link ${item.topId === topId?'toplist_nav__link--current':''}`}>{item.name}</p>
+								</dd>
+							))
+						}
+
 					</dl>
 					
 					
 					<dl className="toplist_nav__list">
 						<dt className="toplist_nav__tit">地区榜</dt>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link toplist_nav__link--current">飙升榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">热歌榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">新歌榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">流行指数</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">听歌识曲榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">MV榜</p>
-						</dd>
+						{
+							tags.area.map(item => (
+								<dd className="toplist_nav__item" key={item.topId} onClick={ () => this.setTopId(item)}>
+									<p className={`toplist_nav__link ${item.topId === topId?'toplist_nav__link--current':''}`}>{item.name}</p>
+								</dd>
+							))
+						}
 					</dl>
 					
 					<dl className="toplist_nav__list">
 						<dt className="toplist_nav__tit">特色榜</dt>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link toplist_nav__link--current">飙升榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">热歌榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">新歌榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">流行指数</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">听歌识曲榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">MV榜</p>
-						</dd>
+						{
+							tags.specail.map(item => (
+								<dd className="toplist_nav__item" key={item.topId} onClick={ () => this.setTopId(item)}>
+									<p className={`toplist_nav__link ${item.topId === topId?'toplist_nav__link--current':''}`}>{item.name}</p>
+								</dd>
+							))
+						}
 					</dl>
 					
 					<dl className="toplist_nav__list">
 						<dt className="toplist_nav__tit">全球榜</dt>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link toplist_nav__link--current">飙升榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">热歌榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">新歌榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">流行指数</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">听歌识曲榜</p>
-						</dd>
-						<dd className="toplist_nav__item">
-							<p className="toplist_nav__link">MV榜</p>
-						</dd>
+						{
+							tags.world.map(item => (
+								<dd className="toplist_nav__item" key={item.topId} onClick={ () => this.setTopId(item)}>
+									<p className={`toplist_nav__link ${item.topId === topId?'toplist_nav__link--current':''}`}>{item.name}</p>
+								</dd>
+							))
+						}
 					</dl>
 				</div>
 				<div className="mod_toplist">

@@ -4,52 +4,50 @@
 
 import React,{ Component } from 'react'
 import Slider from "react-slick";
+import { SampleNextArrow,SamplePrevArrow } from '../../../../utils/slide'
+import { Spin } from 'antd' 
+import { formatNum } from '../../../../utils'
+import { reqGetMvByTag } from '../../../../api'
 
 
 
-
-
-
-function SampleNextArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-	<div
-	  className={className}
-	  style={{ ...style, display: "none", background: "white" }}
-	  onClick={onClick}
-	/>
-  );
-}
-
-function SamplePrevArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-	<div
-	  className={className}
-	  style={{ ...style, display: "none", background: "white"}}
-	  onClick={onClick}
-	/>
-  );
-}
 export default class extends Component{
 	state = {
-		suggestionIndex:0
+		suggestionIndex:0,
+		loading:false,
+		mvList:[]
 	}
 	
-	getData = (index) => {
-		console.log(index)
+	getData = (index,item) => {
+		// console.log(index)
 		this.setState({
-			suggestionIndex:index
+			suggestionIndex:index,
+			loading:true
+		})
+		reqGetMvByTag({lan:item.lan}).then(res => {
+			console.log()
+			this.setState({
+				mvList:res.response.data.mvlist,
+				loading:false
+			})
+		}).catch(() => {
+			this.setState({
+				loading:false
+			})
 		})
 	}
+	componentDidMount = () => {
+		this.getData(0,{})
+	}
+	
 	render(){
 		const suggestionNav = [
-			{name:'为你推荐'},
-			{name:'官方歌单'},
-			{name:'情歌'},
-			{name:'网络歌曲'},
-			{name:'经典'},
-			{name:'KTV热歌'}
+			{"id": 15,"name": "全部",lan:"all"},
+			{"id": 16,"name": "内地",lan:"neidi"},
+			{"id": 17,"name": "港台",lan:"korea"},
+			{"id": 18,"name": "欧美",lan:"gangtai"},
+			{"id": 19,"name": "韩国",lan:"oumei"},
+			{"id": 20,"name": "日本",lan:"janpan"}
 		]
 		
 		const settings = {
@@ -57,50 +55,52 @@ export default class extends Component{
 			infinite: true,
 			speed: 500,
 			slidesToShow: 5,
+			rows:2,
 			slidesToScroll:5,
 			nextArrow: <SampleNextArrow />,
 			prevArrow: <SamplePrevArrow />
 		};
-		const {suggestionIndex} = this.state
-		const arr = [1,2,3,4,5,6,7,8,9,10]
+		const {suggestionIndex,loading,mvList} = this.state
 		return (
 			<div className="mod_index mod_index--mv mod_slide_box mod_bg" style={{paddingBottom: '60px'}}>
 				<div className="section_inner">
 					<div className="index__hd">
-						<h2 className="index__tit"><i className="icon_txt">歌单推荐</i></h2>
+						<h2 className="index__tit"><i className="icon_txt">MV</i></h2>
 					</div>
 					<div className="mod_index_tab">
 						{
 							suggestionNav.map((item,index) => (
-								<li key={index} className={ `index_tab__item js_tag ${suggestionIndex === index?'index_tab__item--current':'' }`  } onClick={ () =>  this.getData(index) }>{item.name}</li>
+								<li key={index} className={ `index_tab__item js_tag ${suggestionIndex === index?'index_tab__item--current':'' }`  } onClick={ () =>  this.getData(index,item) }>{item.name}</li>
 							))
 						}
 					
 					</div>
-					<Slider {...settings}>
-					    {
-							arr.map(item => (
-								<div className="mv_list__item" key={item}>
-									<div className="mv_list__item_box">
-										<div className="mv_list__cover mod_cover js_mv">
-											<img className="mv_list__pic" src="https://y.gtimg.cn/music/photo_new/T015R640x360M101002AaYyE0SmH3T.jpg?max_age=2592000" alt="mv"/>
-											<i className="mod_cover__icon_play"></i>
-										</div>
-										<h3 className="mv_list__title">
-											<span className="js_mv">EXO-SC《10亿点击 (1 Billion Views) (Feat. MOON)》MV</span>
-										</h3>
-										<p className="mv_list__singer">
-											<span className="js_singer">EXO-SC</span>
-										</p>
-										
-										<div className="mv_list__info">
-											<span className="mv_list__listen"><i className="mv_list__listen_icon sprite"></i>12.9万</span>
+					<Spin  spinning={loading}>
+						<Slider {...settings}>
+						    {
+								mvList.map(item => (
+									<div className="mv_list__item" key={item.mv_id}>
+										<div className="mv_list__item_box">
+											<div className="mv_list__cover mod_cover js_mv">
+												<img className="mv_list__pic" src={item.picurl} alt="mv"/>
+												<i className="mod_cover__icon_play"></i>
+											</div>
+											<h3 className="mv_list__title">
+												<span className="js_mv">{item.mvtitle}</span>
+											</h3>
+											<p className="mv_list__singer">
+												<span className="js_singer">{item.singer_name}</span>
+											</p>
+											<div className="mv_list__info">
+												<span className="mv_list__listen"><i className="mv_list__listen_icon sprite"></i>{formatNum(item.listennum)}</span>
+											</div>
 										</div>
 									</div>
-								</div>
-							))
-						}
-					</Slider>
+								))
+							}
+						</Slider>
+					</Spin>
+					
 				</div>
 			</div>
 		)
