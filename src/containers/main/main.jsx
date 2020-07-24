@@ -10,6 +10,7 @@ import Vip from '../vip/vip'
 import Client from '../client/client'
 import Platform from '../platform/platform'
 import { getUserInfo,logout } from '../../redux/actions'
+import Player from '../player/player'
 
 
 import NavHeader from '../navHeader/navHeader'
@@ -28,6 +29,7 @@ class Main extends React.Component{
 		}
 		return (
 			<div>
+				<Player></Player>
 				<NavHeader />
 				
 				<Switch>

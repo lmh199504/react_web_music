@@ -63,7 +63,6 @@ export const getHome = (data) => ({type:GET_HOME,data})
 export const getHomeData = () => {
 	return async dispatch => {
 		const response = await reqGetHome()
-		console.log(response)
 		if(response.response.code === 0){
 			dispatch(getHome(response.response))
 		}

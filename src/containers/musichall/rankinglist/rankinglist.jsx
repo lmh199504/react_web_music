@@ -1,27 +1,28 @@
 
 import React,{ Component } from 'react'
-import { Button,Space,Table } from 'antd';
+import { Button,Space,Table,Spin } from 'antd';
 import { VerticalAlignBottomOutlined,CaretRightOutlined,PlusOutlined,ShareAltOutlined } from '@ant-design/icons';
 import './ranking.less'
 import {tags} from './tags.js'
+import { reqGetRanks } from '../../../api'
 
 import Toolbar from '../../../components/toolbar/toolbar'
 const columns = [
   {
     title: '歌曲',
-    dataIndex: 'name',
+    dataIndex: 'singerName',
 	render:(text, record, index) => {
 		return (
 			
-			<div className="song_msg">
-				<div className="mod_songlist--edit songlist__number" style={{ color: index<3 ?'red' :'' }}>{ index+1 }</div>
+			<div className="song_msg" key={record.rank}>
+				<div className="mod_songlist--edit songlist__number" style={{ color: index<3 ?'red' :'' }}>{ record.rank }</div>
 				<div className="songlist__rank">
 					<i className="icon_rank_popular"></i>
-					168%
+					{ record.rankValue }
 				</div>
-				<img src="https://y.gtimg.cn/music/photo_new/T002R90x90M000002RspIW36U4Nn.jpg?max_age=2592000" alt="封面" className="song_cover"/>
+				<img src={`https://y.gtimg.cn/music/photo_new/T002R90x90M000${record.albumMid}.jpg?max_age=2592000`} alt="封面" className="song_cover"/>
 				<div className="song_name">
-					{text}
+					{record.title}
 				</div>
 				<div className="mod_list_menu">
 					<Space>
@@ -31,7 +32,6 @@ const columns = [
 						<Button shape="circle" icon={<ShareAltOutlined />}></Button>
 					</Space>
 				</div>
-				
 			</div>
 		)
 	}
@@ -39,31 +39,26 @@ const columns = [
   },
   {
     title: '歌手',
-    dataIndex: 'age',
-	width:300
+    dataIndex: 'singerName',
+	width:"15%"
   },
   {
     title: '时长',
     dataIndex: 'address',
-	width:100
+	width:"15%"
   },
 ];
-const data = [];
-for (let i = 0; i < 20; i++) {
-  data.push({
-    key: i,
-    name: `爱，存在`,
-    age: '林小珂',
-    address: `05:30`,
-  });
-}
+
+
 
 export default class RankingList extends Component{
 	
 	state = {
 		selectedRowKeys: [], // Check here to configure the default column
 		showRowSelection:false,
-		topId:4
+		topId:4,
+		data:[],
+		loading:false
 	};
 		
 	start = () => {
@@ -96,10 +91,32 @@ export default class RankingList extends Component{
 		this.setState({
 			topId
 		})
+		this.getData()
 	}
+	componentDidMount = () => {
+		this.getData()
+	}
+	
+	getData = () => {
+		const { topId } = this.state
+		this.setState({
+			loading:true
+		})
+		reqGetRanks({topId}).then(res => {
+			this.setState({
+				data:res.response.detail.data.data.song,
+				loading:false
+			})
+		}).catch(() => {
+			this.setState({
+				loading:false
+			})
+		})
+	}
+	
 	render(){
 		
-		const { selectedRowKeys,showRowSelection,topId } = this.state;
+		const { selectedRowKeys,showRowSelection,topId,data,loading } = this.state;
 		const rowSelection = {
 		    selectedRowKeys,
 		    onChange: this.onSelectChange,
@@ -166,13 +183,12 @@ export default class RankingList extends Component{
 						<p className="toplist__rule js_desc">榜单规则</p>
 					</div>
 					<Toolbar showRowSelection={showRowSelection} setShowRow={this.setShowRow}></Toolbar>
-
-					<div className="mod_songlist mod_songlist--edit">
-						<Table rowSelection={ showRowSelection ? rowSelection:false } columns={columns} dataSource={data}  pagination={false} rowClassName={'rowClassName'}/>
-					</div>
+					<Spin spinning={loading}>
+						<div className="mod_songlist mod_songlist--edit">
+							<Table rowSelection={ showRowSelection ? rowSelection:false } columns={columns} dataSource={data}  pagination={false} rowClassName={'rowClassName'}/>
+						</div>
+					</Spin>
 				</div>
-				
-				
 			</div>
 		)
 	}

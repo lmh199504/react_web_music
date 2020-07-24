@@ -6,7 +6,7 @@ import { Spin } from 'antd'
 import { SampleNextArrow,SamplePrevArrow } from '../../../../utils/slide'
 import { formatNum } from '../../../../utils'
 
-import { reqGetHomeClass } from '../../../../api'
+import { reqGetHomeClass,reqGetSongListDetail } from '../../../../api'
 
 
 
@@ -21,7 +21,9 @@ export default class extends Component{
 	componentDidMount = () => {
 		this.getData(0,{id:-1})
 	}
-	
+	getDetail = (item) => {
+		reqGetSongListDetail({disstid:item.tid || item.content_id})
+	} 
 	getData = (index,item) => {
 		console.log(index)
 		this.setState({
@@ -100,7 +102,7 @@ export default class extends Component{
 						<Slider {...settings}>
 							{
 								classList.map((item,index) => (
-									<div className="playlist__item slide__item" key={index}>
+									<div className="playlist__item slide__item" key={index} onClick={ () => this.getDetail(item) }>
 										<div className="playlist__item_inner">
 											<div className="playlist__cover ">
 												<img className="playlist__pic" src={item.cover_url_big || item.cover} alt="封面"/>

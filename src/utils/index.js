@@ -38,3 +38,13 @@ export const CheckImgExists = (imgurl) => {
         }
     }
 }
+
+//格式化发布时间
+
+export const formatPubTime = (time) => {
+	var date = new Date(time*1000)
+	let y = date.getFullYear()
+	let m = date.getMonth()
+	let d = date.getDay()
+	return y+'-'+ (m+1>9?m+1 : '0' + (m+1)) +'-'+  (d>9?d:'0'+d)
+}

@@ -9,7 +9,7 @@ export default class NewDisc extends Component{
 		param:{
 			page:1,
 			area:1,
-			num:20
+			num:20,
 		},
 		loading:false,
 		activeIndex:0,

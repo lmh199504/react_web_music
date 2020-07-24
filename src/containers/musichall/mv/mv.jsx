@@ -1,34 +1,82 @@
 
 import React,{ Component } from 'react'
-
+import { Pagination,Spin } from 'antd'
+import { reqGetMV } from '../../../api'
+import { formatPubTime } from '../../../utils'
 import './mv.less'
 export default class Mv extends Component{
 	
+	state = {
+		param:{
+			area_id:15,
+			version_id:7,
+			page:1,
+			order:1
+		},
+		mvTag:{},
+		loading:false,
+		mvList:[],
+		total:0
+	}
+	
+	componentDidMount = () => {
+		this.getData()
+	}
+	
+	setParam = (name,value) => {
+		const { param } = this.state
+		param[name] = value
+		this.setState({
+			param
+		})
+		this.getData()
+	}
+	getData = () => {
+		this.setState({
+			loading:true
+		})
+		const { param } = this.state
+		reqGetMV(param).then(res => {
+			this.setState({
+				loading:false,
+				mvTag:res.response.mv_tag.data,
+				mvList:res.response.mv_list.data.list,
+				total:res.response.mv_list.data.total
+			})
+		}).catch(() => {
+			this.setState({
+				loading:false
+			})
+		})
+	}
+	
+	
 	render(){
-		const arr = [1,2,3,4,5,6,7,8,9]
+		const { param,mvTag,loading,mvList } = this.state
+		if(!mvTag.area){
+			return null
+		}
+		
 		
 		return (
 			<div className="main">
 				<div className="mod_tag" id="mv_tags">
 					<div className="tag__list js_tags_area">
 						<h3 className="tag__tit">区域</h3>
-						<li className="tag__item tag__item--select">全部</li>
-						<li className="tag__item">内地</li>
-						<li className="tag__item">港台</li>
-						<li className="tag__item">欧美</li>
-						<li className="tag__item">韩国</li>
-						<li className="tag__item">日本</li>
+						{
+							mvTag.area.map(item => (
+								<li className={`tag__item ${item.id===param.area_id?'tag__item--select':''}`} key={item.id} onClick={ () => this.setParam('area_id',item.id) }>{item.name}</li>
+							))
+						}
+
 					</div>
 					<div className="tag__list js_tags_version">
 						<h3 className="tag__tit">版本</h3>
-						<li className="tag__item tag__item--select">全部</li>
-						<li className="tag__item">MV</li>
-						<li className="tag__item">现场</li>
-						<li className="tag__item">翻唱</li>
-						<li className="tag__item">舞蹈</li>
-						<li className="tag__item">影视</li>
-						<li className="tag__item">综艺</li>
-						<li className="tag__item">儿歌</li>
+						{
+							mvTag.version.map(item => (
+								<li className={`tag__item ${item.id===param.version_id?'tag__item--select':''}`} key={item.id} onClick={ () => this.setParam('version_id',item.id) }>{item.name}</li>
+							))
+						}
 					</div>
 				</div>
 				
@@ -36,40 +84,43 @@ export default class Mv extends Component{
 					<div className="part_detail__hd">
 						<h2 className="part_detail__tit js_lib_title">全部MV</h2>
 						<div className="part_switch">
-							<li className="part_switch__item part_switch__item--left part_switch__item--select">最新</li>
-							<li className="part_switch__item part_switch__item--right">最热</li>
+							<li className={`part_switch__item part_switch__item--left ${param.order ===1?'part_switch__item--select':''}`} onClick={() => this.setParam('order',1)}>最新</li>
+							<li className={`part_switch__item part_switch__item--right ${param.order ===0?'part_switch__item--select':''}`} onClick={() => this.setParam('order',0)}>最热</li>
 						</div>
 					</div>
 				</div>
-					
-				<div className="mod_mv">
-					<ul className="mv_list__list" id="mv_list">
-						{
-							arr.map(item => (
-								<li className="mv_list__item">
-									<div className="mv_list__item_box">
-										<div className="mv_list__cover mod_cover js_mv">
-											<img src="https://y.gtimg.cn/music/photo_new/T015R640x360M000001YiOK42r9CAv.jpg?max_age=2592000" alt="tupian" className="mv_list__pic"/>	
-											<i className="mod_cover__icon_play"></i>
+				<Spin spinning={loading}>
+					<div className="mod_mv">
+						<ul className="mv_list__list" id="mv_list">
+							{
+								mvList.map(item => (
+									<li className="mv_list__item" key={item.vid}>
+										<div className="mv_list__item_box">
+											<div className="mv_list__cover mod_cover js_mv">
+												<img src={item.picurl} alt="tupian" className="mv_list__pic"/>	
+												<i className="mod_cover__icon_play"></i>
+											</div>
+											
+											<h3 className="mv_list__title">
+												<span className="js_mv">{item.title}</span>
+											</h3>	
+											<div className="mv_list__singer">
+												<span className="js_singer">{ item.singers[0].name }</span>
+											</div>
+											<div className="mv_list__info">
+												<span className="mv_list__listen"><i className="mv_list__listen_icon sprite"></i>{item.playcnt}</span>{ formatPubTime(item.pubdate) }
+											</div>
 										</div>
-										
-										<h3 className="mv_list__title">
-											<span className="js_mv">Das sind die Nächte</span>
-										</h3>	
-										<div className="mv_list__singer">
-											<span className="js_singer"> Julian le Play </span>
-										</div>
-										<div className="mv_list__info">
-											<span className="mv_list__listen"><i className="mv_list__listen_icon sprite"></i>5716</span>2021-12-25
-										</div>
-									</div>
-								</li>
-							))
-						}
-						
-					</ul>
-				</div>	
-					
+									</li>
+								))
+							}
+							
+						</ul>
+					</div>	
+				</Spin>
+				
+				
+				<Pagination defaultCurrent={param.page} total={1000}  style={{marginBottom:60,textAlign:'center'}} onChange={ (page) => this.setParam('page',page) } showSizeChanger={false}/>	
 			</div>
 		)
 	}
