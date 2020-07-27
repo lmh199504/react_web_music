@@ -6,3 +6,166 @@
 	right: 20px;
 	z-index: 5;
 }
+.bigPlayer{
+	position: fixed;
+	top: 0;
+	left: 120%;
+	width: 100%;
+	height: 100%;
+	z-index: 5;
+	transition: all 0.7s ease;
+	background-size: cover;
+	background-color: rgb(41, 42, 43);
+	.player_bg{
+		background-size:cover;
+		background-position: 50%;
+		background-repeat: no-repeat;
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 3;
+		opacity: 0.6;
+		transform: translateZ(0);
+		filter: blur(65px);
+		display: block;
+		overflow: hidden;
+	}
+
+	.player_mask {
+	    background-color: rgba(0, 0, 0, 0.35);
+	    position: absolute;
+	    top: 0;
+	    left: 0;
+	    width: 100%;
+	    height: 100%;
+		z-index: 2;
+	}
+}
+
+.showBig{
+	left:0%;
+}
+.smallPlayer{
+	.cover{
+		width: 80px;
+		height: 80px;
+		border-radius: 50%;
+		border: 4px solid darkgray;
+	}
+}
+
+@-webkit-keyframes rotating {
+    from { -webkit-transform: rotate(0) }
+    to { -webkit-transform: rotate(360deg) }
+}
+
+@keyframes rotating {
+    from { transform: rotate(0) }
+    to { transform: rotate(360deg) }
+}
+@-moz-keyframes rotating {
+    from { -moz-transform: rotate(0) }
+    to { -moz-transform: rotate(360deg) }
+}
+.rotate {
+    -webkit-animation: rotating 3s linear infinite;
+    animation: rotating 3s linear infinite;
+
+    animation-play-state:running;
+    -webkit-animation-play-state:running; /* Safari 和 Chrome */
+}
+.rotate-pause {
+    animation-play-state:paused;
+    -webkit-animation-play-state:paused; /* Safari 和 Chrome */
+}
+.player_logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 3;
+}
+
+.player_logo__pic {
+    width: 78px;
+    height: 21px;
+    opacity: 0.3;
+	cursor: pointer;
+
+}
+.player_logo__pic:hover{
+	opacity: 1;
+}
+.mod_player_login{
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	z-index: 9;
+	text-align: right;
+	padding-right: 28px;
+}
+.player_login__guide {
+    float: left;
+    margin-right: 26px;
+    font-size: 14px;
+    color: #fff;
+    line-height: 30px;
+}
+
+.player_login__guide_btn {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 0 17px;
+    height: 28px;
+    border-radius: 28px;
+    font-size: 15px;
+    color: #fff;
+    text-align: center;
+    background-color: #31c27c;
+}
+.player_login__guide_icon {
+    display: inline-block;
+    margin-right: 4px;
+    vertical-align: -2px;
+    width: 13px;
+    height: 14px;
+    background-position: -160px -320px;
+}
+.sprite, .sprite_before:before {
+    background-image: url(../../assets/images/icon_sprite.png);
+    // background-image: -webkit-image-set(url(img/icon_sprite.png?max_age=2592000&v=85678e8…&v=85678e8…) 1x,url(img/icon_sprite@2x.png?max_age=2592000&v=85678e8…&v=85678e8…&v=ce93ff1…) 2x);
+}
+.player_login__link {
+    position: relative;
+    float: left;
+    margin-right: 15px;
+    font-size: 0;
+}
+.player_login__cover {
+    width: 30px;
+    height: 30px;
+    border-radius: 90px;
+    margin-right: 5px;
+    vertical-align: -10px;
+}
+.player_login__out, .player_login__txt {
+    color: #fff;
+    opacity: .3;
+    filter: alpha(opacity=30);
+    line-height: 30px;
+	cursor: pointer;
+}
+
+.player_login__link .player_login__txt {
+    display: inline-block;
+    max-width: 124px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: top;
+    font-size: 14px;
+}
+.player_login__out:hover, .player_login__txt:hover{
+	opacity: 1;
+}

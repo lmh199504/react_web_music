@@ -36,11 +36,11 @@ class Ranking extends Component{
 											</h3>
 											<ul className="toplist__songlist">
 												{
-													item.song.map(item => (
-													<li className="toplist__song" key={item.songId}>
-														<div className="toplist__number">{item.rank}</div>
-														<div className="toplist__songname"><span className="js_song">{item.title}</span></div>
-														<div className="toplist__artist"><span>{item.singerName}</span></div>
+													item.song.map((items,i) => (
+													<li className="toplist__song" key={i}>
+														<div className="toplist__number">{items.rank}</div>
+														<div className="toplist__songname"><span className="js_song">{items.title}</span></div>
+														<div className="toplist__artist"><span>{items.singerName}</span></div>
 													</li>
 													))
 												}

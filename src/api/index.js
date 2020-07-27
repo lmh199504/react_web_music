@@ -40,3 +40,5 @@ export const reqGetDigitalAlbumLists = (data) => request('/getDigitalAlbumLists'
 export const reqBatchGetSongInfo = (data) => request('/batchGetSongInfo',data,"GET")
 //获取歌单详情
 export const reqGetSongListDetail = (data) => request('/getSongListDetail',data,"GET")
+//获取歌曲的vkey
+export const reqGetMusicVKey = (data) => request('/getMusicVKey',data,"GET")
