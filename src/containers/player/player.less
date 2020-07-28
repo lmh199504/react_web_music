@@ -581,7 +581,7 @@ body, button, input, select, textarea, th {
 .sb_overview::-webkit-scrollbar-track
 {
 	/*滚动条的背景区域的内阴影*/
-	box-shadow:0px 1px 3px rgba(0,0,0,0.3) inset;
+	box-shadow:none;
 
 	/*滚动条的背景区域的圆角*/
 	border-radius: 5px;
@@ -717,6 +717,169 @@ body, button, input, select, textarea, th {
     width: 201px;
     height: 180px;
     background: url(../../assets/images/album_cover_player.png) 0 0 no-repeat;
+}
+
+.player__ft {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 11%;
+}
+
+
+.btn_big_down, .btn_big_like, .btn_big_next, .btn_big_only, .btn_big_play, .btn_big_prev, .btn_big_style_list, .btn_big_style_order, .btn_big_style_random, .btn_big_style_single, .btn_big_voice, .btn_lang, .mod_btn_comment, .player_progress__dot {
+    position: absolute;
+    background-image: url(../../assets/images/player.png);
+    // background-image: -webkit-image-set(url(img/player.png?max_age=2592000&v=f051617…&v=f051617…) 1x,url(img/player@2x.png?max_age=2592000&v=f051617…&v=f051617…&v=19a355a…) 2x);
+    opacity: .8;
+    filter: alpha(opacity=80);
+	cursor: pointer;
+}
+
+.btn_big_prev {
+    top: 4px;
+    left: 0;
+    width: 19px;
+    height: 20px;
+    background-position: 0 -30px;
+}
+.btn_big_play {
+    top: 0;
+    left: 65px;
+    width: 21px;
+    height: 29px;
+    background-position: 0 0;
+}
+
+.btn_big_play--pause {
+    background-position: -30px 0;
+}
+.btn_big_next {
+    top: 4px;
+    left: 132px;
+    width: 19px;
+    height: 20px;
+    background-position: 0 -52px;
+}
+
+.player_music {
+    position: relative;
+    margin: 0 448px 0 208px;
+}
+
+.player_music__info {
+    padding-right: 90px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.player_music__time {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.btn_big_style_list {
+    top: 4px;
+    right: 378px;
+    width: 26px;
+    height: 25px;
+    background-position: 0 -205px;
+}
+
+.btn_big_like {
+    top: 4px;
+    right: 330px;
+    width: 23px;
+    height: 21px;
+    background-position: 0 -96px;
+}
+.btn_big_down {
+    top: 4px;
+    right: 286px;
+    width: 22px;
+    height: 21px;
+    background-position: 0 -120px;
+}
+
+.mod_btn_comment {
+    top: 3px;
+    right: 237px;
+    width: 24px;
+    height: 24px;
+    background-position: 0 -400px;
+}
+
+.btn_comment99 {
+    background-position: 0 -430px;
+}
+.btn_comment__numbers {
+    position: absolute;
+    top: -3px;
+    right: 0;
+    white-space: nowrap;
+    text-align: right;
+    height: 8px;
+    line-height: 8px;
+}
+.btn_comment99 .btn_comment__numbers {
+    text-align: left;
+    left: 8px;
+}
+.btn_comment99 .btn_comment__numbers {
+    left: 11px;
+}
+.btn_comment__numb{
+    background-image: url(../../assets/images/comment.png);
+    // background-image: -webkit-image-set(url(img/comment.png?max_age=2592000&v=d415294…&v=d415294…) 1x,url(img/comment@2x.png?max_age=2592000&v=d415294…&v=d415294…&v=7a3868d…) 2x);
+}
+.btn_comment__numb_add {
+    background-position: -25px -125px;
+    margin-left: 1px;
+    vertical-align: -1px;
+}
+.btn_comment__numb {
+    display: inline-block;
+    width: 6px;
+    height: 8px;
+}
+.btn_comment__numb_9 {
+    background-position: -40px -210px;
+}
+
+.btn_big_only {
+    top: 3px;
+    right: 137px;
+    width: 74px;
+    height: 26px;
+    background-position: 0 -282px;
+}
+.btn_big_only--on {
+    background-position: 0 -311px;
+}
+.player_progress {
+    padding-top: 6px;
+    height: 8px;
+    cursor: pointer;
+}
+.player_voice {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;
+    padding-top: 13px;
+}
+.btn_big_voice {
+    top: 4px;
+    left: -31px;
+    width: 26px;
+    height: 21px;
+    background-position: 0 -144px;
+}
+.player_progress__inner .ant-slider,.player_progress .ant-slider{
+	margin: 0;
+	padding: 0;
 }
 @media (max-width: 1300px){
 	.player_style_normal {

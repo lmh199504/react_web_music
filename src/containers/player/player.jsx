@@ -1,11 +1,14 @@
 
 import React,{ Component } from 'react'
 import './player.less'
+import { Slider } from 'antd'
 import { connect } from 'react-redux'
 import { formatSongTime } from '../../utils'
-import { setCurrentSongs,showBigplayer,hideBigPlayer,playing,resetPlaylist,setIndex } from '../../redux/actions'
+import { setCurrentSongs,showBigplayer,hideBigPlayer,playing,resetPlaylist,setIndex,stopPlay } from '../../redux/actions'
 import { reqGetLyric } from '../../api'
 import  Lyric  from 'lyric-parser'
+
+
 class Player extends Component{
 	
 	state = {
@@ -14,6 +17,9 @@ class Player extends Component{
 		checkall:false,
 		currentLyric:null,
 		currentLineNum: 0,
+		currentTime:0,
+		defaultTime:0,
+		defaultVolume:50
 	}
 	selectAll = () => {
 		const { checkall } =  this.state
@@ -29,16 +35,25 @@ class Player extends Component{
 		
 	}
 	componentDidMount = () => {
-		console.log(this.refs.myAudio)
+		// console.log(this.refs.myAudio)
+		const {defaultVolume} = this.state
+		this.refs.myAudio.volume = defaultVolume/100
 		this.refs.myAudio.onplay = () => {
+			console.log('playing...')
 			this.props.playing()
 		}
 		
 		this.refs.myAudio.onerror = () => {
-			
+			// console.log("播放错误")
+			const { isPlay } = this.props
+			setTimeout(() => {
+				if(isPlay){
+					this.playNext()
+				}
+			},5000)
 		}
 		
-		this.refs.myAudio.onend = () => {
+		this.refs.myAudio.onended = () => {
 			const { currentIndex,playList } = this.props
 			if(currentIndex<playList.length){
 				this.props.setCurrentSongs(playList[currentIndex + 1])
@@ -46,17 +61,47 @@ class Player extends Component{
 				this.props.setCurrentSongs(playList[0])
 			}
 		}
+		this.refs.myAudio.ontimeupdate = () => {
+			const { currentSong } = this.props
+			
+			this.setState({
+				currentTime:parseInt(this.refs.myAudio.currentTime),
+				defaultTime:(this.refs.myAudio.currentTime/currentSong.interval)*100
+				
+			})
+
+		}
 	}
 	componentWillReceiveProps = () => {
 		
 	}
 	playNext = () => {
-		
+		console.log("下一首")
+		const { currentIndex,playList } = this.props
+		if(currentIndex<playList.length){
+			this.props.setIndex(currentIndex + 1)
+			this.props.setCurrentSongs(playList[currentIndex + 1])
+			
+		}else{
+			this.props.setIndex(0)
+			this.props.setCurrentSongs(playList[0])
+			
+		}
 	}
 	playPre = () => {
-		
+		const { currentIndex,playList } = this.props
+		if(currentIndex === 0){
+			this.props.setIndex(playList.length - 1)
+			this.props.setCurrentSongs(playList[playList.length - 1])
+		}else{
+			this.props.setIndex(currentIndex - 1)
+			this.props.setCurrentSongs(playList[currentIndex - 1])
+		}
 	}
-	
+	formatter = (value) => {
+		const { currentSong } = this.props
+		return formatSongTime(parseInt((value/100)*currentSong.interval));
+	}
 	handleLyric = ({
 	    lineNum,
 	    txt
@@ -85,17 +130,22 @@ class Player extends Component{
 	componentDidUpdate = () => {
 		
 		const { cSong } = this.state
-		const { currentSong,bigPlayer,isPlay } = this.props
+		const { currentSong,bigPlayer,isPlay,currentLyric } = this.props
 		if(currentSong.songmid !== cSong.songmid){
+			console.log("播放新歌曲了")
+			
 			this.setState({
 				cSong:currentSong
 			})
+			if(currentLyric){
+				currentLyric.stop()
+			}
 			this.refs.myAudio.src = currentSong.src
+			this.refs.myAudio.play()
 			reqGetLyric({songmid:currentSong.songmid}).then(res=>{
 				if(res.response.code === 0){
 					
 					const lyric = new Lyric(res.response.lyric,this.handleLyric)
-					console.log(lyric)
 					this.setState({
 						currentLyric:lyric
 					})
@@ -107,7 +157,7 @@ class Player extends Component{
 					}
 				}
 			})
-			this.refs.myAudio.play()
+			
 		}
 		
 		if(bigPlayer){
@@ -139,9 +189,36 @@ class Player extends Component{
 		this.props.setCurrentSongs(item)
 		this.props.setIndex(index)
 	}
+	setCurrentTime = (value) => {
+		console.log(value)
+		const { currentSong } = this.props
+		const { currentLyric } = this.state
+		this.refs.myAudio.currentTime = (value/100)*currentSong.interval
+		currentLyric.seek(this.refs.myAudio.currentTime * 1000)
+	}
+	
+	toggelPlay = () => {
+		const { currentLyric } = this.state
+		const { isPlay } = this.props
+		if(isPlay){
+			this.props.stopPlay()
+			this.refs.myAudio.pause()
+			currentLyric.togglePlay()
+		}else{
+			this.props.playing()
+			this.refs.myAudio.play()
+			currentLyric.togglePlay()
+		}
+	}
+	toolTipVolumn = (value) => {
+		return value
+	}
+	changeVolumn = (value) => {
+		this.refs.myAudio.volume = value/100
+	}
 	render(){
-		const { cSong,checkall,currentLyric,currentLineNum } = this.state
-		const { bigPlayer,isPlay,playList } = this.props
+		const { cSong,checkall,currentLyric,currentLineNum,currentTime,defaultTime,defaultVolume } = this.state
+		const { bigPlayer,isPlay,playList,currentSong } = this.props
 		return (
 			<div className="player">
 				<div className="smallPlayer">
@@ -278,13 +355,13 @@ class Player extends Component{
 								<div className="mod_song_info" id="song_info">
 									<div className="song_info__info">
 										<div className="song_info__cover js_album">
-											<img src="https://y.gtimg.cn/music/photo_new/T002R300x300M000003FdPSP16mkTG.jpg?max_age=2592000" id="song_pic" alt="" className="song_info__pic"/>
+											<img src={ currentSong.cover } id="song_pic" alt="" className="song_info__pic"/>
 										</div>
 										<div className="song_info__name" id="song_name">
-											歌曲名：<span>VALI ATA UDALJ 思念的风雨</span>
+											歌曲名：<span>{ currentSong.title }</span>
 										</div>
 										<div className="song_info__singer">
-											歌手名：<span>彻摩</span>
+											歌手名：<span>{ currentSong.singer ? currentSong.singer[0].name :''}</span>
 										</div>
 										<div className="song_info__album" id="album_name">
 											专辑名：<span>真圆 ZEMIYAN</span>
@@ -306,19 +383,60 @@ class Player extends Component{
 							</div>
 						</div>
 						<div className="player__ft">
-							<div className="btn_big_prev">
+							<div className="btn_big_prev" onClick={ () => this.playPre() }>
 								<span className="icon_txt">上一首</span>
 							</div>
-							<div className="btn_big_play btn_big_play--pause">
-								<span class="icon_txt">暂停</span>
+							<div className={`btn_big_play ${isPlay?'btn_big_play--pause':''}`} onClick={ () => this.toggelPlay() }>
+								<span className="icon_txt">暂停</span>
 							</div>
-							<div className="btn_big_next">
-								<span class="icon_txt">下一首</span>
+							<div className="btn_big_next" onClick={ () => this.playNext()}>
+								<span className="icon_txt">下一首</span>
+							</div>
+							<div className="player_music">
+								<div className="player_music__info" id="sim_song_info">
+									<span className="js_song">
+										{cSong.title }
+									</span>
+									 - 
+									<span className="js_singer">{cSong.singer ? cSong.singer[0].name :'-'}</span>
+								</div>
+								<div className="player_music__time" id="time_show">{formatSongTime(currentTime)} / {formatSongTime(cSong.interval)}</div>
+								<div className="player_progress">
+									<Slider tipFormatter={this.formatter} onChange={ (value) => this.setCurrentTime(value)} value={defaultTime}/>
+								</div>
+								
+							</div>
+							<div>
+								<span className="btn_big_style_list" id="play_mod" title="列表循环[O]"><span className="icon_txt">列表循环[O]</span></span>
+							</div>
+							<div className="btn_big_like js_btn_fav">
+								<span className="icon_txt">喜欢[V]</span>
+							</div>
+							<div  className="btn_big_down js_btn_down" title="下载[D]"><span className="icon_txt">下载[D]</span></div>
+							<div className="mod_btn_comment js_into_comment btn_comment99">
+								<span className="btn_comment__numbers">
+									<i className="btn_comment__numb btn_comment__numb_9"></i>
+									<i className="btn_comment__numb btn_comment__numb_9"></i>
+									<i className="btn_comment__numb btn_comment__numb_9"></i>
+									<i className="btn_comment__numb btn_comment__numb_add"></i>
+								</span>
+								<span className="icon_txt">评论</span>
+							</div>
+							<div className="btn_big_only btn_big_only--on" id="simp_btn">
+								<span className="icon_txt">打开纯净模式[C]</span>
+							</div>
+							<div className="player_progress player_voice">
+								<div className="btn_big_voice" id="spanmute">
+									<span className="icon_txt">关闭声音[M]</span>
+								</div>
+								<div className="player_progress__inner">
+									<Slider tipFormatter={this.toolTipVolumn} onChange={ (value) => this.changeVolumn(value) } defaultValue={defaultVolume}/>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<audio  src="" ref="myAudio"></audio >
+				<audio  src="" ref="myAudio" autoPlay={false}></audio >
 			</div>
 		)
 	}
@@ -331,5 +449,5 @@ export default connect(
 		isPlay:state.isPlay,
 		currentIndex:state.currentIndex
 	}),
-	{ setCurrentSongs,showBigplayer,hideBigPlayer,playing,resetPlaylist,setIndex }
+	{ setCurrentSongs,showBigplayer,hideBigPlayer,playing,resetPlaylist,setIndex,stopPlay }
 )(Player)

@@ -1,6 +1,6 @@
 
 
-import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX } from './action-types.js'
+import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX,STOP_PLAY } from './action-types.js'
 import Cookies from 'js-cookie'
 import { reqLogin,reqGetUserInfo,reqLogout,reqRegister,reqGetHome,reqGetSongListDetail,reqGetMusicVKey } from '../api/index'
 import Song from '../utils/Song.js'
@@ -94,6 +94,7 @@ export const resetPlaylists = (item) => {
 				}
 				
 				song = new Song(cd)
+				dispatch(setIndex(0))
 				dispatch(setCurrentSong(song))
 			}
 			
@@ -107,12 +108,14 @@ export const resetPlaylists = (item) => {
 const setCurrentSong = (data) => ({type:SET_CURRENT_SONG,data})
 // 设置当前播放歌曲的异步action
 export const setCurrentSongs = (data) => {
+
 	return async dispatch => {
-		const re = await reqGetMusicVKey({songmid:data.mid || data.songmid})
+		const re = await reqGetMusicVKey({songmid:data.songmid})
 		if(re.response.req_0.data.midurlinfo[0].vkey !== ''){
 			data.src = re.response.playLists[0]
 		}else{
-			message.warning('vip歌曲')
+			data.src = 'http://www.baidu.com'
+			message.warning('vip歌曲,即将跳过。')
 		}
 		dispatch(setCurrentSong(data))
 	}
@@ -124,5 +127,7 @@ export const showBigplayer = (data) => ({type:SHOW_BIGPLAYER,data})
 export const hideBigPlayer = (data) => ({type:HIDE_BIGPLAYER,data})
 //设置播放中
 export const playing = (data) => ({type:PLAYING,data})
+//设置暂停
+export const stopPlay = (data) => ({type:STOP_PLAY,data})
 //设置当前序号
 export const setIndex = (data) => ({type:SET_INDEX,data})

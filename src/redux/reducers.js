@@ -5,7 +5,7 @@
  */
 
 import { combineReducers } from 'redux'
-import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX } from './action-types.js'
+import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX,STOP_PLAY } from './action-types.js'
 
 
 const initUser = {
@@ -49,7 +49,7 @@ const initCurrentSong = {}
 function currentSong(state = initCurrentSong,action){
 	switch (action.type){
 		case SET_CURRENT_SONG:
-			return action.data
+			return {...state,...action.data}
 		default:
 			return state
 	}
@@ -71,7 +71,8 @@ function isPlay(state=initIsPlay,action){
 	switch (action.type){
 		case PLAYING:
 			return true
-			
+		case STOP_PLAY:
+			return false
 		default:
 			return state
 	}
