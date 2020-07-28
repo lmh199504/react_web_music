@@ -2,16 +2,15 @@
 import React,{ Component } from 'react'
 import Slider from "react-slick";
 import { Spin } from 'antd' 
-
+import { connect } from 'react-redux'
 import { SampleNextArrow,SamplePrevArrow } from '../../../../utils/slide'
 import { formatNum } from '../../../../utils'
+import { reqGetHomeClass} from '../../../../api'
 
-import { reqGetHomeClass,reqGetSongListDetail } from '../../../../api'
+import { resetPlaylists } from '../../../../redux/actions'
 
 
-
-
-export default class extends Component{
+class Suggest extends Component{
 	state = {
 		suggestionIndex:0,
 		classList:[],
@@ -21,11 +20,22 @@ export default class extends Component{
 	componentDidMount = () => {
 		this.getData(0,{id:-1})
 	}
-	getDetail = (item) => {
-		reqGetSongListDetail({disstid:item.tid || item.content_id})
+	getDetail = async(item) => {
+		// const response = await reqGetSongListDetail({disstid:item.tid || item.content_id});
+		// const songlist = response.response.cdlist[0].songlist
+		// let playList = []
+		// for (let cd of songlist) {
+		// 	const re = await reqGetMusicVKey({songmid:cd.mid})
+		// 	if(re.response.req_0.data.midurlinfo[0].vkey !== ''){
+		// 		cd.src = re.response.playLists[0]
+		// 	}
+		// 	let song = new Song(cd)
+		// 	playList.push(song)
+		// }
+		this.props.resetPlaylists(item)
 	} 
+	
 	getData = (index,item) => {
-		console.log(index)
 		this.setState({
 			suggestionIndex:index
 		})
@@ -113,7 +123,7 @@ export default class extends Component{
 												<span className="playlist__title_txt">{item.title}</span>	
 											</h4>
 											<div className="playlist__other">
-												播放量：{formatNum(item.access_num)}
+												播放量：{formatNum(item.listen_num)}
 											</div>
 										</div>
 									</div>
@@ -127,3 +137,8 @@ export default class extends Component{
 		)
 	}
 }
+
+export default connect(
+	state=>({}),
+	{resetPlaylists}
+)(Suggest)
