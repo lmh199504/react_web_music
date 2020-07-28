@@ -123,7 +123,7 @@ class Suggest extends Component{
 												<span className="playlist__title_txt">{item.title}</span>	
 											</h4>
 											<div className="playlist__other">
-												播放量：{formatNum(item.access_num)}
+												播放量：{formatNum(item.listen_num)}
 											</div>
 										</div>
 									</div>

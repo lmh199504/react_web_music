@@ -42,3 +42,5 @@ export const reqBatchGetSongInfo = (data) => request('/batchGetSongInfo',data,"G
 export const reqGetSongListDetail = (data) => request('/getSongListDetail',data,"GET")
 //获取歌曲的vkey
 export const reqGetMusicVKey = (data) => request('/getMusicVKey',data,"GET")
+//获取歌词
+export const reqGetLyric = (data) => request('/getLyric',data,"GET")

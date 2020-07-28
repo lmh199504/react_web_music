@@ -14,3 +14,5 @@ export const SET_CURRENT_SONG = 'set_current_song' //设置当前播放歌曲
 export const SHOW_BIGPLAYER = 'show_bigplayer' //显示大播放器
 export const HIDE_BIGPLAYER = 'hide_bigplayer' //隐藏大播放器
 export const PLAYING = 'PLAYING' //播放中
+
+export const SET_INDEX = 'set_index' //设置当前播放序号
