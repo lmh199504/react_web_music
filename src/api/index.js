@@ -44,3 +44,5 @@ export const reqGetSongListDetail = (data) => request('/getSongListDetail',data,
 export const reqGetMusicVKey = (data) => request('/getMusicVKey',data,"GET")
 //获取歌词
 export const reqGetLyric = (data) => request('/getLyric',data,"GET")
+//获取专辑详情
+export const reqGetAlbumInfo = (data) => request('/getAlbumInfo',data,"GET")

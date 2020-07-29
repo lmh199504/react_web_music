@@ -4,9 +4,9 @@ import Slider from "react-slick";
 import { connect } from 'react-redux'
 import { Spin } from 'antd' 
 import { SampleNextArrow,SamplePrevArrow } from '../../../../utils/slide'
-import { reqGetHomeNewAblum } from '../../../../api'
-
-
+import { reqGetHomeNewAblum,reqGetAlbumInfo } from '../../../../api'
+import { SongFromNewDisc } from '../../../../utils'
+import { setIndex,resetPlaylist,setCurrentSongs } from '../../../../redux/actions'
 
 class Newdisc extends Component{
 	state = {
@@ -42,7 +42,20 @@ class Newdisc extends Component{
 	componentDidMount = () => {
 		this.getData(0,{area:1})
 	}
-	
+	playAblum = async (item) => {
+		const res = await reqGetAlbumInfo({albummid:item.mid})
+		let playList = []
+		for(let i = 0;i<res.response.data.list.length;i++){
+			let song = new SongFromNewDisc(res.response.data.list[i])
+			playList.push(song)
+			if(playList.length === 1){
+				this.props.setCurrentSongs(song)
+				this.props.setIndex(0)
+			}
+
+		}
+		this.props.resetPlaylist(playList)
+	}
 	
 	render(){
 		const { homeData } = this.props
@@ -89,7 +102,7 @@ class Newdisc extends Component{
 								newAblumArr.map((item,index) => (
 									<div className="playlist__item slide__item" key={index}>
 										<div className="playlist__item_inner">
-											<div className="playlist__cover ">
+											<div className="playlist__cover " onClick={ () => this.playAblum(item) }>
 												<img className="playlist__pic" src={ `https://y.gtimg.cn/music/photo_new/T002R300x300M000${item.photo.pic_mid}.jpg?max_age=2592000` } alt="封面"/>
 												<i className="mod_cover__mask"></i>
 												<i className="mod_cover__icon_play js_play"></i>
@@ -115,5 +128,6 @@ class Newdisc extends Component{
 
 
 export default connect(
-	state=>({homeData:state.homeData})
+	state=>({homeData:state.homeData}),
+	{ setIndex,resetPlaylist,setCurrentSongs }
 )(Newdisc)

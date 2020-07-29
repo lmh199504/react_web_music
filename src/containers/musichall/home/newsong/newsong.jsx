@@ -2,12 +2,14 @@
 
 import React,{ Component } from 'react'
 import Slider from "react-slick";
+import { connect } from 'react-redux'
 import { reqGetHomeNewSong } from '../../../../api'
 import { SampleNextArrow,SamplePrevArrow } from '../../../../utils/slide'
 import { formatSongTime } from '../../../../utils'
 import { Spin } from 'antd' 
-
-export default class NewSong extends Component{
+import { setIndex,setCurrentSongs,addSongToPlay } from '../../../../redux/actions'
+import  Song  from '../../../../utils/Song'
+class NewSong extends Component{
 	
 	
 	state = {
@@ -44,7 +46,19 @@ export default class NewSong extends Component{
 	componentDidMount = () => {
 		this.getData(0,{type:5})
 	}
-	
+	playThis = async(item) => {
+		const { currentIndex } = this.props
+		const song = new Song(item)
+		if(currentIndex === -1){
+			this.props.setIndex(0)
+			this.props.addSongToPlay({index:0,song})
+			this.props.setCurrentSongs(song)
+		}else{
+			this.props.setIndex(currentIndex+1)
+			this.props.addSongToPlay({index:currentIndex+1,song})
+			this.props.setCurrentSongs(song)
+		}
+	}
 	render(){
 		const suggestionNav = [
 			{name:'最新',type:5},
@@ -83,10 +97,10 @@ export default class NewSong extends Component{
 						<Slider {...settings}>
 							{
 								songList.map((item,index) => (
-								<div  key={index}>
+								<div  key={index} >
 									<div className="songlist__item_box">
 									
-										<div className="songlist__link album_name  mod_cover">
+										<div className="songlist__link album_name  mod_cover" onClick={ () => this.playThis(item) }>
 																										
 											<img src={`https://y.gtimg.cn/music/photo_new/T002R90x90M000${item.album.pmid}.jpg?max_age=2592000`} className="songlist__pic" alt="封面"/>
 											<i className="mod_cover__mask"></i>
@@ -115,3 +129,10 @@ export default class NewSong extends Component{
 		)
 	}
 }
+
+export default  connect(
+	state=>({
+		currentIndex:state.currentIndex
+	}),
+	{ setIndex,setCurrentSongs,addSongToPlay }
+)(NewSong)

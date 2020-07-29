@@ -16,3 +16,4 @@ export const HIDE_BIGPLAYER = 'hide_bigplayer' //隐藏大播放器
 export const PLAYING = 'PLAYING' //播放中
 export const STOP_PLAY = 'stop_play' //暂停
 export const SET_INDEX = 'set_index' //设置当前播放序号
+export const ADD_SONG_TO_PLAY = 'add_song_toplay' //添加歌曲到播放列表中播放

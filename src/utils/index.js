@@ -48,3 +48,18 @@ export const formatPubTime = (time) => {
 	let d = date.getDay()
 	return y+'-'+ (m+1>9?m+1 : '0' + (m+1)) +'-'+  (d>9?d:'0'+d)
 }
+
+export class SongFromNewDisc{
+	constructor(item){
+		this.songmid = item.songmid
+		this.singer = item.singer
+		this.title = item.songname
+		this.interval = item.interval
+		this.cover = `https://y.gtimg.cn/music/photo_new/T002R300x300M000${item.albummid}.jpg?max_age=2592000`
+				  // `https://y.gtimg.cn/music/photo_new/T002R90x90M000${item.album.mid}.jpg?max_age=2592000`
+		this.src = item.src || ''
+		this.checked = false
+		// this.album = item.album
+		this.albumName = item.albumname
+	}
+}

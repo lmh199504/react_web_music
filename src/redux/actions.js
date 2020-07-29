@@ -1,6 +1,6 @@
 
 
-import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX,STOP_PLAY } from './action-types.js'
+import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX,STOP_PLAY ,ADD_SONG_TO_PLAY} from './action-types.js'
 import Cookies from 'js-cookie'
 import { reqLogin,reqGetUserInfo,reqLogout,reqRegister,reqGetHome,reqGetSongListDetail,reqGetMusicVKey } from '../api/index'
 import Song from '../utils/Song.js'
@@ -131,3 +131,6 @@ export const playing = (data) => ({type:PLAYING,data})
 export const stopPlay = (data) => ({type:STOP_PLAY,data})
 //设置当前序号
 export const setIndex = (data) => ({type:SET_INDEX,data})
+//添加歌曲到播放列表并播放
+export const addSongToPlay = (data) => ({type:ADD_SONG_TO_PLAY,data})
+

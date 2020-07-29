@@ -5,7 +5,7 @@
  */
 
 import { combineReducers } from 'redux'
-import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX,STOP_PLAY } from './action-types.js'
+import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX,STOP_PLAY,ADD_SONG_TO_PLAY } from './action-types.js'
 
 
 const initUser = {
@@ -41,6 +41,9 @@ function playList(state = initPlayList,action){
 	switch (action.type){
 		case RESET_PLAYLIST:
 			return action.data
+		case ADD_SONG_TO_PLAY:
+			state.splice(action.data.index,0,action.data.song)
+			return state
 		default:
 			return state
 	}
@@ -49,12 +52,13 @@ const initCurrentSong = {}
 function currentSong(state = initCurrentSong,action){
 	switch (action.type){
 		case SET_CURRENT_SONG:
-			return {...state,...action.data}
+			return {...state,...action.data}	
 		default:
 			return state
 	}
 }
 
+//显示隐藏播放器
 const initPlayer = false 
 function bigPlayer(state = initPlayer,action){
 	switch (action.type){

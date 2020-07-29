@@ -18,8 +18,9 @@ class Player extends Component{
 		currentLyric:null,
 		currentLineNum: 0,
 		currentTime:0,
-		defaultTime:0,
-		defaultVolume:50
+		defaultTime:0, //提示框当前时间
+		defaultVolume:50,
+		playMode: 0 // 列表循环-0 顺序播放-1 单曲循环-2 随便播放-3
 	}
 	selectAll = () => {
 		const { checkall } =  this.state
@@ -54,12 +55,8 @@ class Player extends Component{
 		}
 		
 		this.refs.myAudio.onended = () => {
-			const { currentIndex,playList } = this.props
-			if(currentIndex<playList.length){
-				this.props.setCurrentSongs(playList[currentIndex + 1])
-			}else{
-				this.props.setCurrentSongs(playList[0])
-			}
+			console.log("播放结束了")
+			this.playNext()
 		}
 		this.refs.myAudio.ontimeupdate = () => {
 			const { currentSong } = this.props
@@ -78,7 +75,7 @@ class Player extends Component{
 	playNext = () => {
 		console.log("下一首")
 		const { currentIndex,playList } = this.props
-		if(currentIndex<playList.length){
+		if(currentIndex<playList.length - 1){
 			this.props.setIndex(currentIndex + 1)
 			this.props.setCurrentSongs(playList[currentIndex + 1])
 			
@@ -129,8 +126,8 @@ class Player extends Component{
 	}
 	componentDidUpdate = () => {
 		
-		const { cSong } = this.state
-		const { currentSong,bigPlayer,isPlay,currentLyric } = this.props
+		const { cSong,currentLyric } = this.state
+		const { currentSong,bigPlayer,isPlay } = this.props
 		if(currentSong.songmid !== cSong.songmid){
 			console.log("播放新歌曲了")
 			
@@ -138,7 +135,14 @@ class Player extends Component{
 				cSong:currentSong
 			})
 			if(currentLyric){
+				
+				
 				currentLyric.stop()
+				this.setState({
+					currentLyric:null,
+					currentLineNum:0
+				})
+				
 			}
 			this.refs.myAudio.src = currentSong.src
 			this.refs.myAudio.play()
@@ -216,8 +220,20 @@ class Player extends Component{
 	changeVolumn = (value) => {
 		this.refs.myAudio.volume = value/100
 	}
+	setPlayMode = () => {
+		const { playMode } = this.state
+		if(playMode === 3){
+			this.setState({
+				playMode:0
+			})
+		}else{
+			this.setState({
+				playMode:playMode + 1
+			})
+		}
+	}
 	render(){
-		const { cSong,checkall,currentLyric,currentLineNum,currentTime,defaultTime,defaultVolume } = this.state
+		const { cSong,checkall,currentLyric,currentLineNum,currentTime,defaultTime,defaultVolume,playMode } = this.state
 		const { bigPlayer,isPlay,playList,currentSong } = this.props
 		return (
 			<div className="player">
@@ -364,7 +380,7 @@ class Player extends Component{
 											歌手名：<span>{ currentSong.singer ? currentSong.singer[0].name :''}</span>
 										</div>
 										<div className="song_info__album" id="album_name">
-											专辑名：<span>真圆 ZEMIYAN</span>
+											专辑名：<span>{ currentSong.albumName }</span>
 										</div>
 									</div>
 									<div className="song_info__lyric">
@@ -407,7 +423,11 @@ class Player extends Component{
 								
 							</div>
 							<div>
-								<span className="btn_big_style_list" id="play_mod" title="列表循环[O]"><span className="icon_txt">列表循环[O]</span></span>
+								<span onClick={ () => this.setPlayMode() } 
+									className={`${playMode === 0 ?'btn_big_style_list':playMode === 1?'btn_big_style_order':playMode===2?'btn_big_style_random':playMode===3?'btn_big_style_single':'' }`} id="play_mod" 
+									title={ playMode === 0 ? '列表循环':playMode === 1 ?'顺序播放': playMode===2 ? '随机播放':playMode===3?'单曲循环':''}>
+									<span className="icon_txt">{ playMode === 0 ? '列表循环':playMode === 1 ?'顺序播放': playMode===2 ? '随机播放':playMode===3?'单曲循环':''}</span>
+								</span>
 							</div>
 							<div className="btn_big_like js_btn_fav">
 								<span className="icon_txt">喜欢[V]</span>

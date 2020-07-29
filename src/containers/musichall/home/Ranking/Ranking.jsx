@@ -8,6 +8,10 @@ import './ranking.less'
 class Ranking extends Component{
 	
 	
+	playThisRank = (item) => {
+		console.log(item)
+	} 
+	
 	render(){
 		const { homeData } = this.props
 		if(!homeData.toplist){
@@ -29,7 +33,7 @@ class Ranking extends Component{
 									<li className= {`toplist__item item${index+1} mod_cover`} key={item.topId}>
 										<div className="toplist__box">
 											<div className="toplist__bg"></div>
-											<i className="mod_cover__icon_play js_play_toplist"></i>
+											<i className="mod_cover__icon_play js_play_toplist" onClick={ () => this.playThisRank(item) }></i>
 											<i className="toplist__line"></i>
 											<h3 className="toplist__hd">
 												<p className="toplist__tit" style={{ float:'unset' }}>热歌</p>
