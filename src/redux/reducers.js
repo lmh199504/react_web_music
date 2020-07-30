@@ -5,7 +5,9 @@
  */
 
 import { combineReducers } from 'redux'
-import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX,STOP_PLAY,ADD_SONG_TO_PLAY } from './action-types.js'
+import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX,STOP_PLAY,ADD_SONG_TO_PLAY ,
+	SHOW_MV_PLAYER,HIDE_MV_PLAYER,SET_CURRENT_MV
+} from './action-types.js'
 
 
 const initUser = {
@@ -91,6 +93,24 @@ function currentIndex(state=-1,action){
 	}
 }
 
+function isShowMv(state=false,action){
+	switch (action.type){
+		case SHOW_MV_PLAYER:
+			return true
+		case HIDE_MV_PLAYER:
+			return false
+		default:
+			return state
+	}
+}
+function currentMv(state={},action){
+	switch (action.type){
+		case SET_CURRENT_MV:
+			return action.data
+		default :
+			return state	
+	}
+}
 
 
 export default combineReducers({
@@ -100,5 +120,7 @@ export default combineReducers({
 	currentSong,
 	bigPlayer,
 	isPlay,
-	currentIndex
+	currentIndex,
+	isShowMv,
+	currentMv
 })

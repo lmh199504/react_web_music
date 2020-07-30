@@ -46,3 +46,15 @@ export const reqGetMusicVKey = (data) => request('/getMusicVKey',data,"GET")
 export const reqGetLyric = (data) => request('/getLyric',data,"GET")
 //获取专辑详情
 export const reqGetAlbumInfo = (data) => request('/getAlbumInfo',data,"GET")
+//获取搜索结果
+export const reqGetSearchByKey = (data) => request('/getSearchByKey',data,"GET")
+//获取热搜词
+export const reqGetHotkey = (data) => request('/getHotkey',data,"GET")
+//获取关键字搜索提示
+export const reqGetSmartbox = (data) => request('/getSmartbox',data,"GET")
+//获取MV播放信息
+export const reqGetMvPlay = (data) => request('/getMvPlay',data,"GET")
+//获取歌手信息
+export const reqGetSingerDesc = (data) => request('/getSingerDesc',data,"GET")
+//获取歌手的热门歌曲
+export const reqGetSingerHotsong = (data) => request('/getSingerHotsong',data,"GET")

@@ -25,7 +25,8 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "slick-carousel": "^1.8.1",
-    "swiper": "^6.0.4"
+    "swiper": "^6.0.4",
+    "xml2js": "^0.4.23"
   },
   "scripts": {
     "eject": "react-scripts eject",

@@ -64,6 +64,11 @@ export default class Singer extends Component{
 		e.target.src = require('../../../assets/images/timg.jpg')
 	}
 
+	toSingerDetail = (item) => {
+		console.log(item)
+		this.props.history.push(`/musichall/singerDetail/${item.singer_mid}`)
+	}
+
 	render(){
 		
 		const { tags,param,total,singerlist,loading } = this.state
@@ -123,7 +128,7 @@ export default class Singer extends Component{
 								<ul className="singer_list__list js_avtar_list">
 									{
 										singerlist.map(item => (
-											<li className="singer_list__item" key={item.singer_id}>
+											<li className="singer_list__item" key={item.singer_id} onClick={ () => this.toSingerDetail(item) }>
 												<div className="singer_list__item_box">
 													<div className="singer_list__cover js_singer">
 														<img className="singer_list__pic" src={ item.singer_pic } alt={item.singer_name} onError={ $event => this.replaceImg($event) } />

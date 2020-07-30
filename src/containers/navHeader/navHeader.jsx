@@ -3,13 +3,66 @@
 import React,{ Component } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Input } from 'antd'
-
+import { reqGetHotkey,reqGetSmartbox } from '../../api'
+import { formatNum } from '../../utils'
 import './index.less'
 const { Search } = Input
+
+let timer = null
 export default class NavHeader extends Component{
 	
-	render(){
+
+	state = {
+		hotKeyArr:[],
+		searchValue:'',
+		inIput:false,
+		resultSong:[],
+		resultMv:[],
+		resultSinger:[],
+		resultAblum:[]
+	}
+
+	search = (value) => {
+		if(value===''){
+			return
+		}
+		reqGetSmartbox({key:value}).then(res => {
+			console.log(res)
+			this.setState({
+				resultAblum:res.response.data.album.itemlist,
+				resultMv:res.response.data.mv.itemlist,
+				resultSinger:res.response.data.singer.itemlist,
+				resultSong:res.response.data.song.itemlist
+			})
+		}).catch(() => {
+
+		})
 		
+
+	}
+	searchOnInput = (event) => {
+		const key = event.target.value
+		clearTimeout(timer)
+		this.setState({
+			searchValue:key
+		})
+		timer = setTimeout(()=>{
+			if(key !== ''){
+				this.search(key)
+			}
+		},500)
+
+	}
+	componentDidMount = () => {
+		reqGetHotkey().then(res => {
+			this.setState({
+				hotKeyArr:res.response.data.hotkey
+			})
+		})
+	}
+	
+	render(){
+		const { hotKeyArr,inIput,searchValue,resultSong,resultAblum,resultSinger,resultMv } = this.state
 		return (
 			<div className="mod_header">
 				<div className="section_inner">
@@ -42,46 +95,27 @@ export default class NavHeader extends Component{
 						<div className="mod_search_input">
 							<Search
 							  placeholder="搜索音乐、MV、歌单、用户"
-							  onSearch={value => console.log(value)}
+							  onSearch={value => this.search(value) }
 							  style={{ width: 220 }}
+							  onBlur={ () => this.setState({inIput:false}) }
+							  onFocus={ () => this.setState({inIput:true}) }
+							  onInput={ (event) => this.searchOnInput(event) }
 							/>
 							<div className="js_smartbox">
-								<div className="mod_search_other">
+								<div className={`mod_search_other ${inIput && searchValue === ''?'drop':''}`}>
 									<div className="search_hot">
 										<dl className="search_hot__list" >
 											<dt className="search_hot__tit">热门搜索</dt>
 											<dd>
-												
-												<p  className="search_hot__link js_smartbox_search js_left" data-name="我们的歌">
-													<span className="search_hot__number">1</span>
-													<span className="search_hot__name">我们的歌</span>
-													<span className="search_hot__listen">76.6万</span>
-												</p>
-												
-												<p  className="search_hot__link js_smartbox_search js_left" data-name="冰雪奇缘2">
-													<span className="search_hot__number">2</span>
-													<span className="search_hot__name">冰雪奇缘2</span>
-													<span className="search_hot__listen">58.7万</span>
-												</p>
-												
-												<p  className="search_hot__link js_smartbox_search js_left" data-name="张杰">
-													<span className="search_hot__number">3</span>
-													<span className="search_hot__name">张杰</span>
-													<span className="search_hot__listen">32.4万</span>
-												</p>
-												
-												<p className="search_hot__link js_smartbox_search js_left" data-name="桥边姑娘">
-													<span className="search_hot__number">4</span>
-													<span className="search_hot__name">桥边姑娘</span>
-													<span className="search_hot__listen">28.8万</span>
-												</p>
-												
-												<p className="search_hot__link js_smartbox_search js_left" data-name="星辰大海">
-													<span className="search_hot__number">5</span>
-													<span className="search_hot__name">星辰大海</span>
-													<span className="search_hot__listen">20.3万</span>
-												</p>
-												
+												{
+													hotKeyArr.map((item,index)=>(
+														index<5?<p  className="search_hot__link js_smartbox_search js_left" key={index}>
+															<span className="search_hot__number">{index + 1}</span>
+															<span className="search_hot__name">{item.k}</span>
+															<span className="search_hot__listen">{formatNum(item.n)}</span>
+														</p>:null
+													))
+												}
 											</dd>
 										</dl>
 									</div>
@@ -109,99 +143,85 @@ export default class NavHeader extends Component{
 									
 									
 								</div>
-								<div className="mod_search_result " >
+								<div className={`mod_search_other ${inIput && searchValue !== ''?'drop':''}`} >
 									<div className="search_result__sort">
 										<h4 className="search_result__tit"><i className="search_result__icon_song"></i>单曲</h4>
 										<ul className="search_result__list">
-
-											<li>
-												<p className="search_result__link js_smartbox_song">
-													<span className="search_result__name">素颜</span>-
-													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span>/何曼婷</span>
-												</p>
-											</li>
-
-											<li>
-												<p className="search_result__link js_smartbox_song">
-													<span className="search_result__name">有何不可</span>-
-													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span></span>
-												</p>
-											</li>
-
-											<li>
-												<p className="search_result__link js_smartbox_song" >
-													<span className="search_result__name">雅俗共赏</span>-
-													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span></span>
-												</p>
-											</li>
-
-											<li>
-												<p className="search_result__link js_smartbox_song" >
-													<span className="search_result__name">断桥残雪</span>-
-													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span></span>
-												</p>
-											</li>
-
+											
+											{
+												resultSong.map((item,index) => (
+													index < 5 ?<li key={index}>
+														<p className="search_result__link js_smartbox_song">
+															<span className="search_result__name">{item.name}</span>-
+															<span className="search_result__singer">
+																{item.singer}
+															</span>
+														</p>
+													</li>:null
+												))
+											}
 										</ul>
 									</div>
 									
 
 
 									
-									<div className="search_result__sort">
-										<h4 className="search_result__tit"><i className="search_result__icon_singer"></i>歌手</h4>
-										<ul className="search_result__list">
+									{
+										resultSinger.length!==0 ? <div className="search_result__sort">
+											<h4 className="search_result__tit"><i className="search_result__icon_singer"></i>歌手</h4>
+											<ul className="search_result__list">
 
-											<li>
-												<p className="search_result__link js_smartbox_singer" >
-													<span className="search_result__name"><span className="search_result__keyword">许嵩</span></span>
-												</p>
-											</li>
+												{
+													resultSinger.map((item,index) => (
+														<li key={index}>
+															<p className="search_result__link js_smartbox_singer" >
+																<span className="search_result__name"><span className="search_result__keyword">{item.name}</span></span>
+															</p>
+														</li>
+													))
+												}
 
-										</ul>
-									</div>
+											</ul>
+										</div>:null
+									}
 									
 
 
 									
-									<div className="search_result__sort">
-										<h4 className="search_result__tit"><i className="search_result__icon_album"></i>专辑</h4>
-										<ul className="search_result__list">
+									{
+										resultAblum.length!==0 ?<div className="search_result__sort">
+											<h4 className="search_result__tit"><i className="search_result__icon_album"></i>专辑</h4>
+											<ul className="search_result__list">
 
-											<li>
-												<p className="search_result__link js_smartbox_album">
-													<span className="search_result__name">自定义</span>
-													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span></span>
-												</p>
-											</li>
-
-											<li>
-												<p className="search_result__link js_smartbox_album" >
-													<span className="search_result__name">Vae新歌+精选珍藏合辑</span>
-													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span></span>
-												</p>
-											</li>
-
-										</ul>
-									</div>
+												{
+													resultAblum.map((item,index) =>(
+														index <2  ?<li key={index}>
+															<p className="search_result__link js_smartbox_album">
+																<span className="search_result__name">{item.name}</span>
+																<span className="search_result__singer"><span className="search_result__keyword">{item.singer}</span></span>
+															</p>
+														</li>:null
+													))
+												}
+											</ul>
+										</div>:null
+									}
 									
 									<div className="search_result__sort">
 										<h4 className="search_result__tit"><i className="search_result__icon_mv"></i>MV</h4>
 										<ul className="search_result__list">
+											
+											{
+												resultMv.map((item,index) => (
 
-											<li>
-												<p className="search_result__link js_smartbox_mv" >
-													<span className="search_result__name">雅俗共赏</span>-
-													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span></span>
-												</p>
-											</li>
-
-											<li>
-												<p className="search_result__link js_smartbox_mv" >
-													<span className="search_result__name">素颜</span>-
-													<span className="search_result__singer"><span className="search_result__keyword">许嵩</span>/何曼婷</span>
-												</p>
-											</li>
+													<li key={index}>
+														<p className="search_result__link js_smartbox_mv" >
+															<span className="search_result__name">{item.name}</span>-
+															<span className="search_result__singer"><span className="search_result__keyword">{item.singer}</span></span>
+														</p>
+													</li>
+												))
+											}
 
 										</ul>
 									</div>

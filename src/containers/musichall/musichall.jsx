@@ -13,6 +13,7 @@ import Mv from './mv/mv'
 import Digital from './digital/digital'
 import Ticketing from './ticketing/ticketing'
 import { getHomeData } from '../../redux/actions'
+import SingerDetail from '../singerDetail/singerDetail'
 class MusicHall extends Component{
 	
 	componentDidMount= () => {
@@ -67,6 +68,7 @@ class MusicHall extends Component{
 					<Route path='/musichall/mv' component={Mv}/>
 					<Route path='/musichall/digital' component={Digital}/>
 					<Route path='/musichall/ticketing' component={Ticketing}/>
+					<Route path='/musichall/singerDetail/:singermid' component={SingerDetail}/>
 					<Redirect to='/musichall/home'/>
 				</Switch>
 				

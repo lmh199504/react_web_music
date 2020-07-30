@@ -11,13 +11,16 @@ import Client from '../client/client'
 import Platform from '../platform/platform'
 import { getUserInfo,logout } from '../../redux/actions'
 import Player from '../player/player'
-
+import MvPlayer from '../mvplayer/mvplayer'
 
 import NavHeader from '../navHeader/navHeader'
 class Main extends React.Component{
 	
-	
+
+
+
 	render(){
+		
 		
 		
 		const { username } = this.props.user 
@@ -30,8 +33,8 @@ class Main extends React.Component{
 		return (
 			<div>
 				<Player></Player>
+				<MvPlayer></MvPlayer>
 				<NavHeader />
-				
 				<Switch>
 					<Route path="/musichall" component={MusicHall} />
 					<Route path="/mymusic" component={MyMusic}/>

@@ -1,6 +1,7 @@
 
 
-import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX,STOP_PLAY ,ADD_SONG_TO_PLAY} from './action-types.js'
+import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX,STOP_PLAY
+	 ,ADD_SONG_TO_PLAY,SHOW_MV_PLAYER,HIDE_MV_PLAYER,SET_CURRENT_MV} from './action-types.js'
 import Cookies from 'js-cookie'
 import { reqLogin,reqGetUserInfo,reqLogout,reqRegister,reqGetHome,reqGetSongListDetail,reqGetMusicVKey } from '../api/index'
 import Song from '../utils/Song.js'
@@ -133,4 +134,9 @@ export const stopPlay = (data) => ({type:STOP_PLAY,data})
 export const setIndex = (data) => ({type:SET_INDEX,data})
 //添加歌曲到播放列表并播放
 export const addSongToPlay = (data) => ({type:ADD_SONG_TO_PLAY,data})
-
+//显示mv播放器
+export const showMvPlayer = () => ({type:SHOW_MV_PLAYER})
+//隐藏mv播放器
+export const hideMvPlayer = () => ({type:HIDE_MV_PLAYER})
+//设置当前mv
+export const setCurrentMv = (data) => ({type:SET_CURRENT_MV,data})

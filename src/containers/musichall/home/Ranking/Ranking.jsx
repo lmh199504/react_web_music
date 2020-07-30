@@ -5,11 +5,30 @@
 import React,{ Component } from 'react'
 import { connect } from 'react-redux'
 import './ranking.less'
+import { reqGetRanks } from '../../../../api'
+import Song from '../../../../utils/Song'
+import { setIndex,setCurrentSongs,resetPlaylist } from '../../../../redux/actions'
 class Ranking extends Component{
 	
 	
 	playThisRank = (item) => {
 		console.log(item)
+		reqGetRanks({topId:item.topId}).then(res => {
+			let list = res.response.detail.data.songInfoList
+			let playList = []
+			list.forEach((item) => {
+				let song = new Song(item)
+				console.log(song)
+				playList.push(song)
+				if(playList.length === 1){
+					this.props.setIndex(0)
+					this.props.setCurrentSongs(song)
+				}
+			})
+			this.props.resetPlaylist(playList)
+
+		})
+
 	} 
 	
 	render(){
@@ -64,5 +83,6 @@ class Ranking extends Component{
 }
 
 export default connect(
-	state=>({homeData:state.homeData})
+	state=>({homeData:state.homeData}),
+	{setIndex,setCurrentSongs,resetPlaylist}
 )(Ranking)

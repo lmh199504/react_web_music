@@ -4,14 +4,15 @@
 
 import React,{ Component } from 'react'
 import Slider from "react-slick";
+import { connect } from 'react-redux'
 import { SampleNextArrow,SamplePrevArrow } from '../../../../utils/slide'
 import { Spin } from 'antd' 
 import { formatNum } from '../../../../utils'
-import { reqGetMvByTag } from '../../../../api'
+import { reqGetMvByTag,reqGetMvPlay } from '../../../../api'
+import { showMvPlayer,setCurrentMv } from '../../../../redux/actions'
 
 
-
-export default class extends Component{
+class Mv extends Component{
 	state = {
 		suggestionIndex:0,
 		loading:false,
@@ -34,6 +35,19 @@ export default class extends Component{
 			this.setState({
 				loading:false
 			})
+		})
+	}
+
+	playThisMv = (item) => {
+		// console.log(item)
+		reqGetMvPlay({vid:item.vid}).then(res => {
+			
+			const mp4Arr = res.response.getMVUrl.data[item.vid].mp4
+			const mvUrl = mp4Arr[mp4Arr.length - 1].freeflow_url[mp4Arr[mp4Arr.length - 1].freeflow_url.length - 1]
+			// console.log(mvUrl)
+			this.props.showMvPlayer()
+			this.props.setCurrentMv({url:mvUrl})
+			
 		})
 	}
 	componentDidMount = () => {
@@ -81,7 +95,7 @@ export default class extends Component{
 								mvList.map(item => (
 									<div className="mv_list__item" key={item.mv_id}>
 										<div className="mv_list__item_box">
-											<div className="mv_list__cover mod_cover js_mv">
+											<div className="mv_list__cover mod_cover js_mv" onClick={ () => this.playThisMv(item) }>
 												<img className="mv_list__pic" src={item.picurl} alt="mv"/>
 												<i className="mod_cover__icon_play"></i>
 											</div>
@@ -106,3 +120,7 @@ export default class extends Component{
 		)
 	}
 }
+export default connect(
+	state=>({}),
+	{showMvPlayer,setCurrentMv}
+)(Mv)

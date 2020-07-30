@@ -69,9 +69,7 @@ class Player extends Component{
 
 		}
 	}
-	componentWillReceiveProps = () => {
-		
-	}
+
 	playNext = () => {
 		console.log("下一首")
 		const { currentIndex,playList } = this.props
