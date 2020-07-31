@@ -1,8 +1,12 @@
 import React,{ Component } from 'react'
-import { reqGetRadioLists } from '../../../api'
+import { reqGetRadioLists,reqGetRadioSong } from '../../../api'
 import { formatNum } from '../../../utils'
 import './radioStation.less'
-export default class RadioStation extends Component{
+import { connect } from 'react-redux'
+import { setIndex,setCurrentSongs,resetPlaylist } from '../../../redux/actions'
+import Song from '../../../utils/Song'
+
+class RadioStation extends Component{
 	
 	state = {
 		groupList:[],
@@ -61,6 +65,26 @@ export default class RadioStation extends Component{
 		})
 	}
 	
+	playThis = (item) => {
+		
+		reqGetRadioSong({radioId:item.radioId}).then(res => {
+			const list = res.data.songlist.data.track_list
+			let playList = []
+
+			list.forEach((item,index)=>{
+				let song = new Song(item)
+				if(index === 0){
+					this.props.setCurrentSongs(song)
+					this.props.setIndex(index)
+				}
+				playList.push(song)
+			})
+
+			this.props.resetPlaylist(playList)
+		})
+
+		
+	}
 	render(){
 		const { groupList,scrolTop,activeType } = this.state
 		return (
@@ -88,7 +112,7 @@ export default class RadioStation extends Component{
 													<div className="playlist__cover ">
 														<img className="playlist__pic" src={radio.radioImg} alt="封面"/>
 														<i className="mod_cover__mask"></i>
-														<i className="mod_cover__icon_play js_play"></i>
+														<i className="mod_cover__icon_play js_play" onClick={ () => this.playThis(radio) }></i>
 													</div>
 													<h4 className="playlist__title">
 														<span className="playlist__title_txt">{radio.radioName}</span>	
@@ -110,3 +134,8 @@ export default class RadioStation extends Component{
 		)
 	}
 }
+
+export default connect(
+	state=>({}),
+	{ setIndex,setCurrentSongs,resetPlaylist }
+)(RadioStation)

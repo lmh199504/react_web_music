@@ -20,7 +20,8 @@ class Player extends Component{
 		currentTime:0,
 		defaultTime:0, //提示框当前时间
 		defaultVolume:50,
-		playMode: 0 // 列表循环-0 顺序播放-1 单曲循环-2 随便播放-3
+		playMode: 0, // 列表循环-0 顺序播放-1 单曲循环-2 随便播放-3
+		showType:false //纯净模式
 	}
 	selectAll = () => {
 		const { checkall } =  this.state
@@ -230,8 +231,15 @@ class Player extends Component{
 			})
 		}
 	}
+	setShowType = () => {
+		const { showType } = this.state
+		this.setState({
+			showType:!showType
+		})
+	}
+
 	render(){
-		const { cSong,checkall,currentLyric,currentLineNum,currentTime,defaultTime,defaultVolume,playMode } = this.state
+		const { cSong,checkall,currentLyric,currentLineNum,currentTime,defaultTime,defaultVolume,playMode,showType } = this.state
 		const { bigPlayer,isPlay,playList,currentSong } = this.props
 		return (
 			<div className="player">
@@ -440,7 +448,7 @@ class Player extends Component{
 								</span>
 								<span className="icon_txt">评论</span>
 							</div>
-							<div className="btn_big_only btn_big_only--on" id="simp_btn">
+							<div className={`btn_big_only ${showType?'btn_big_only--on':''}`} id="simp_btn" onClick={ () => this.setShowType() }>
 								<span className="icon_txt">打开纯净模式[C]</span>
 							</div>
 							<div className="player_progress player_voice">

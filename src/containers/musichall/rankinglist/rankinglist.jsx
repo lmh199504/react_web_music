@@ -5,8 +5,10 @@ import { VerticalAlignBottomOutlined,CaretRightOutlined,PlusOutlined,ShareAltOut
 import './ranking.less'
 import {tags} from './tags.js'
 import { reqGetRanks } from '../../../api'
-
+import  Song  from '../../../utils/Song'
 import Toolbar from '../../../components/toolbar/toolbar'
+import { connect } from 'react-redux'
+import { setIndex,setCurrentSongs,resetPlaylist } from '../../../redux/actions'
 const columns = [
   {
     title: '歌曲',
@@ -20,11 +22,11 @@ const columns = [
 					<i className="icon_rank_popular"></i>
 					{ record.rankValue }
 				</div>
-				<img src={`https://y.gtimg.cn/music/photo_new/T002R90x90M000${record.albumMid}.jpg?max_age=2592000`} alt="封面" className="song_cover"/>
+				<img src={`https://y.gtimg.cn/music/photo_new/T002R90x90M000${record.album.mid}.jpg?max_age=2592000`} alt="封面" className="song_cover"/>
 				<div className="song_name">
 					{record.title}
 				</div>
-				<div className="mod_list_menu">
+				<div className="mod_list_menu mytoolbtn">
 					<Space>
 						<Button shape="circle" icon={<CaretRightOutlined />}></Button>
 						<Button shape="circle" icon={<PlusOutlined />}></Button>
@@ -44,14 +46,14 @@ const columns = [
   },
   {
     title: '时长',
-    dataIndex: 'address',
+    dataIndex: 'interval',
 	width:"15%"
   },
 ];
 
 
 
-export default class RankingList extends Component{
+class RankingList extends Component{
 	
 	state = {
 		selectedRowKeys: [], // Check here to configure the default column
@@ -103,8 +105,15 @@ export default class RankingList extends Component{
 			loading:true
 		})
 		reqGetRanks({topId}).then(res => {
+
+			const songList = res.response.detail.data.songInfoList
+			const dataList = res.response.detail.data.data.song
+			for(let i = 0;i<songList.length;i++){
+				songList[i] = {...songList[i],...dataList[i]}
+
+			}
 			this.setState({
-				data:res.response.detail.data.data.song,
+				data:res.response.detail.data.songInfoList,
 				loading:false
 			})
 		}).catch(() => {
@@ -114,6 +123,22 @@ export default class RankingList extends Component{
 		})
 	}
 	
+
+	playAll = () => {
+		const { data } = this.state
+		let playList = []
+		data.forEach((item,index) => {
+			let song = new Song(item)
+			playList.push(song)
+			if(index === 0){
+				this.props.setIndex(0)
+				this.props.setCurrentSongs(song)
+			}
+		})
+		this.props.resetPlaylist(playList)
+
+	}
+
 	render(){
 		
 		const { selectedRowKeys,showRowSelection,topId,data,loading } = this.state;
@@ -182,7 +207,7 @@ export default class RankingList extends Component{
 						</span>
 						<p className="toplist__rule js_desc">榜单规则</p>
 					</div>
-					<Toolbar showRowSelection={showRowSelection} setShowRow={this.setShowRow}></Toolbar>
+					<Toolbar showRowSelection={showRowSelection} setShowRow={this.setShowRow} playAll={this.playAll}></Toolbar>
 					<Spin spinning={loading}>
 						<div className="mod_songlist mod_songlist--edit">
 							<Table rowSelection={ showRowSelection ? rowSelection:false } columns={columns} dataSource={data}  pagination={false} rowClassName={'rowClassName'}/>
@@ -193,3 +218,9 @@ export default class RankingList extends Component{
 		)
 	}
 }
+export default connect(
+	state=>({
+
+	}),
+	{setIndex,setCurrentSongs,resetPlaylist}
+)(RankingList)

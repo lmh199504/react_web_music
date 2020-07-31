@@ -1,15 +1,16 @@
 
 
 import React,{ Component } from 'react'
-import {  Radio,Spin,Popover } from 'antd';
-import { reqGetSongListCategories,reqGetSongLists } from '../../../api'
+import {  Radio,Spin,Popover,Pagination } from 'antd';
+import { reqGetSongListCategories,reqGetSongLists,reqGetSongListDetail } from '../../../api'
 import { formatNum } from '../../../utils'
 import './classified.less'
 import '../home/home.less'
+import Song from '../../../utils/Song'
+import { setIndex,setCurrentSongs,resetPlaylist } from '../../../redux/actions'
+import { connect } from 'react-redux'
 
-
-
-export default class Classified extends Component{
+class Classified extends Component{
 	
 	state = {
 		categories:[],
@@ -20,7 +21,8 @@ export default class Classified extends Component{
 			categoryId:10000000
 		},
 		loading:false,
-		songList:[]
+		songList:[],
+		total:10000
 	}
 	handleSizeChange = (e) => {
 		const { param } = this.state
@@ -64,10 +66,14 @@ export default class Classified extends Component{
 	}
 	setParm = (name,value) => {
 		const { param } = this.state
+		if(name === "categoryId"){
+			param.page = 1
+		}
 		param[name] = value
 		this.setState({
 			param
 		})
+		
 		
 		this.getData()
 	}
@@ -87,8 +93,27 @@ export default class Classified extends Component{
 			})
 		})
 	}
+
+	playThis = (item) => {
+		reqGetSongListDetail({disstid:item.dissid}).then(res => {
+			const list = res.response.cdlist[0].songlist
+			// console.log(list)
+			let playList = []
+			list.forEach((item,index) => {
+
+				let song = new Song(item)
+				playList.push(song)
+				if(index === 0){
+					this.props.setIndex(0)
+					this.props.setCurrentSongs(song)
+				}
+			})
+			this.props.resetPlaylist(playList)
+
+		})
+	}
 	render(){
-		const { param,categories,songList,loading } = this.state
+		const { param,categories,songList,loading,total } = this.state
 		
 		return (
 			<div className="main">
@@ -152,7 +177,7 @@ export default class Classified extends Component{
 				<div className="part_detail__hd">
 					<div className="all_classified_title">全部歌单</div>
 					<div>
-						<Radio.Group value={param.sortId} onChange={this.handleSizeChange}>
+						<Radio.Group value={param.sortId} onChange={ (target) => this.handleSizeChange(target)}>
 							<Radio.Button value="5">推荐</Radio.Button>
 							<Radio.Button value="2">最新</Radio.Button>
 						</Radio.Group>
@@ -168,7 +193,7 @@ export default class Classified extends Component{
 											<div className="playlist__cover ">
 												<img className="playlist__pic" src={item.imgurl} alt="封面"/>
 												<i className="mod_cover__mask"></i>
-												<i className="mod_cover__icon_play js_play"></i>
+												<i className="mod_cover__icon_play js_play" onClick={ () => this.playThis(item) }></i>
 											</div>
 											<h4 className="playlist__title">
 												<span className="playlist__title_txt">{item.dissname}</span>	
@@ -184,7 +209,16 @@ export default class Classified extends Component{
 					</div>
 				</Spin>
 				
+				<div>
+
+					<Pagination defaultCurrent={param.page} current={param.page} total={total}  style={{marginBottom:60,textAlign:'center'}} pageSize={20} showSizeChanger={false} onChange={ (page) => this.setParm('page',page)}/>
+				</div>
 			</div>
 		)
 	}
 }
+
+export default connect(
+	state=>({}),
+	{ setCurrentSongs,setIndex,resetPlaylist }
+)(Classified)

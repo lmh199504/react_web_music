@@ -1,10 +1,12 @@
 
 import React,{ Component } from 'react'
 import { Pagination,Spin } from 'antd'
-import { reqGetMV } from '../../../api'
+import { reqGetMV,reqGetMvPlay } from '../../../api'
 import { formatPubTime } from '../../../utils'
 import './mv.less'
-export default class Mv extends Component{
+import { connect } from 'react-redux'
+import { showMvPlayer,setCurrentMv } from '../../../redux/actions'
+class Mv extends Component{
 	
 	state = {
 		param:{
@@ -25,6 +27,9 @@ export default class Mv extends Component{
 	
 	setParam = (name,value) => {
 		const { param } = this.state
+		if(name === "area_id" || name === "version_id"){
+			param.page = 1
+		}
 		param[name] = value
 		this.setState({
 			param
@@ -50,7 +55,18 @@ export default class Mv extends Component{
 		})
 	}
 	
-	
+	playThisMv = (item) => {
+		// console.log(item)
+		reqGetMvPlay({vid:item.vid}).then(res => {
+			
+			const mp4Arr = res.response.getMVUrl.data[item.vid].mp4
+			const mvUrl = mp4Arr[mp4Arr.length - 1].freeflow_url[mp4Arr[mp4Arr.length - 1].freeflow_url.length - 1]
+			// console.log(mvUrl)
+			this.props.showMvPlayer()
+			this.props.setCurrentMv({url:mvUrl})
+			
+		})
+	}
 	render(){
 		const { param,mvTag,loading,mvList } = this.state
 		if(!mvTag.area){
@@ -96,9 +112,9 @@ export default class Mv extends Component{
 								mvList.map(item => (
 									<li className="mv_list__item" key={item.vid}>
 										<div className="mv_list__item_box">
-											<div className="mv_list__cover mod_cover js_mv">
+											<div className="mv_list__cover mod_cover js_mv" onClick={ () => this.playThisMv(item) }>
 												<img src={item.picurl} alt="tupian" className="mv_list__pic"/>	
-												<i className="mod_cover__icon_play"></i>
+												<i className="mod_cover__icon_play" ></i>
 											</div>
 											
 											<h3 className="mv_list__title">
@@ -125,3 +141,8 @@ export default class Mv extends Component{
 		)
 	}
 }
+
+export default connect(
+	state=>({}),
+	{ showMvPlayer,setCurrentMv }
+)(Mv)

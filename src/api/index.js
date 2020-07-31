@@ -58,3 +58,11 @@ export const reqGetMvPlay = (data) => request('/getMvPlay',data,"GET")
 export const reqGetSingerDesc = (data) => request('/getSingerDesc',data,"GET")
 //获取歌手的热门歌曲
 export const reqGetSingerHotsong = (data) => request('/getSingerHotsong',data,"GET")
+//获取歌手的专辑
+export const reqGetSingerAblumList = (data) => request('/getSingerAblumList',data,"GET")
+//获取歌手的mv
+export const reqGetSingerMV = (data) => request('/getSingerMV',data,"GET")
+//获取歌手的粉丝数
+export const reqGetSingerStarNum = (data) =>request('/getSingerStarNum',data,"GET")
+//获取电台歌曲
+export const reqGetRadioSong = (data) => request('/getRadioSong',data,"GET")

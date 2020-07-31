@@ -1,9 +1,12 @@
 
 import React,{ Component } from 'react'
 import { Pagination,Spin } from 'antd';
-import { reqGetNewDisks } from '../../../api'
+import { reqGetNewDisks,reqGetAlbumInfo } from '../../../api'
 import './newdisc.less'
-export default class NewDisc extends Component{
+import { SongFromNewDisc } from '../../../utils'
+import {connect} from 'react-redux'
+import { resetPlaylist,setIndex,setCurrentSongs } from '../../../redux/actions'
+class NewDisc extends Component{
 	
 	state = {
 		param:{
@@ -56,7 +59,22 @@ export default class NewDisc extends Component{
 			})
 		})
 	}
-	
+	playThis = (item) => {
+		// console.log(item)
+		reqGetAlbumInfo({albummid:item.mid}).then(res => {
+			const list = res.response.data.list
+			let playList = []
+			list.forEach((item,index) => {
+				let song = new SongFromNewDisc(item)
+				playList.push(song)
+				if(index === 0){
+					this.props.setIndex(0)
+					this.props.setCurrentSongs(song)
+				}
+			})
+			this.props.resetPlaylist(playList)
+		})
+	} 
 	
 	render(){
 		const { loading,param,discList,total } = this.state
@@ -89,7 +107,7 @@ export default class NewDisc extends Component{
 										<li className="playlist__item" key={item.id}>
 											<div className="playlist__item_box">
 												<div className="playlist__cover mod_cover">
-													<div className="js_album">
+													<div className="js_album" onClick={ () => this.playThis(item) }>
 														<img src={`//y.gtimg.cn/music/photo_new/T002R300x300M000${item.photo.pic_mid}.jpg?max_age=2592000`} alt="守候" className="playlist__pic" style={{ display: 'block',visibility: 'visible' }}/>
 														<i className="mod_cover__icon_play js_play" ></i>
 													</div>
@@ -119,3 +137,11 @@ export default class NewDisc extends Component{
 		)
 	}
 }
+
+export default connect(
+	state=>({
+
+	}),{
+		resetPlaylist,setCurrentSongs,setIndex
+	}
+)(NewDisc)

@@ -3,7 +3,6 @@
 /* 
 	包含多个reducer函数：根据老的state和指定的action返回一个新的state
  */
-
 import { combineReducers } from 'redux'
 import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX,STOP_PLAY,ADD_SONG_TO_PLAY ,
 	SHOW_MV_PLAYER,HIDE_MV_PLAYER,SET_CURRENT_MV
@@ -44,8 +43,9 @@ function playList(state = initPlayList,action){
 		case RESET_PLAYLIST:
 			return action.data
 		case ADD_SONG_TO_PLAY:
-			state.splice(action.data.index,0,action.data.song)
-			return state
+			let arr = [...state]
+			arr.splice(action.data.index,0,action.data.song)
+			return arr
 		default:
 			return state
 	}

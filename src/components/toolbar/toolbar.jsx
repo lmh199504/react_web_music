@@ -27,7 +27,7 @@ export default class Toolbar extends Component{
 		return (
 			<div className="mod_songlist_toolbar">
 				<Space>
-					<Button type="primary" size="large" icon={<PlayCircleOutlined />}>播放全部</Button>
+					<Button type="primary" size="large" icon={<PlayCircleOutlined />} onClick={ ()=>this.props.playAll() }>播放全部</Button>
 					<Popover content={content} title="" trigger="click" placement="rightBottom">
 						<Button size="large" icon={<PlusSquareOutlined />}>添加到</Button>
 					</Popover>

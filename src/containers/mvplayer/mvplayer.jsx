@@ -30,7 +30,7 @@ class MvPlayer extends Component{
         }
         
         if(mvInfo.url === currentMv.url){
-            console.log("一样的mv")
+            // console.log("一样的mv")
         }else{
             this.setState({
                 mvInfo:currentMv
@@ -51,7 +51,7 @@ class MvPlayer extends Component{
                 <div className="closeBtn">
                     <CloseCircleOutlined  className="closeIcon" onClick={ () => this.hidePlayer() }/>
                 </div>
-                <video src="" ref="myVideo" autoPlay={false} className="myVideo"></video>
+                <video src="" ref="myVideo" autoPlay={false} className="myVideo" controls></video>
                 
             </div>
         )

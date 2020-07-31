@@ -1,12 +1,14 @@
 
 import React, { Component } from 'react'
-import { reqGetSingerDesc, reqGetSingerHotsong } from '../../api'
-import { formatSongTime } from '../../utils'
+import { reqGetSingerDesc, reqGetSingerHotsong,reqGetSingerAblumList,reqGetSingerMV,reqGetSingerStarNum } from '../../api'
+import { formatSongTime, formatNum } from '../../utils'
 import './singerDetail.less'
 import { parseString  } from 'xml2js'
 import { Popover } from 'antd'
 import { connect } from 'react-redux'
-
+import Song from '../../utils/Song'
+import { message } from 'antd'
+import { setIndex,setCurrentSongs,addSongToPlay,resetPlaylist } from '../../redux/actions'
 class SingerDetail extends Component {
 
     state ={
@@ -15,9 +17,17 @@ class SingerDetail extends Component {
         singermid:'',
         totalSongs:0,
         totalMv:0,
+        fanMvNum:0,
+        singerMvNum:0,
         totalAblum:0,
         hotSong:[],
-        cSong:{}
+        albumlist:[],
+        cSong:{},
+        singerName:'',
+        mvList:[],
+        fanMvList:[],
+        fansNum:0
+
     }
     componentDidMount = () => {
         const { singermid } = this.props.match.params
@@ -35,12 +45,45 @@ class SingerDetail extends Component {
         })
 
         reqGetSingerHotsong({ singermid }).then(res => {
-            console.log(res)
             this.setState({
                 totalSongs:res.data.singerSongList.data.totalNum,
                 hotSong:res.data.singerSongList.data.songList
             })
+
+            const { hotSong } = this.state
+            const singerName = hotSong[0].songInfo.singer[0].name
+            this.setState({
+                singerName
+            })
+
         })
+
+        reqGetSingerAblumList({singermid}).then(res => {
+            this.setState({
+                albumlist:res.data.getAlbumList.data.albumList,
+                totalAblum:res.data.getAlbumList.data.total
+            })
+        })
+
+        reqGetSingerMV({singermid}).then(res => {
+            this.setState({
+                mvList:res.response.data.list,
+                singerMvNum:res.response.data.total
+            })
+        })
+
+        reqGetSingerMV({singermid,order:'time'}).then(res => {
+            this.setState({
+                fanMvList:res.response.data.list,
+                fanMvNum:res.response.data.total
+            })
+        })
+        reqGetSingerStarNum({singermid}).then(res => {
+            this.setState({
+                fansNum:res.response.num
+            })
+        })
+
     }
     getContent = (text) => {
         return (
@@ -49,11 +92,53 @@ class SingerDetail extends Component {
             </div>
         )
     }
+    playThis = (item,index) => {
+        const song = new Song(item.songInfo)
+        const { playList } =  this.props
+        const { currentIndex } = this.props
+        console.log(playList)
+        const i =  playList.findIndex(item => {
+            return item.songmid === song.songmid
+        })
+        console.log(i)
+        if(i === -1){
+            this.props.setCurrentSongs(song)
+            if(currentIndex === -1){
+                this.props.addSongToPlay({index:0,song})
+                this.props.setIndex(0)
+            }else{
+                
+                this.props.addSongToPlay({index:currentIndex + 1,song})
+                this.props.setIndex(currentIndex + 1)
+            }
+        }else{
+            message.info("歌曲已在播放列表中.")
+            this.props.setCurrentSongs(song)
+            this.props.setIndex(i)
+        }
 
+        
+        
+        
+    }
+
+    playHotSong = () => {
+        const {hotSong} = this.state
+        let playList = []
+        hotSong.forEach((item,index) => {
+            let song = new Song(item.songInfo)
+            playList.push(song)
+            if(index === 0){
+                this.props.setIndex(0)
+                this.props.setCurrentSongs(song)
+            }
+        })
+        
+        this.props.resetPlaylist(playList)
+
+    }
     render() {
-        const { basic,desc,singermid,totalSongs,cSong } = this.state
-        const checkall = false
-        const { playList } = this.props
+        const { basic,desc,singermid,totalSongs,cSong,singerName,hotSong,albumlist,mvList,fanMvList,totalAblum,singerMvNum,fanMvNum,fansNum } = this.state
         return (
             <div className="main singerDetail" >
                 <div className="mod_data">
@@ -67,9 +152,9 @@ class SingerDetail extends Component {
                     <div className="data__cont">
                         <div className="data__name">
                             <h1 className="data__name_txt js_none_index" style={{ display: 'none' }}>
-                                <span className="js_goto_tab" title="周杰伦" >周杰伦</span>
+                                <span className="js_goto_tab" title={singerName} >{singerName}</span>
                             </h1>
-                            <h1 className="data__name_txt js_index" title="周杰伦"> 周杰伦</h1>
+                            <h1 className="data__name_txt js_index" title={singerName}> {singerName}</h1>
                         </div>
                         <div className="data__desc" id="singer_desc">
                             <div className="data__desc_txt" id="short_desc">
@@ -95,24 +180,28 @@ class SingerDetail extends Component {
                             <li className="data_statistic__item">
                                 <div className="js_goto_tab">
                                     <span className="data_statistic__tit">专辑</span>
-                                    <strong className="data_statistic__number">55</strong>
+                                    <strong className="data_statistic__number">
+                                        {totalAblum}
+                                    </strong>
                                 </div>
                             </li>
                             <li className="data_statistic__item">
                                 <div className="js_goto_tab">
                                     <span className="data_statistic__tit">MV</span>
-                                    <strong className="data_statistic__number">1937</strong>
+                                    <strong className="data_statistic__number">
+                                        {fanMvNum+singerMvNum}
+                                    </strong>
                                 </div>
                             </li>
                         </ul>
                         <div className="data__actions">
-                            <div className="mod_btn_green js_singer_radio">
+                            <div className="mod_btn_green js_singer_radio" onClick={ ()=> this.playHotSong() }>
                                 <i className="mod_btn_green__icon_play"></i>
                                 播放歌手热门歌曲
                             </div>
                             <div className="mod_btn js_follow">
                                 <i className="mod_btn__icon_more" data-status="0"></i>
-                                关注 2384.0万
+                                关注 {formatNum(fansNum)}
                             </div>
                         </div>
                     </div>
@@ -128,9 +217,7 @@ class SingerDetail extends Component {
                         <div className="mod_songlist">
                             <i className="player_songlist__line"></i>
                             <ul className="songlist__header">
-                                <li className={`songlist__edit sprite ${checkall ?'songlist__edit--check':''}`} onClick={ () => this.selectAll()}>
-                                    <input type="checkbox" className="songlist__checkbox js_check_all"/>
-                                </li>
+                                
                                 <li className="songlist__header_name">歌曲</li>
                                 <li className="songlist__header_author">歌手</li>
                                 <li className="songlist__header_time">时长</li>
@@ -138,16 +225,12 @@ class SingerDetail extends Component {
                             <i className="player_songlist__line"></i>
                             <ul className="songlist__list" id="song_box">
                                 {
-                                    playList.map((item,index) => (
-                                        
-                                        <li key={index}>
-                                            <div className={`songlist__item ${item.songmid === cSong.songmid?'songlist__item--playing':''}`}>
-                                                <div className={`songlist__edit sprite ${item.checked===true ? 'songlist__edit--check':''}`} onClick={ () => this.checkedSong(item) }>
-                                                    <input type="checkbox" className="songlist__checkbox"/>
-                                                </div>
+                                    hotSong.map((item,index) => (
+                                        <li key={index} className={`${index%2 !== 0 ?'line_height_list':''}`}>
+                                            <div className={`songlist__item ${item.songInfo.mid === cSong.songmid?'songlist__item--playing':''}`}>
                                                 <div className="songlist__number">{index + 1}</div>
                                                 <div className="songlist__songname">
-                                                    <span className="songlist__songname_txt" title={item.title}>{item.title}</span>
+                                                    <span className="songlist__songname_txt" title={item.title}>{item.songInfo.title}</span>
                                                     <div className="mod_list_menu">
                                                         <div className="list_menu__item list_menu__play js_play" onClick={ () => this.playThis(item,index) }>
                                                             <i className="list_menu__icon_play"></i>
@@ -168,23 +251,119 @@ class SingerDetail extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="songlist__artist">
-                                                    <span className="singer_name">{item.singer[0].name}</span>
+                                                    <span className="singer_name">{item.songInfo.singer[0].name}</span>
                                                 </div>
-                                                <div className="songlist__time">{formatSongTime(item.interval)}</div>
+                                                <div className="songlist__time">{formatSongTime(item.songInfo.interval)}</div>
                                                 <div className="songlist__other"></div>
-                                                <span className="songlist__delete js_delete">
-                                                    <span className="icon_txt">删除</span>
-                                                </span>
+                                                
                                                 <i className="player_songlist__line"></i>
                                             </div>
                                         </li>
                                     ))
                                 }
-                            
-                                
                             </ul>
                         </div>    
 
+                    </div>
+                    <div className="mod_part">
+                        <div className="part__hd">
+                            <h2 className="part__tit">专辑</h2>
+                            <span  className="part__more js_goto_tab">全部<i className="icon_part_arrow sprite"></i></span>
+                        </div>
+                        <div className="mod_playlist">
+                            <ul className="playlist__list" id="albumlist">
+                                {
+                                    albumlist.map((item,index)=>(
+                                        <li className="playlist__item" key={index}>
+                                            <div className="playlist__item_box">
+                                                <div className="playlist__cover mod_cover">
+                                                    <div className="js_album">
+                                                        <img src={`//y.gtimg.cn/music/photo_new/T002R300x300M000${item.albumMid}.jpg?max_age=2592000`} alt="专辑封面" className="playlist__pic"/>
+                                                        <i className="mod_cover__icon_play js_play"></i>
+                                                    </div>
+                                                </div>
+
+                                                <h4 className="playlist__title"><span className="playlist__title_txt"><span  title="Mojito" className="js_album" >{item.albumName}</span></span></h4>
+                                                <div className="playlist__other">
+                                                    { item.publishDate }
+                                                </div>
+                                            </div>
+                                        </li>
+                                    ))
+                                }
+                                
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <div className="mod_part">
+                        <div className="part__hd">
+                            <h2 className="part__tit">MV</h2>
+                            <span  className="part__more js_goto_tab">全部<i className="icon_part_arrow sprite"></i></span>
+                        </div>
+
+                        <div className="mod_mv">
+                            <ul className="mv_list__list" id="mv_list">
+                                {
+                                    mvList.map(item => (
+                                        <li className="mv_list__item" key={item.vid} style={{width:'20%'}}>
+                                            <div className="mv_list__item_box">
+                                                <div className="mv_list__cover mod_cover js_mv">
+                                                    <img src={item.pic} alt="tupian" className="mv_list__pic"/>	
+                                                    <i className="mod_cover__icon_play"></i>
+                                                </div>
+                                                
+                                                <h3 className="mv_list__title">
+                                                    <span className="js_mv">{item.title}</span>
+                                                </h3>	
+                                                <div className="mv_list__singer">
+                                                    <span className="js_singer">{ item.singer_name }</span>
+                                                </div>
+                                                <div className="mv_list__info">
+                                                    <span className="mv_list__listen"><i className="mv_list__listen_icon sprite"></i>{item.playcnt}</span>{ formatNum(item.listenCount) }
+                                                </div>
+                                            </div>
+                                        </li>
+                                    ))
+                                }
+                                
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="mod_part">
+                        <div className="part__hd">
+                            <h2 className="part__tit">粉丝上传MV</h2>
+                            <span  className="part__more js_goto_tab">全部<i className="icon_part_arrow sprite"></i></span>
+                        </div>
+                        <div className="mod_mv">
+                            <ul className="mv_list__list" id="mv_list">
+                                {
+                                    fanMvList.map(item => (
+                                        <li className="mv_list__item" key={item.vid} style={{width:'20%'}}>
+                                            <div className="mv_list__item_box">
+                                                <div className="mv_list__cover mod_cover js_mv">
+                                                    <img src={item.pic} alt="tupian" className="mv_list__pic"/>	
+                                                    <i className="mod_cover__icon_play"></i>
+                                                </div>
+                                                
+                                                <h3 className="mv_list__title">
+                                                    <span className="js_mv">{item.title}</span>
+                                                </h3>	
+                                                <div className="mv_list__singer">
+                                                    <span className="js_singer">{ item.singer_name }</span>
+                                                </div>
+                                                <div className="mv_list__info">
+                                                    <span className="mv_list__listen"><i className="mv_list__listen_icon sprite"></i>{item.playcnt}</span>{ formatNum(item.listenCount) }
+                                                </div>
+                                            </div>
+                                        </li>
+                                    ))
+                                }
+                                
+                            </ul>
+                        </div>
                     </div>
                 </div> 
             </div>
@@ -193,5 +372,9 @@ class SingerDetail extends Component {
 }
 
 export default connect(
-    state=>({playList:state.playList})
+    state=>({
+        playList:state.playList,
+        currentIndex:state.currentIndex
+    }),
+    {setCurrentSongs,setIndex,addSongToPlay,resetPlaylist}
 )(SingerDetail)

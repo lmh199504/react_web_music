@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { reqGetHomeNewSong } from '../../../../api'
 import { SampleNextArrow,SamplePrevArrow } from '../../../../utils/slide'
 import { formatSongTime } from '../../../../utils'
-import { Spin } from 'antd' 
+import { Spin, message } from 'antd' 
 import { setIndex,setCurrentSongs,addSongToPlay } from '../../../../redux/actions'
 import  Song  from '../../../../utils/Song'
 class NewSong extends Component{
@@ -47,17 +47,29 @@ class NewSong extends Component{
 		this.getData(0,{type:5})
 	}
 	playThis = async(item) => {
-		const { currentIndex } = this.props
+		const { currentIndex,playList } = this.props
 		const song = new Song(item)
-		if(currentIndex === -1){
-			this.props.setIndex(0)
-			this.props.addSongToPlay({index:0,song})
-			this.props.setCurrentSongs(song)
+
+		const i = playList.findIndex(listItem => {
+			return listItem.songmid === song.songmid
+		})
+		if(i === -1){
+			if(currentIndex === -1){
+				this.props.setIndex(0)
+				this.props.addSongToPlay({index:0,song})
+				this.props.setCurrentSongs(song)
+			}else{
+				this.props.setIndex(currentIndex+1)
+				this.props.addSongToPlay({index:currentIndex+1,song})
+				this.props.setCurrentSongs(song)
+			}
 		}else{
-			this.props.setIndex(currentIndex+1)
-			this.props.addSongToPlay({index:currentIndex+1,song})
+			message.info('歌曲已在播放列表中.')
 			this.props.setCurrentSongs(song)
+			this.props.setIndex(i)
 		}
+
+		
 	}
 	render(){
 		const suggestionNav = [
@@ -132,7 +144,8 @@ class NewSong extends Component{
 
 export default  connect(
 	state=>({
-		currentIndex:state.currentIndex
+		currentIndex:state.currentIndex,
+		playList:state.playList
 	}),
 	{ setIndex,setCurrentSongs,addSongToPlay }
 )(NewSong)
