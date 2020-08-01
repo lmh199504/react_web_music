@@ -1,9 +1,12 @@
 
 
 import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX,STOP_PLAY
-	 ,ADD_SONG_TO_PLAY,SHOW_MV_PLAYER,HIDE_MV_PLAYER,SET_CURRENT_MV} from './action-types.js'
+	 ,ADD_SONG_TO_PLAY,SHOW_MV_PLAYER,HIDE_MV_PLAYER,SET_CURRENT_MV,SET_LOVE_LIST} from './action-types.js'
 import Cookies from 'js-cookie'
-import { reqLogin,reqGetUserInfo,reqLogout,reqRegister,reqGetHome,reqGetSongListDetail,reqGetMusicVKey } from '../api/index'
+import { reqLogin,reqGetUserInfo,reqLogout,reqRegister,reqGetHome,reqGetSongListDetail,reqGetMusicVKey,
+	reqGetLoveSong
+ 
+ } from '../api/index'
 import Song from '../utils/Song.js'
 import { message } from 'antd'
 
@@ -140,3 +143,13 @@ export const showMvPlayer = () => ({type:SHOW_MV_PLAYER})
 export const hideMvPlayer = () => ({type:HIDE_MV_PLAYER})
 //设置当前mv
 export const setCurrentMv = (data) => ({type:SET_CURRENT_MV,data})
+//设置喜欢的歌曲的同步action
+export const setLoveList = (data) => ({type:SET_LOVE_LIST,data})
+export const setLoveLists = (data) => {
+	return async dispatch => {
+		const response = await reqGetLoveSong()
+		if(response.code === 0){
+			dispatch(setLoveList(response.data.songList))
+		}
+	}
+}

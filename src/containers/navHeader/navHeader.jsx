@@ -6,10 +6,12 @@ import { Input } from 'antd'
 import { reqGetHotkey,reqGetSmartbox } from '../../api'
 import { formatNum } from '../../utils'
 import './index.less'
+import { connect } from 'react-redux'
+import { logout } from '../../redux/actions'
 const { Search } = Input
 
 let timer = null
-export default class NavHeader extends Component{
+class NavHeader extends Component{
 	
 
 	state = {
@@ -235,10 +237,16 @@ export default class NavHeader extends Component{
 							<img src="http://thirdqq.qlogo.cn/g?b=sdk&k=5GvhCOicBXrBf50u3StdLRw&s=140&t=1550910887" alt="头像" className="top_login__cover js_user_img"/>	
 						</div>	
 						<div className="mod_btn_green top_login__btn_vip js_openvip" >开通绿钻豪华版</div>	
-						<div className="mod_btn top_login__btn_vip js_openmusic">开通付费包</div>
+						<div className="mod_btn top_login__btn_vip js_openmusic" onClick={ () => this.props.logout() }>退出登录</div>
 					</div>
 				</div>	
 			</div>
 		)
 	}
 }
+
+
+export default connect(
+	state=>({}),
+	{ logout }
+)(NavHeader)

@@ -66,3 +66,9 @@ export const reqGetSingerMV = (data) => request('/getSingerMV',data,"GET")
 export const reqGetSingerStarNum = (data) =>request('/getSingerStarNum',data,"GET")
 //获取电台歌曲
 export const reqGetRadioSong = (data) => request('/getRadioSong',data,"GET")
+//添加喜欢的歌曲
+export const reqAddLoveSong = (data) => request('/user/addLoveSong',data)
+//删除喜欢的歌曲
+export const reqDelLoveSong = (data) => request('/user/delLoveSong',data)
+//获取用户喜欢的歌曲
+export const reqGetLoveSong = (data) => request('/user/getLoveSong',data,"GET")

@@ -1,4 +1,11 @@
 
+export const downLoad = (url, filename) => {
+   getBlob(url).then(blob => {
+       saveAs(blob, filename);
+   })
+   
+   console.log(url)
+}
 
 
 //格式化数字
@@ -62,4 +69,84 @@ export class SongFromNewDisc{
 		// this.album = item.album
 		this.albumName = item.albumname
 	}
+}
+
+
+
+
+
+
+const getBlob = (url) => {
+    return new Promise(resolve => {
+        let that = this; // 创建XMLHttpRequest，会让this指向XMLHttpRequest，所以先接收一下this
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        //监听进度事件
+        xhr.addEventListener(
+            "progress",
+            function(evt) {
+                if (evt.lengthComputable) {
+                    let percentComplete = evt.loaded / evt.total;
+                    that.percentage = percentComplete * 100;
+					console.log(that.percentage)
+                }
+            },
+            false
+        );
+
+        xhr.responseType = "blob";
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                resolve(xhr.response);
+            }
+        };
+        
+        xhr.send();
+    });
+}
+
+
+const saveAs = (blob, filename) => {
+    // ie的下载
+    if (window.navigator.msSaveOrOpenBlob) {
+        navigator.msSaveBlob(blob, filename);
+    } else {
+        // 非ie的下载
+        const link = document.createElement("a");
+        const body: any = document.querySelector("body");
+
+        link.href = window.URL.createObjectURL(blob);
+        link.download = filename;
+
+        // fix Firefox
+        link.style.display = "none";
+        body.appendChild(link);
+
+        link.click();
+        body.removeChild(link);
+
+        window.URL.revokeObjectURL(link.href);
+    }
+}
+
+
+export const downloadBlobFile = (url,filename) => {
+	console.log(filename)
+	let form = document.createElement('form')
+	form.style.display = 'none'
+	form.target = ''
+	form.method = 'get'
+	form.action = url
+	document.body.appendChild(form)
+	form.submit()
+}
+
+
+export const isLoveSong = (song,list) => {
+	
+	if(!song.songmid){
+		return false
+	}
+	const index = list.findIndex(item => song.songmid === item.songmid)
+	return (index === -1 ? false:true )
 }

@@ -1,12 +1,13 @@
 
 import React,{ Component } from 'react'
 import './player.less'
-import { Slider } from 'antd'
+import { Slider,message } from 'antd'
 import { connect } from 'react-redux'
-import { formatSongTime } from '../../utils'
-import { setCurrentSongs,showBigplayer,hideBigPlayer,playing,resetPlaylist,setIndex,stopPlay } from '../../redux/actions'
-import { reqGetLyric } from '../../api'
+import { formatSongTime,isLoveSong } from '../../utils'
+import { setCurrentSongs,showBigplayer,hideBigPlayer,playing,resetPlaylist,setIndex,stopPlay,setLoveLists } from '../../redux/actions'
+import { reqGetLyric,reqAddLoveSong,reqDelLoveSong } from '../../api'
 import  Lyric  from 'lyric-parser'
+
 
 
 class Player extends Component{
@@ -20,7 +21,7 @@ class Player extends Component{
 		currentTime:0,
 		defaultTime:0, //提示框当前时间
 		defaultVolume:50,
-		playMode: 0, // 列表循环-0 顺序播放-1 单曲循环-2 随便播放-3
+		playMode: 0, // 列表循环-0 顺序播放-1 随机播放-2 单曲循环-3
 		showType:false //纯净模式
 	}
 	selectAll = () => {
@@ -56,8 +57,17 @@ class Player extends Component{
 		}
 		
 		this.refs.myAudio.onended = () => {
-			console.log("播放结束了")
-			this.playNext()
+
+			const { playMode,currentLyric } =  this.state
+			
+			if(playMode === 3){
+				this.refs.myAudio.currentTime = 0
+				this.refs.myAudio.play()
+				currentLyric.seek(this.refs.myAudio.currentTime * 1000)
+				this.reset()
+			}else{
+				this.playNext()
+			}
 		}
 		this.refs.myAudio.ontimeupdate = () => {
 			const { currentSong } = this.props
@@ -74,25 +84,62 @@ class Player extends Component{
 	playNext = () => {
 		console.log("下一首")
 		const { currentIndex,playList } = this.props
-		if(currentIndex<playList.length - 1){
-			this.props.setIndex(currentIndex + 1)
-			this.props.setCurrentSongs(playList[currentIndex + 1])
-			
-		}else{
-			this.props.setIndex(0)
-			this.props.setCurrentSongs(playList[0])
-			
+		const { playMode } = this.state 
+		console.log(playMode)
+		if(playMode === 0 || playMode === 3){ //列表循环
+			if(currentIndex<playList.length - 1){
+				this.props.setIndex(currentIndex + 1)
+				this.props.setCurrentSongs(playList[currentIndex + 1])
+				
+			}else{
+				this.props.setIndex(0)
+				this.props.setCurrentSongs(playList[0])
+				
+			}
+		}else if(playMode === 1){ //顺序播放
+			if(currentIndex<playList.length - 1){
+				this.props.setIndex(currentIndex + 1)
+				this.props.setCurrentSongs(playList[currentIndex + 1])
+				
+			}else{
+				this.props.setIndex(0)
+				this.props.setCurrentSongs(playList[0])
+				
+			}
+		}else if(playMode === 2){
+			const index = Math.floor(Math.random()*playList.length)
+			this.props.setCurrentSongs(playList[index])
+			this.props.setIndex(index)
 		}
+		
 	}
 	playPre = () => {
 		const { currentIndex,playList } = this.props
-		if(currentIndex === 0){
-			this.props.setIndex(playList.length - 1)
-			this.props.setCurrentSongs(playList[playList.length - 1])
-		}else{
-			this.props.setIndex(currentIndex - 1)
-			this.props.setCurrentSongs(playList[currentIndex - 1])
+		const { playMode } = this.state
+		if(playMode === 0 || playMode === 3){ //顺序播放
+			if(currentIndex === 0){
+				this.props.setIndex(playList.length - 1)
+				this.props.setCurrentSongs(playList[playList.length - 1])
+			}else{
+				this.props.setIndex(currentIndex - 1)
+				this.props.setCurrentSongs(playList[currentIndex - 1])
+			}
+		}else if(playMode === 1){ //
+			if(currentIndex === 0){
+				this.props.setIndex(playList.length - 1)
+				this.props.setCurrentSongs(playList[playList.length - 1])
+			}else{
+				this.props.setIndex(currentIndex - 1)
+				this.props.setCurrentSongs(playList[currentIndex - 1])
+			}
+		}else {
+			
+			const index = Math.floor(Math.random()*playList.length)
+			this.props.setCurrentSongs(playList[index])
+			this.props.setIndex(index)
 		}
+		
+		
 	}
 	formatter = (value) => {
 		const { currentSong } = this.props
@@ -174,8 +221,12 @@ class Player extends Component{
 			
 		}
 	}
-	componentWillUpdate = () => {
-		
+
+	reset = () => {
+		this.setState({
+			currentLineNum:0,
+			currentTime:0,
+		})
 	}
 	checkedSong = (item) => {
 
@@ -237,10 +288,42 @@ class Player extends Component{
 			showType:!showType
 		})
 	}
+	downMusic = () => {
 
+		
+	}
+	addLoveSong = () => {
+		const { currentSong,user } = this.props
+		let songList = []
+		songList.push(currentSong)
+		reqAddLoveSong({userId:user._id,songList}).then(() => {
+			message.info("收藏成功")
+			this.props.setLoveLists()
+		})
+	}
+	delLoveSong = () => {
+
+		const { currentSong,user } = this.props
+		let songList = []
+		songList.push(currentSong)
+		reqDelLoveSong({userId:user._id,delList:songList}).then(()=>{
+			this.props.setLoveLists()
+		})
+	}
+	
+	toggleLove = () => {
+		const { currentSong,loveList } = this.props
+		console.log(isLoveSong(currentSong,loveList))
+		if(isLoveSong(currentSong,loveList)){
+			this.delLoveSong()
+		}else{
+			this.addLoveSong()
+		}
+		
+	}
 	render(){
 		const { cSong,checkall,currentLyric,currentLineNum,currentTime,defaultTime,defaultVolume,playMode,showType } = this.state
-		const { bigPlayer,isPlay,playList,currentSong } = this.props
+		const { bigPlayer,isPlay,playList,currentSong,loveList } = this.props
 		return (
 			<div className="player">
 				<div className="smallPlayer">
@@ -272,7 +355,7 @@ class Player extends Component{
 								<span className="player_login__txt">敷衍、</span>
 							</span>
 							
-							<span  className="player_login__out js_logout" >退出</span>
+							<span  className="player_login__out js_logout" onClick={ () => this.delLoveSong() }>退出</span>
 						</span>
 						
 						<span className="player_login__link player_login__link--set js_opts_unlogin" ><span className="player_login__txt">设置</span></span>
@@ -280,9 +363,9 @@ class Player extends Component{
 					</div>
 					<div className="mod_player">
 						<div className="player__hd"></div>
-						<div className="player__bd">
-							<div className="player_style_normal js_box js_full_box">
-								<div className="mod_songlist_toolbar">
+						<div className="player__bd ">
+							<div className={ `player_style_normal js_box js_full_box ` }>
+								<div className={`mod_songlist_toolbar ${showType?'hidden':''}` }>
 									<li className="mod_btn js_all_like">
 										<i className="mod_btn_green__icon_like"></i>收藏
 										<span className="mod_btn__border"></span>
@@ -305,7 +388,7 @@ class Player extends Component{
 									</li>
 								</div>
 								
-								<div className="sb_scrollable sb_main sb_viewport">
+								<div className={`sb_scrollable sb_main sb_viewport ${showType?'hidden':''}`}>
 									<div className="sb_overview">
 										<div className="mod_songlist mod_songlist--edit">
 											<i className="player_songlist__line"></i>
@@ -374,8 +457,8 @@ class Player extends Component{
 										</div>
 									</div>
 								</div>
-								<div className="mod_song_info" id="song_info">
-									<div className="song_info__info">
+								<div className={`mod_song_info ${showType?'maxSongInfo':''}`} id="song_info" >
+									<div className={`song_info__info ${showType?'hidden':''}`}>
 										<div className="song_info__cover js_album">
 											<img src={ currentSong.cover } id="song_pic" alt="" className="song_info__pic"/>
 										</div>
@@ -389,7 +472,7 @@ class Player extends Component{
 											专辑名：<span>{ currentSong.albumName }</span>
 										</div>
 									</div>
-									<div className="song_info__lyric">
+									<div className={`song_info__lyric ${showType?'maxLyric':''}`}>
 										<div className="song_info__lyric_box js_lyric_box" ref="lyricList" data={currentLyric && currentLyric.lines}>
 											<div className="song_info__lyric_inner qrc_ctn" id="qrc_ctn" >
 												{
@@ -435,10 +518,10 @@ class Player extends Component{
 									<span className="icon_txt">{ playMode === 0 ? '列表循环':playMode === 1 ?'顺序播放': playMode===2 ? '随机播放':playMode===3?'单曲循环':''}</span>
 								</span>
 							</div>
-							<div className="btn_big_like js_btn_fav">
+							<div className={`btn_big_like js_btn_fav ${isLoveSong(currentSong,loveList)? 'btn_big_like--like':''}`} onClick={ () => this.toggleLove() }>
 								<span className="icon_txt">喜欢[V]</span>
 							</div>
-							<div  className="btn_big_down js_btn_down" title="下载[D]"><span className="icon_txt">下载[D]</span></div>
+							<div  className="btn_big_down js_btn_down" title="下载[D]" onClick={ () => this.downMusic() }><span className="icon_txt">下载[D]</span></div>
 							<div className="mod_btn_comment js_into_comment btn_comment99">
 								<span className="btn_comment__numbers">
 									<i className="btn_comment__numb btn_comment__numb_9"></i>
@@ -469,11 +552,13 @@ class Player extends Component{
 }
 export default connect(
 	state=>({
+		user:state.user,
 		playList:state.playList,
 		currentSong:state.currentSong,
 		bigPlayer:state.bigPlayer,
 		isPlay:state.isPlay,
-		currentIndex:state.currentIndex
+		currentIndex:state.currentIndex,
+		loveList:state.loveList
 	}),
-	{ setCurrentSongs,showBigplayer,hideBigPlayer,playing,resetPlaylist,setIndex,stopPlay }
+	{ setCurrentSongs,showBigplayer,hideBigPlayer,playing,resetPlaylist,setIndex,stopPlay,setLoveLists }
 )(Player)

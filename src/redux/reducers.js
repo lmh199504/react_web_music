@@ -5,7 +5,7 @@
  */
 import { combineReducers } from 'redux'
 import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX,STOP_PLAY,ADD_SONG_TO_PLAY ,
-	SHOW_MV_PLAYER,HIDE_MV_PLAYER,SET_CURRENT_MV
+	SHOW_MV_PLAYER,HIDE_MV_PLAYER,SET_CURRENT_MV,SET_LOVE_LIST
 } from './action-types.js'
 
 
@@ -112,6 +112,15 @@ function currentMv(state={},action){
 	}
 }
 
+function loveList(state=[],action){
+	switch (action.type){
+		case SET_LOVE_LIST:
+			return action.data
+		default:
+			return state
+	}
+}
+
 
 export default combineReducers({
 	user,
@@ -122,5 +131,6 @@ export default combineReducers({
 	isPlay,
 	currentIndex,
 	isShowMv,
-	currentMv
+	currentMv,
+	loveList
 })

@@ -5,13 +5,15 @@ import Toolbar from '../../components/toolbar/toolbar'
 import { Button,Space,Table } from 'antd';
 import { VerticalAlignBottomOutlined,CaretRightOutlined,PlusOutlined,ShareAltOutlined } from '@ant-design/icons';
 import './mymusic.less'
-
+import { connect } from 'react-redux'
+import { setLoveLists } from '../../redux/actions'
+import { formatSongTime } from '../../utils'
 
 
 const columns = [
   {
     title: '歌曲',
-    dataIndex: 'name',
+    dataIndex: 'title',
 	render:(text, record, index) => {
 		return (
 			
@@ -21,11 +23,11 @@ const columns = [
 					<i className="icon_rank_popular"></i>
 					168%
 				</div>
-				<img src="https://y.gtimg.cn/music/photo_new/T002R90x90M000002RspIW36U4Nn.jpg?max_age=2592000" alt="封面" className="song_cover"/>
+				<img src={ record.cover } alt="封面" className="song_cover"/>
 				<div className="song_name">
 					{text}
 				</div>
-				<div className="mod_list_menu">
+				<div className="mod_list_menu mytoolbtn">
 					<Space>
 						<Button shape="circle" icon={<CaretRightOutlined />}></Button>
 						<Button shape="circle" icon={<PlusOutlined />}></Button>
@@ -41,27 +43,33 @@ const columns = [
   },
   {
     title: '歌手',
-    dataIndex: 'age',
-	width:300
+    dataIndex: 'title',
+	width:300,
+	render:(text,record,index) => {
+		return(
+			<div>
+				{ record.singer?record.singer[0].name:'' }
+			</div>
+		)
+	}
   },
   {
     title: '时长',
-    dataIndex: 'address',
-	width:100
+    dataIndex: 'interval',
+	width:100,
+	render:(text) => {
+		return (
+			<div>
+				{ formatSongTime(text) }
+			</div>
+		)
+	}
   },
 ];
-const data = [];
-for (let i = 0; i < 20; i++) {
-  data.push({
-    key: i,
-    name: `爱，存在`,
-    age: '林小珂',
-    address: `05:30`,
-  });
-}
 
 
-export default class MusicHall extends Component{
+
+class MyMusic extends Component{
 	
 	state = {
 		selectedRowKeys: [], // Check here to configure the default column
@@ -79,8 +87,14 @@ export default class MusicHall extends Component{
 			showRowSelection:!showRowSelection
 		})
 	}
+	componentDidMount = () => {
+		this.props.setLoveLists()
+	}
+	
 	
 	render(){
+		const { loveList } = this.props
+		
 		const { showRowSelection,selectedRowKeys } = this.state
 		const rowSelection = {
 		    selectedRowKeys,
@@ -135,7 +149,7 @@ export default class MusicHall extends Component{
 						<div className="js_sub" id="like_song_box">
 							<Toolbar setShowRow={this.setShowRow} showRowSelection={showRowSelection}></Toolbar>
 							<div className="mod_songlist mod_songlist--edit">
-								<Table rowSelection={ showRowSelection ? rowSelection:false } columns={columns} dataSource={data}  pagination={false} rowClassName={'rowClassName'}/>
+								<Table rowSelection={ showRowSelection ? rowSelection:false } columns={columns} dataSource={loveList}  pagination={false} rowClassName={'rowClassName'}/>
 							</div>
 						</div>
 					</div>
@@ -147,3 +161,8 @@ export default class MusicHall extends Component{
 		)
 	}
 }
+
+export default connect(
+	state=>({loveList:state.loveList}),
+	{setLoveLists}
+)(MyMusic)

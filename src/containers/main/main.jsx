@@ -16,9 +16,6 @@ import MvPlayer from '../mvplayer/mvplayer'
 import NavHeader from '../navHeader/navHeader'
 class Main extends React.Component{
 	
-
-
-
 	render(){
 		
 		
