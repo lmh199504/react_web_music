@@ -8,7 +8,7 @@ import { formatNum } from '../../../../utils'
 import { reqGetHomeClass} from '../../../../api'
 
 import { resetPlaylists } from '../../../../redux/actions'
-
+import { withRouter } from 'react-router-dom'
 
 class Suggest extends Component{
 	state = {
@@ -21,17 +21,6 @@ class Suggest extends Component{
 		this.getData(0,{id:-1})
 	}
 	getDetail = async(item) => {
-		// const response = await reqGetSongListDetail({disstid:item.tid || item.content_id});
-		// const songlist = response.response.cdlist[0].songlist
-		// let playList = []
-		// for (let cd of songlist) {
-		// 	const re = await reqGetMusicVKey({songmid:cd.mid})
-		// 	if(re.response.req_0.data.midurlinfo[0].vkey !== ''){
-		// 		cd.src = re.response.playLists[0]
-		// 	}
-		// 	let song = new Song(cd)
-		// 	playList.push(song)
-		// }
 		this.props.resetPlaylists(item)
 	} 
 	
@@ -70,6 +59,11 @@ class Suggest extends Component{
 				loading:false
 			})
 		})
+	}
+
+	toClassDetail = (item) => {
+		console.log(item)
+		this.props.history.push(`/musichall/classDetail/${item.content_id}`)
 	}
 	render(){
 		const suggestionNav = [
@@ -112,12 +106,12 @@ class Suggest extends Component{
 						<Slider {...settings}>
 							{
 								classList.map((item,index) => (
-									<div className="playlist__item slide__item" key={index} onClick={ () => this.getDetail(item) }>
+									<div className="playlist__item slide__item" key={index} >
 										<div className="playlist__item_inner">
-											<div className="playlist__cover ">
+											<div className="playlist__cover " onClick={ () => this.toClassDetail(item) }>
 												<img className="playlist__pic" src={item.cover_url_big || item.cover} alt="封面"/>
 												<i className="mod_cover__mask"></i>
-												<i className="mod_cover__icon_play js_play"></i>
+												<i className="mod_cover__icon_play js_play" onClick={ () => this.getDetail(item) }></i>
 											</div>
 											<h4 className="playlist__title">
 												<span className="playlist__title_txt">{item.title}</span>	
@@ -138,7 +132,7 @@ class Suggest extends Component{
 	}
 }
 
-export default connect(
+export default withRouter( connect(
 	state=>({}),
 	{resetPlaylists}
-)(Suggest)
+)(Suggest))

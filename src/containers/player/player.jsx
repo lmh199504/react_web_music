@@ -181,8 +181,6 @@ class Player extends Component{
 				cSong:currentSong
 			})
 			if(currentLyric){
-				
-				
 				currentLyric.stop()
 				this.setState({
 					currentLyric:null,

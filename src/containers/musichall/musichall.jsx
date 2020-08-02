@@ -14,6 +14,7 @@ import Digital from './digital/digital'
 import Ticketing from './ticketing/ticketing'
 import { getHomeData,setLoveLists } from '../../redux/actions'
 import SingerDetail from '../singerDetail/singerDetail'
+import ClassDetail from '../classDetail/classDetail'
 class MusicHall extends Component{
 	
 	componentDidMount= () => {
@@ -70,6 +71,7 @@ class MusicHall extends Component{
 					<Route path='/musichall/digital' component={Digital}/>
 					<Route path='/musichall/ticketing' component={Ticketing}/>
 					<Route path='/musichall/singerDetail/:singermid' component={SingerDetail}/>
+					<Route path='/musichall/classDetail/:disstid' component={ClassDetail}/>
 					<Redirect to='/musichall/home'/>
 				</Switch>
 				

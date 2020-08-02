@@ -112,6 +112,10 @@ class Classified extends Component{
 
 		})
 	}
+
+	toClassDetail = (item) => {
+		this.props.history.push(`/musichall/classDetail/${item.dissid}`)
+	} 
 	render(){
 		const { param,categories,songList,loading,total } = this.state
 		
@@ -191,8 +195,8 @@ class Classified extends Component{
 									<div className="playlist__item slide__item classified" key={item.dissid}>
 										<div className="playlist__item_inner">
 											<div className="playlist__cover ">
-												<img className="playlist__pic" src={item.imgurl} alt="封面"/>
-												<i className="mod_cover__mask"></i>
+												<img className="playlist__pic" src={item.imgurl} alt="封面" />
+												<i className="mod_cover__mask" onClick={ () => this.toClassDetail(item) }></i>
 												<i className="mod_cover__icon_play js_play" onClick={ () => this.playThis(item) }></i>
 											</div>
 											<h4 className="playlist__title">

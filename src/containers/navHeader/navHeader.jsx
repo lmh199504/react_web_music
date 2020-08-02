@@ -65,6 +65,7 @@ class NavHeader extends Component{
 	
 	render(){
 		const { hotKeyArr,inIput,searchValue,resultSong,resultAblum,resultSinger,resultMv } = this.state
+		const { user } = this.props
 		return (
 			<div className="mod_header">
 				<div className="section_inner">
@@ -234,7 +235,7 @@ class NavHeader extends Component{
 					</div>
 					<div className="header__opt">
 						<div className="top_login__link js_logined">
-							<img src="http://thirdqq.qlogo.cn/g?b=sdk&k=5GvhCOicBXrBf50u3StdLRw&s=140&t=1550910887" alt="头像" className="top_login__cover js_user_img"/>	
+							<img src={user.headerImg} alt="头像" className="top_login__cover js_user_img"/>	
 						</div>	
 						<div className="mod_btn_green top_login__btn_vip js_openvip" >开通绿钻豪华版</div>	
 						<div className="mod_btn top_login__btn_vip js_openmusic" onClick={ () => this.props.logout() }>退出登录</div>
@@ -247,6 +248,6 @@ class NavHeader extends Component{
 
 
 export default connect(
-	state=>({}),
+	state=>({user:state.user}),
 	{ logout }
 )(NavHeader)
