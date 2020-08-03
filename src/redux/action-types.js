@@ -21,3 +21,4 @@ export const SHOW_MV_PLAYER = 'show_smv_player' //显示mv播放器
 export const HIDE_MV_PLAYER = 'hide_mv_player' //隐藏mv播放器
 export const SET_CURRENT_MV = 'set_current_mv' //设置当前mv
 export const SET_LOVE_LIST = 'set_love_list'  //喜欢的歌曲列表
+export const SET_LOVE_SINGER = 'set_love_singer' //获取喜欢的歌手列表

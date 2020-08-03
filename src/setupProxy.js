@@ -12,4 +12,18 @@ module.exports = function(app) {
 			}
 		})
 	);
+
+
+	app.use(
+		'/apc',
+		createProxyMiddleware({
+			target: 'http://ws.stream.qqmusic.qq.com',
+			changeOrigin: true,
+			pathRewrite: {
+				'^/apc': '/'
+			}
+		})
+	);
+
+
 };

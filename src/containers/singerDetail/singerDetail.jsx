@@ -1,14 +1,14 @@
 
 import React, { Component } from 'react'
-import { reqGetSingerDesc, reqGetSingerHotsong,reqGetSingerAblumList,reqGetSingerMV,reqGetSingerStarNum } from '../../api'
-import { formatSongTime, formatNum } from '../../utils'
+import { reqGetSingerDesc, reqGetSingerHotsong,reqGetSingerAblumList,reqGetSingerMV,reqGetSingerStarNum,reqAddLoveSinger,reqDelLoveSinger,reqGetSimilarSinger } from '../../api'
+import { formatSongTime, formatNum,isLoveSinger } from '../../utils'
 import './singerDetail.less'
 import { parseString  } from 'xml2js'
 import { Popover } from 'antd'
 import { connect } from 'react-redux'
 import Song from '../../utils/Song'
 import { message } from 'antd'
-import { setIndex,setCurrentSongs,addSongToPlay,resetPlaylist } from '../../redux/actions'
+import { setIndex,setCurrentSongs,addSongToPlay,resetPlaylist,setLoveSingers } from '../../redux/actions'
 class SingerDetail extends Component {
 
     state ={
@@ -26,8 +26,8 @@ class SingerDetail extends Component {
         singerName:'',
         mvList:[],
         fanMvList:[],
-        fansNum:0
-
+        fansNum:0,
+        singerlist:[]
     }
     componentDidMount = () => {
         const { singermid } = this.props.match.params
@@ -84,6 +84,11 @@ class SingerDetail extends Component {
             })
         })
 
+        reqGetSimilarSinger({singermid}).then(res => {
+            this.setState({
+                singerlist:res.response.singers.items
+            })
+        })
     }
     getContent = (text) => {
         return (
@@ -137,8 +142,47 @@ class SingerDetail extends Component {
         this.props.resetPlaylist(playList)
 
     }
+    addLoveSinger = () => {
+        const { user } = this.props
+
+        const { singerName,singermid } = this.state
+        reqAddLoveSinger({userId:user._id,singer:{singerName,singermid}}).then(res => {
+            message.success("关注成功.")
+            this.props.setLoveSingers()
+        }).catch(() => {
+            console.log("错误了.")
+        })
+    }
+
+    delLoveSinger = () => {
+        const { singerName,singermid } = this.state
+        reqDelLoveSinger({singer:{singerName,singermid}}).then(res => {
+            message.success('取消关注成功.')
+            this.props.setLoveSingers()
+        })
+    }
+    toggleLove = () => {
+        const { singermid } = this.state
+        const { loveSinger } = this.props
+        console.log(loveSinger)
+        console.log(isLoveSinger({singermid},loveSinger))
+        if(isLoveSinger({singermid},loveSinger)){ //是喜欢的歌手
+            this.delLoveSinger()
+        }else{
+            this.addLoveSinger()
+        }
+    }
+    replaceImg = (e) => {
+		e.target.src = require('../../assets/images/timg.jpg')
+	}
+    toSingerDetail = (item) => {
+		
+        this.props.history.push(`/musichall/singerDetail/${item.mid}`)
+        window.location.reload()
+	}
     render() {
-        const { basic,desc,singermid,totalSongs,cSong,singerName,hotSong,albumlist,mvList,fanMvList,totalAblum,singerMvNum,fanMvNum,fansNum } = this.state
+        const { basic,desc,singermid,totalSongs,cSong,singerName,hotSong,albumlist,mvList,fanMvList,totalAblum,singerMvNum,fanMvNum,fansNum,singerlist } = this.state
+        const { loveSinger } = this.props
         return (
             <div className="main singerDetail" >
                 <div className="mod_data">
@@ -199,8 +243,8 @@ class SingerDetail extends Component {
                                 <i className="mod_btn_green__icon_play"></i>
                                 播放歌手热门歌曲
                             </div>
-                            <div className="mod_btn js_follow">
-                                <i className="mod_btn__icon_more" data-status="0"></i>
+                            <div className="mod_btn js_follow" onClick={ () => this.toggleLove() }>
+                                <i className={`${  isLoveSinger({ singermid },loveSinger) ? 'mod_btn__icon_yes':'mod_btn__icon_more'} `} data-status="0"></i>
                                 关注 {formatNum(fansNum)}
                             </div>
                         </div>
@@ -331,8 +375,8 @@ class SingerDetail extends Component {
                             </ul>
                         </div>
                     </div>
-
-                    <div className="mod_part">
+                    {
+                        fanMvList.length !== 0 ? (<div className="mod_part">
                         <div className="part__hd">
                             <h2 className="part__tit">粉丝上传MV</h2>
                             <span  className="part__more js_goto_tab">全部<i className="icon_part_arrow sprite"></i></span>
@@ -364,6 +408,39 @@ class SingerDetail extends Component {
                                 
                             </ul>
                         </div>
+                    </div>):null
+                    }
+                    
+
+
+                    <div className="mod_part">
+                        <div className="part__hd">
+                            <h2 className="part__tit">相似歌手</h2>
+                            <span className="part__more js_goto_tab hidden">全部<i className="icon_part_arrow sprite"></i></span>
+                        </div>
+                        
+
+                        <div id="mod-singerlist">
+                            <div className="mod_singer_list">
+                                <ul className="singer_list__list js_avtar_list">
+                                    {
+                                        singerlist.map(item => (
+                                            <li className="singer_list__item" key={item.mid} onClick={ () => this.toSingerDetail(item) }>
+                                                <div className="singer_list__item_box">
+                                                    <div className="singer_list__cover js_singer">
+                                                        <img className="singer_list__pic" src={ item.pic } alt={item.name} onError={ $event => this.replaceImg($event) } />
+                                                    </div>
+                                                    <h3 className="singer_list__title">
+                                                        <p className="js_singer">{item.name}</p>	
+                                                    </h3>
+                                                </div>
+                                            </li>
+                                        ))
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+
                     </div>
                 </div> 
             </div>
@@ -373,8 +450,10 @@ class SingerDetail extends Component {
 
 export default connect(
     state=>({
+        user:state.user,
         playList:state.playList,
-        currentIndex:state.currentIndex
+        currentIndex:state.currentIndex,
+        loveSinger:state.loveSinger
     }),
-    {setCurrentSongs,setIndex,addSongToPlay,resetPlaylist}
+    {setCurrentSongs,setIndex,addSongToPlay,resetPlaylist,setLoveSingers}
 )(SingerDetail)

@@ -97,10 +97,8 @@ class Classified extends Component{
 	playThis = (item) => {
 		reqGetSongListDetail({disstid:item.dissid}).then(res => {
 			const list = res.response.cdlist[0].songlist
-			// console.log(list)
 			let playList = []
 			list.forEach((item,index) => {
-
 				let song = new Song(item)
 				playList.push(song)
 				if(index === 0){
@@ -196,7 +194,7 @@ class Classified extends Component{
 										<div className="playlist__item_inner">
 											<div className="playlist__cover ">
 												<img className="playlist__pic" src={item.imgurl} alt="封面" />
-												<i className="mod_cover__mask" onClick={ () => this.toClassDetail(item) }></i>
+												<i className="mod_cover__mask"  onClick={ () => this.toClassDetail(item) }></i>
 												<i className="mod_cover__icon_play js_play" onClick={ () => this.playThis(item) }></i>
 											</div>
 											<h4 className="playlist__title">

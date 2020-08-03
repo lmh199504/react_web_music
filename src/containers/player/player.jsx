@@ -3,7 +3,7 @@ import React,{ Component } from 'react'
 import './player.less'
 import { Slider,message } from 'antd'
 import { connect } from 'react-redux'
-import { formatSongTime,isLoveSong } from '../../utils'
+import { formatSongTime,isLoveSong,downFile } from '../../utils'
 import { setCurrentSongs,showBigplayer,hideBigPlayer,playing,resetPlaylist,setIndex,stopPlay,setLoveLists } from '../../redux/actions'
 import { reqGetLyric,reqAddLoveSong,reqDelLoveSong } from '../../api'
 import  Lyric  from 'lyric-parser'
@@ -287,8 +287,8 @@ class Player extends Component{
 		})
 	}
 	downMusic = () => {
-
-		
+		const { currentSong } = this.props
+		downFile(currentSong.src,currentSong.title)
 	}
 	addLoveSong = () => {
 		const { currentSong,user } = this.props

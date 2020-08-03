@@ -108,9 +108,9 @@ class Suggest extends Component{
 								classList.map((item,index) => (
 									<div className="playlist__item slide__item" key={index} >
 										<div className="playlist__item_inner">
-											<div className="playlist__cover " onClick={ () => this.toClassDetail(item) }>
+											<div className="playlist__cover " >
 												<img className="playlist__pic" src={item.cover_url_big || item.cover} alt="封面"/>
-												<i className="mod_cover__mask"></i>
+												<i className="mod_cover__mask" onClick={ () => this.toClassDetail(item) }></i>
 												<i className="mod_cover__icon_play js_play" onClick={ () => this.getDetail(item) }></i>
 											</div>
 											<h4 className="playlist__title">

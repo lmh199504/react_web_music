@@ -49,13 +49,15 @@ body {
     zoom: 1;
 	background-image: url(../images/cover_play@2x.png);
 	background-size: cover;
-	cursor: pointer;
+    cursor: pointer;
+    z-index: 5;
 }
 
 .mod_cover:hover .mod_cover__icon_play,  .playlist__cover:hover .mod_cover__icon_play {
 	opacity: 1;
 	transform: scale(1) translateZ(0);
 }
+
 .mod_cover:hover .mod_cover__icon_play{
 	background-size: 68%;
 	background-repeat: no-repeat;
@@ -79,7 +81,7 @@ body {
     -webkit-transition: opacity .5s;
     transition: opacity .5s;
 }
-
+.mod_cover:hover .mod_cover__mask{opacity: 0.5;}
 .mod_cover:hover .mv_list__pic{
 	transform: scale(1.2);
 }
@@ -141,3 +143,6 @@ body {
 
 
 
+.hidden{
+    display: none!important;
+}

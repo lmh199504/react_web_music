@@ -207,7 +207,7 @@ class RankingList extends Component{
 						</span>
 						<p className="toplist__rule js_desc">榜单规则</p>
 					</div>
-					<Toolbar showRowSelection={showRowSelection} setShowRow={this.setShowRow} playAll={this.playAll}></Toolbar>
+					<Toolbar showRowSelection={showRowSelection} setShowRow={this.setShowRow} playAll={this.playAll} piliang={true} down={true} add={true}></Toolbar>
 					<Spin spinning={loading}>
 						<div className="mod_songlist mod_songlist--edit">
 							<Table rowSelection={ showRowSelection ? rowSelection:false } columns={columns} dataSource={data}  pagination={false} rowClassName={'rowClassName'}/>

@@ -153,7 +153,7 @@ class MyLove extends Component{
 
                 <div className="profile_cont">
                     <div className={`js_sub ${index === 1?'':'hidden'}`}id="like_song_box">
-                        <Toolbar setShowRow={this.setShowRow} showRowSelection={showRowSelection} playAll={ this.playAll }></Toolbar>
+                        <Toolbar setShowRow={this.setShowRow} showRowSelection={showRowSelection} playAll={ this.playAll } piliang={true} down={true} add={true} shoucan={false}></Toolbar>
                         <div className="mod_songlist mod_songlist--edit">
                             <Table rowSelection={ showRowSelection ? rowSelection:false } columns={columns} dataSource={loveList}  pagination={false} rowClassName={'rowClassName'}/>
                         </div>

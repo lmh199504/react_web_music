@@ -1,10 +1,10 @@
 
 
 import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX,STOP_PLAY
-	 ,ADD_SONG_TO_PLAY,SHOW_MV_PLAYER,HIDE_MV_PLAYER,SET_CURRENT_MV,SET_LOVE_LIST} from './action-types.js'
+	 ,ADD_SONG_TO_PLAY,SHOW_MV_PLAYER,HIDE_MV_PLAYER,SET_CURRENT_MV,SET_LOVE_LIST,SET_LOVE_SINGER} from './action-types.js'
 import Cookies from 'js-cookie'
 import { reqLogin,reqGetUserInfo,reqLogout,reqRegister,reqGetHome,reqGetSongListDetail,reqGetMusicVKey,
-	reqGetLoveSong
+	reqGetLoveSong,reqGetLoveSinger
  
  } from '../api/index'
 import Song from '../utils/Song.js'
@@ -150,6 +150,18 @@ export const setLoveLists = (data) => {
 		const response = await reqGetLoveSong()
 		if(response.code === 0){
 			dispatch(setLoveList(response.data.songList))
+		}
+	}
+}
+
+//获取喜欢的歌手的同步action
+export const setLoveSinger = (data) => ({type:SET_LOVE_SINGER,data})
+//获取喜欢歌手的异步action
+export const setLoveSingers = () => {
+	return async dispatch => {
+		const res = await reqGetLoveSinger()
+		if(res.code === 0){
+			dispatch(setLoveSinger(res.data.singers))
 		}
 	}
 }

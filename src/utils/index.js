@@ -1,11 +1,4 @@
 
-export const downLoad = (url, filename) => {
-   getBlob(url).then(blob => {
-       saveAs(blob, filename);
-   })
-   
-   console.log(url)
-}
 
 
 //格式化数字
@@ -73,75 +66,6 @@ export class SongFromNewDisc{
 
 
 
-
-
-
-const getBlob = (url) => {
-    return new Promise(resolve => {
-        let that = this; // 创建XMLHttpRequest，会让this指向XMLHttpRequest，所以先接收一下this
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", url, true);
-        //监听进度事件
-        xhr.addEventListener(
-            "progress",
-            function(evt) {
-                if (evt.lengthComputable) {
-                    let percentComplete = evt.loaded / evt.total;
-                    that.percentage = percentComplete * 100;
-					console.log(that.percentage)
-                }
-            },
-            false
-        );
-
-        xhr.responseType = "blob";
-        xhr.onload = () => {
-            if (xhr.status === 200) {
-                resolve(xhr.response);
-            }
-        };
-        
-        xhr.send();
-    });
-}
-
-
-const saveAs = (blob, filename) => {
-    // ie的下载
-    if (window.navigator.msSaveOrOpenBlob) {
-        navigator.msSaveBlob(blob, filename);
-    } else {
-        // 非ie的下载
-        const link = document.createElement("a");
-        const body: any = document.querySelector("body");
-
-        link.href = window.URL.createObjectURL(blob);
-        link.download = filename;
-
-        // fix Firefox
-        link.style.display = "none";
-        body.appendChild(link);
-
-        link.click();
-        body.removeChild(link);
-
-        window.URL.revokeObjectURL(link.href);
-    }
-}
-
-
-export const downloadBlobFile = (url,filename) => {
-	console.log(filename)
-	let form = document.createElement('form')
-	form.style.display = 'none'
-	form.target = ''
-	form.method = 'get'
-	form.action = url
-	document.body.appendChild(form)
-	form.submit()
-}
-
-
 export const isLoveSong = (song,list) => {
 	
 	if(!song.songmid){
@@ -150,3 +74,60 @@ export const isLoveSong = (song,list) => {
 	const index = list.findIndex(item => song.songmid === item.songmid)
 	return (index === -1 ? false:true )
 }
+
+export const isLoveSinger = (singer,list) => {
+    if(!singer.singermid){
+        return false
+    }
+    const index = list.findIndex(item => item.singermid === singer.singermid)
+    return (index === -1 ? false:true )
+}
+
+export const downFile = (url,filename) => {
+    
+    var downUrl = url.replace('http://ws.stream.qqmusic.qq.com','/apc')
+    // window.open(downUrl)
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', downUrl);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.responseType = "blob";
+    xhr.onprogress = function (event) {
+        if (event.lengthComputable) {
+            var load_process = ((event.loaded/event.total)*100).toFixed(1)
+            console.log(load_process)
+        }
+    };
+    xhr.onloadstartchange = function(){
+        console.log('onloadstartchange')
+    }
+    xhr.onloadedmetadata = function(){
+        console.log('onloadedmetadata')
+    }
+    xhr.onload = function (oEvent) {
+
+
+        if (xhr.readyState === 4 && xhr.status === 200) {
+
+
+
+            var blob = new Blob([xhr.response], {type: 'audio/mp3'});
+            var csvUrl = URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.href = csvUrl;
+            link.download = filename;
+            var event = document.createEvent('MouseEvents');
+            event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+            link.dispatchEvent(event);
+            URL.revokeObjectURL(csvUrl);  
+
+
+        }
+    }
+    xhr.onerror = function(){
+        console.log("下载失败")
+    }
+    xhr.send();
+}
+
+
+

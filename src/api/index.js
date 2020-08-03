@@ -64,6 +64,8 @@ export const reqGetSingerAblumList = (data) => request('/getSingerAblumList',dat
 export const reqGetSingerMV = (data) => request('/getSingerMV',data,"GET")
 //获取歌手的粉丝数
 export const reqGetSingerStarNum = (data) =>request('/getSingerStarNum',data,"GET")
+//获取相似的歌手
+export const reqGetSimilarSinger = (data) => request('/getSimilarSinger',data,"GET")
 //获取电台歌曲
 export const reqGetRadioSong = (data) => request('/getRadioSong',data,"GET")
 //添加喜欢的歌曲
@@ -72,3 +74,9 @@ export const reqAddLoveSong = (data) => request('/user/addLoveSong',data)
 export const reqDelLoveSong = (data) => request('/user/delLoveSong',data)
 //获取用户喜欢的歌曲
 export const reqGetLoveSong = (data) => request('/user/getLoveSong',data,"GET")
+//添加喜欢的歌手 
+export const reqAddLoveSinger = (data) => request('/user/addLoveSinger',data)
+//删除喜欢的歌手
+export const reqDelLoveSinger = (data) => request('/user/delLoveSinger',data)
+//获取喜欢的歌手
+export const reqGetLoveSinger = (data) => request('/user/getLoveSinger',data,"GET")
