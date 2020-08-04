@@ -40,8 +40,8 @@ class Login extends React.Component{
 				
 					<Space direction="vertical" style={{'width': '100%'}} size="large">
 						<h1>用户登陆</h1>	
-						<Input size="large" placeholder="用户名" prefix={<UserOutlined />} onChange={ val => {this.handleChange('username',val)} }/>
-						<Input type="password" size="large" placeholder="密码" prefix={<LockOutlined />} onChange={ val => {this.handleChange('password',val)} } />
+						<Input size="large" placeholder="用户名" prefix={<UserOutlined />} onChange={ val => {this.handleChange('username',val)} } onPressEnter={ () => this.onSubmit() }/>
+						<Input type="password" size="large" placeholder="密码" prefix={<LockOutlined />} onChange={ val => {this.handleChange('password',val)} } onPressEnter={ () => this.onSubmit() }/>
 						<Button type="primary" block onClick={ this.onSubmit }>登陆</Button>
 						<Button block onClick={ this.toRegister }>没有账号?去注册.</Button>
 					</Space>

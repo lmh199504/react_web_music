@@ -18,7 +18,14 @@ Service.interceptors.request.use(config => {
 		// console.log("已经登陆")
 	}else{
 		// console.log("还未登陆")
-	}
+    }
+    
+    if(config.url === '/user/addUserSheet'){
+        config.headers = {
+            'Content-Type':'multipart/form-data'
+        }
+    }
+    console.log(config)
 	return config
     
 })

@@ -83,6 +83,14 @@ export const isLoveSinger = (singer,list) => {
     return (index === -1 ? false:true )
 }
 
+export const isLoveSheet = (sheet,list) => {
+    if(!sheet.disstid){
+        return false
+    }
+    const index = list.findIndex(item => item.disstid === sheet.disstid)
+    return (index === -1 ? false:true )
+}
+
 export const downFile = (url,filename) => {
     
     var downUrl = url.replace('http://ws.stream.qqmusic.qq.com','/apc')

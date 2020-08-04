@@ -71,7 +71,9 @@ class Player extends Component{
 		}
 		this.refs.myAudio.ontimeupdate = () => {
 			const { currentSong } = this.props
-			
+			if(!this.refs.myAudio){
+				return
+			}
 			this.setState({
 				currentTime:parseInt(this.refs.myAudio.currentTime),
 				defaultTime:(this.refs.myAudio.currentTime/currentSong.interval)*100
@@ -85,7 +87,6 @@ class Player extends Component{
 		console.log("下一首")
 		const { currentIndex,playList } = this.props
 		const { playMode } = this.state 
-		console.log(playMode)
 		if(playMode === 0 || playMode === 3){ //列表循环
 			if(currentIndex<playList.length - 1){
 				this.props.setIndex(currentIndex + 1)

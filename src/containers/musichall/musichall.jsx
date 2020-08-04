@@ -12,7 +12,7 @@ import RadioStation from './radioStation/radioStation'
 import Mv from './mv/mv'
 import Digital from './digital/digital'
 import Ticketing from './ticketing/ticketing'
-import { getHomeData,setLoveLists,setLoveSingers } from '../../redux/actions'
+import { getHomeData,setLoveLists,setLoveSingers,setLoveSheets } from '../../redux/actions'
 import SingerDetail from '../singerDetail/singerDetail'
 import ClassDetail from '../classDetail/classDetail'
 class MusicHall extends Component{
@@ -21,7 +21,7 @@ class MusicHall extends Component{
 		this.props.getHomeData()
 		this.props.setLoveLists()
 		this.props.setLoveSingers()
-
+		this.props.setLoveSheets()
 	}
 	
 	render(){
@@ -84,5 +84,5 @@ class MusicHall extends Component{
 
 export default connect(
 	state=>({homeData:state.homeData}),
-	{getHomeData,setLoveLists,setLoveSingers}
+	{getHomeData,setLoveLists,setLoveSingers,setLoveSheets}
 )(MusicHall)

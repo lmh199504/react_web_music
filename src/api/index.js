@@ -80,3 +80,12 @@ export const reqAddLoveSinger = (data) => request('/user/addLoveSinger',data)
 export const reqDelLoveSinger = (data) => request('/user/delLoveSinger',data)
 //获取喜欢的歌手
 export const reqGetLoveSinger = (data) => request('/user/getLoveSinger',data,"GET")
+
+//获取收藏的歌单
+export const reqGetLoveSheet = (data) => request('/user/getLoveSheet',data,"GET")
+//添加收藏歌单
+export const reqAddLoveSheet = (data) => request('/user/addLoveSheet',data)
+//取消收藏歌单
+export const reqDelLoveSheet = (data) => request('/user/delLoveSheet',data)
+//创建用户歌单
+export const reqAddUserSheet = (data) => request('/user/addUserSheet',data)

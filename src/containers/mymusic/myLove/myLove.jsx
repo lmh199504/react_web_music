@@ -3,16 +3,19 @@ import React,{Component} from 'react'
 import { Button,Space,Table,message } from 'antd';
 import Toolbar from '../../../components/toolbar/toolbar'
 import { VerticalAlignBottomOutlined,CaretRightOutlined,PlusOutlined,ShareAltOutlined } from '@ant-design/icons';
-import { formatSongTime } from '../../../utils'
+import { formatSongTime,formatNum } from '../../../utils'
 import { connect } from 'react-redux';
-import { setIndex,setCurrentSongs,resetPlaylist,addSongToPlay } from '../../../redux/actions'
-  
+import { setIndex,setCurrentSongs,resetPlaylist,addSongToPlay,setLoveSheets } from '../../../redux/actions'
+import './myLove.less'  
 class MyLove extends Component{
 
     state = {
 		selectedRowKeys: [], // Check here to configure the default column
         showRowSelection:false,
         index:1
+    }
+    componentDidMount = () => {
+        this.props.setLoveSheets()
     }
     setCurrent = (index) => {
         this.setState({
@@ -70,7 +73,7 @@ class MyLove extends Component{
 		}
     }
     render(){
-        const { loveList } = this.props
+        const { loveList,loveSheet } = this.props
         const { index } = this.state
         loveList.forEach((element,index) => {
             element.key = index
@@ -145,7 +148,7 @@ class MyLove extends Component{
                 <div className="js_box" id="like_box">
                     <div className="mod_tab">
                         <li className={`mod_tab__item ${index ===1 ?'mod_tab__current':''}`} onClick={ () => this.setCurrent(1) }>歌曲 {loveList.length}</li>
-                        <li className={`mod_tab__item ${index ===2 ?'mod_tab__current':''}`} onClick={ () => this.setCurrent(2) }>歌单 0</li>
+                        <li className={`mod_tab__item ${index ===2 ?'mod_tab__current':''}`} onClick={ () => this.setCurrent(2) }>歌单 {loveSheet.length}</li>
                         <li className={`mod_tab__item ${index ===3 ?'mod_tab__current':''}`} onClick={ () => this.setCurrent(3) }>专辑 0</li>
                         <li className={`mod_tab__item ${index ===4 ?'mod_tab__current':''}`} onClick={ () => this.setCurrent(4) }>视频 0</li>
                     </div>
@@ -161,13 +164,39 @@ class MyLove extends Component{
 
 
                     <div className={`js_sub ${index === 2?'':'hidden'}`}>
-                        <span style={{ color:'#000' }}>歌单 0</span>
+                        <div style={{ position:'relative',width:'100%',display:'flex',flexWrap:'wrap' }}>
+                                {
+                                    loveSheet.map(item => (
+                                        <div className="playlist__item slide__item classified" key={item.disstid} style={{display:'block'}}>
+                                            <div className="playlist__item_inner">
+                                                <div className="playlist__cover ">
+                                                    <img className="playlist__pic" src={item.logo} alt="封面" />
+                                                    <i className="mod_cover__mask"  onClick={ () => this.toClassDetail(item) }></i>
+                                                    <i className="mod_cover__icon_play js_play" onClick={ () => this.playThis(item) }></i>
+                                                </div>
+                                                <h4 className="playlist__title">
+                                                    <span className="playlist__title_txt">{item.dissname}</span>	
+                                                </h4>
+                                                <div className="playlist__other">
+                                                    播放量：{formatNum(item.visitnum)}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                }
+                        </div>
                     </div>
                     <div className={`js_sub ${index === 3?'':'hidden'}`}>
-                        <span style={{ color:'#000' }}>专辑 0</span>
+                        <div className="none_txt">
+                            <i className="none_txt__symbol"></i>
+                            <p style={{ color:'#000',fontSize:18 }}>什么也没有，去<a href="/musichall">音乐馆</a>发现好音乐！</p>
+                        </div>
                     </div>
                     <div className={`js_sub ${index === 4?'':'hidden'}`}>
-                        <span style={{ color:'#000' }}>视频 0</span>
+                        <div className="none_txt">
+                            <i className="none_txt__symbol"></i>
+                            <p style={{ color:'#000',fontSize:18 }}>什么也没有，去<a href="/musichall">音乐馆</a>发现好音乐！</p>
+                        </div>
                     </div>
 
                 </div>
@@ -178,6 +207,10 @@ class MyLove extends Component{
 }
 
 export default connect(
-    state=>({loveList:state.loveList,playList:state.playList,currentIndex:state.currentIndex}),
-    { setIndex,setCurrentSongs,resetPlaylist,addSongToPlay }
+    state=>({loveList:state.loveList,
+        playList:state.playList,
+        currentIndex:state.currentIndex,
+        loveSheet:state.loveSheet
+    }),
+    { setIndex,setCurrentSongs,resetPlaylist,addSongToPlay,setLoveSheets }
 )(MyLove)

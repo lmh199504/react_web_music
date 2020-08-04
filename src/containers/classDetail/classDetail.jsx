@@ -1,13 +1,15 @@
 import React,{ Component } from 'react'
 import './classdetail.less'
 import Toolbar from '../../components/toolbar/toolbar'
-import { Table,Button,Space,Popover,Spin } from 'antd'
+import { Table,Button,Space,Popover,Spin,message } from 'antd'
 import { VerticalAlignBottomOutlined,CaretRightOutlined,PlusOutlined,ShareAltOutlined } from '@ant-design/icons';
-import { reqGetSongListDetail } from '../../api'
-import { formatSongTime,formatNum } from '../../utils'
+import { reqGetSongListDetail,reqAddLoveSheet,reqDelLoveSheet } from '../../api'
+import { formatSongTime,formatNum,isLoveSheet } from '../../utils'
+import { connect } from 'react-redux'
+import { setIndex,setCurrentSongs,resetPlaylist,setLoveSheets } from '../../redux/actions'
+import Song from '../../utils/Song';
 
-
-export default class ClassDetail extends Component{
+class ClassDetail extends Component{
 
     state = {
         islove:false,
@@ -19,7 +21,8 @@ export default class ClassDetail extends Component{
         visitnum:0,
         dissname:'',
         loading:false,
-        nickname:''
+        nickname:'',
+        disstid:''
     }
     replaceImg = (e) => {
         e.target.src = require('../../assets/images/timg.jpg')
@@ -28,7 +31,8 @@ export default class ClassDetail extends Component{
         const { disstid } = this.props.match.params
         console.log(disstid)
         this.setState({
-            loading:true
+            loading:true,
+            disstid
         })
         reqGetSongListDetail({disstid}).then(res => {
             const list = res.response.cdlist[0].songlist
@@ -56,11 +60,60 @@ export default class ClassDetail extends Component{
     }
     playAll = () => {
         console.log("播放全部")
+        const { list } = this.state
+        let playList = []
+        list.forEach((item,index) => {
+            let song = new Song(item)
+            if(index === 0){
+                this.props.setIndex(index)
+                this.props.setCurrentSongs(song)
+            }
+            playList.push(song)
+        })
+        this.props.resetPlaylist(playList)
     }
     setLove = () => {
-        const { islove } = this.state
+        const { disstid } = this.state
+        const { loveSheet } = this.props
+        if(isLoveSheet({disstid},loveSheet)){
+            this.delLoveSheet()
+        }else{
+            this.addLoveSheet()
+        }
+        
+    }
+    addLoveSheet = () => {
+        const { disstid,visitnum,logo,dissname,nickname } = this.state
         this.setState({
-            islove:!islove
+            loading:true
+        })
+        reqAddLoveSheet({sheet:{disstid,visitnum,logo,dissname,nickname}}).then(() => {
+            this.props.setLoveSheets()
+            message.info('收藏成功.')
+            this.setState({
+                loading:false
+            })
+        }).catch(() => {
+            this.setState({
+                loading:false
+            })
+        })
+    }
+    delLoveSheet = () => {
+        const { disstid,visitnum,logo,dissname } = this.state
+        this.setState({
+            loading:true
+        })
+        reqDelLoveSheet({sheet:{disstid,visitnum,logo,dissname}}).then(res => {
+            this.props.setLoveSheets()
+            message.info('取消收藏.')
+            this.setState({
+                loading:false
+            })
+        }).catch(() => {
+            this.setState({
+                loading:false
+            })
         })
     }
     getContent = () => {
@@ -122,7 +175,8 @@ export default class ClassDetail extends Component{
               }
             },
         ];
-        const { islove,list,logo,visitnum ,desc,dissname,tags,loading,nickname} = this.state
+        const { list,logo,visitnum ,desc,dissname,tags,loading,nickname,disstid} = this.state
+        const { loveSheet } = this.props
         return(
             <div className="main myclassDetail">
                 <Spin spinning={loading}>
@@ -152,7 +206,7 @@ export default class ClassDetail extends Component{
                                 <li className="data_info__item">播放量：{formatNum(visitnum)}</li>
                                 <li className="data_info__item">收藏量：5.4万</li>
                             </ul>
-                            <Toolbar playAll={this.playAll} shoucan={true} add={false} down={false} piliang={false} islove={islove} setLove={this.setLove} comment={true} more={true}></Toolbar>
+                            <Toolbar playAll={this.playAll} shoucan={true} add={false} down={false} piliang={false} islove={isLoveSheet({disstid},loveSheet)} setLove={this.setLove} comment={true} more={true}></Toolbar>
                         </div>
                     </div>
                     <div className="detail_layout">
@@ -176,3 +230,8 @@ export default class ClassDetail extends Component{
         )
     }
 }
+
+export default connect(
+    state=>({loveSheet:state.loveSheet}),
+    {setIndex,setCurrentSongs,resetPlaylist,setLoveSheets}
+)(ClassDetail)
