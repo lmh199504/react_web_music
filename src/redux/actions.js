@@ -1,10 +1,10 @@
 
 
 import { AUTH_SUCCESS,AUTH_FAIL,RESET_AUTH,GET_HOME,RESET_PLAYLIST,SET_CURRENT_SONG,SHOW_BIGPLAYER,HIDE_BIGPLAYER,PLAYING,SET_INDEX,STOP_PLAY
-	 ,ADD_SONG_TO_PLAY,SHOW_MV_PLAYER,HIDE_MV_PLAYER,SET_CURRENT_MV,SET_LOVE_LIST,SET_LOVE_SINGER,SET_LOVE_SHEET} from './action-types.js'
+	 ,ADD_SONG_TO_PLAY,SHOW_MV_PLAYER,HIDE_MV_PLAYER,SET_CURRENT_MV,SET_LOVE_LIST,SET_LOVE_SINGER,SET_LOVE_SHEET,SET_USER_SHEET} from './action-types.js'
 import Cookies from 'js-cookie'
 import { reqLogin,reqGetUserInfo,reqLogout,reqRegister,reqGetHome,reqGetSongListDetail,reqGetMusicVKey,
-	reqGetLoveSong,reqGetLoveSinger,reqGetLoveSheet
+	reqGetLoveSong,reqGetLoveSinger,reqGetLoveSheet,reqGetUserSheet
  
  } from '../api/index'
 import Song from '../utils/Song.js'
@@ -173,6 +173,17 @@ export const setLoveSheets = (data) => {
 		const res = await reqGetLoveSheet()
 		if(res.code === 0){
 			dispatch(setLoveSheet(res.data.sheets))
+		}
+	}
+}
+//获取用户创建的跟单同步action
+export const setUserSheet = (data) => ({type:SET_USER_SHEET,data})
+//获取用户创建的跟单异步action
+export const setUserSheets = () => {
+	return async dispatch => {
+		const res = await reqGetUserSheet()
+		if(res.code === 0){
+			dispatch(setUserSheet(res.data.usheets))
 		}
 	}
 }

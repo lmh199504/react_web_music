@@ -4,7 +4,7 @@ import React,{ Component } from 'react'
 import './mymusic.less'
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
-import { setLoveLists } from '../../redux/actions'
+import { setLoveLists,setUserSheets } from '../../redux/actions'
 
 import { Route,Redirect,Switch } from 'react-router-dom'
 import MyLove from './myLove/myLove'
@@ -20,6 +20,7 @@ class MyMusic extends Component{
 	
 	componentDidMount = () => {
 		this.props.setLoveLists()
+		this.props.setUserSheets()
 	}
 	
 	
@@ -89,5 +90,5 @@ export default connect(
 	state=>({loveList:state.loveList,
 		user:state.user
 	}),
-	{setLoveLists}
+	{setLoveLists,setUserSheets}
 )(MyMusic)

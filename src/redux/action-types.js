@@ -23,3 +23,4 @@ export const SET_CURRENT_MV = 'set_current_mv' //设置当前mv
 export const SET_LOVE_LIST = 'set_love_list'  //喜欢的歌曲列表
 export const SET_LOVE_SINGER = 'set_love_singer' //获取喜欢的歌手列表
 export const SET_LOVE_SHEET = 'set_love_sheet'  //设置喜欢的歌单
+export const SET_USER_SHEET = 'set_user_sheet' //设置用户创建的歌单

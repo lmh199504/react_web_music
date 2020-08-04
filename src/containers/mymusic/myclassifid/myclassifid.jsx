@@ -3,16 +3,11 @@
 import React,{ Component } from 'react'
 import './myclassfid.less'
 import { connect } from 'react-redux'
-import { formatNum } from '../../../utils'
 import { Modal,Button,Input,Form,Upload,message  } from 'antd'
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { reqAddUserSheet } from '../../../api'
+import { setUserSheets } from '../../../redux/actions'
 
-function getBase64(img, callback) {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-}
 
 
 
@@ -23,8 +18,8 @@ class MyClassifid extends Component{
         visible: false,
         file:"",
         name:'',
-        desc:''
-
+        desc:'',
+        imageUrl:""
     }
 
     showModel = () => {
@@ -34,7 +29,11 @@ class MyClassifid extends Component{
     }
 
 
-
+    getBase64(img, callback) {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => callback(reader.result));
+        reader.readAsDataURL(img);
+    }
 
     beforeUpload = (file) => {
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -45,14 +44,12 @@ class MyClassifid extends Component{
         else if (!isLt2M) {
             message.error('Image must smaller than 2MB!');
         }else{
-            getBase64(file,imageUrl => {
+            this.getBase64(file,imageUrl => {
+                var base64Data = imageUrl.replace(/^data:image\/\w+;base64,/, '')
                 this.setState({
-                    imageUrl
+                    imageUrl,
+                    file:base64Data
                 })
-               
-            })
-            this.setState({
-                file
             })
         }
         return false
@@ -75,28 +72,40 @@ class MyClassifid extends Component{
         forms.append('name',name)
         forms.append('desc',desc)
         console.log(forms.get('file'))
-
         reqAddUserSheet(forms).then(res => {
-            console.log(res)
+            this.setState({ 
+                loading: false,
+                visible: false,
+                file:"",
+                name:'',
+                desc:'',
+                imageUrl:""
+            });
+            this.props.setUserSheets()
+            message.info("歌单创建成功.")
+        }).catch(() => {
+            this.setState({ 
+                loading: false, 
+                visible: false,
+                file:"",
+                name:'',
+                desc:'',
+                imageUrl:""
+            });
         })
-        setTimeout(() => {
-            this.setState({ loading: false, visible: false });
-        }, 3000);
     }
     setParam = (name,event) => {
         this.setState({
             [name]:event.target.value
         })
     }
-    changeFile = (e) => {
-        // console.log(e)
-        console.log(this.refs.upLoadImg.files[0])
+    replaceImg = (e) => {
+        e.target.src = require('../../../assets/images/timg.jpg')
     }
     render(){
 
-        const { loveSheet } = this.props
-        const { loading,visible } = this.state
-        const { imageUrl } = this.state;
+        const { userSheet } = this.props
+        const { loading,visible,name,desc,imageUrl } = this.state
         const uploadButton = (
             <div>
                 {this.state.loading ? <LoadingOutlined /> : <PlusOutlined />}
@@ -130,19 +139,19 @@ class MyClassifid extends Component{
                 <div className="classList">
                     <div style={{ position:'relative',width:'100%',display:'flex',flexWrap:'wrap' }}>
                             {
-                                loveSheet.map(item => (
+                                userSheet.map(item => (
                                     <div className="playlist__item slide__item classified" key={item.dissid} style={{display:'block'}}>
                                         <div className="playlist__item_inner">
                                             <div className="playlist__cover ">
-                                                <img className="playlist__pic" src={item.logo} alt="封面" />
+                                                <img className="playlist__pic" src={item.sheetCover} alt="封面" style={{width:'100%',height:'100%'}} onError={ (e) => this.replaceImg(e) }/>
                                                 <i className="mod_cover__mask"  onClick={ () => this.toClassDetail(item) }></i>
                                                 <i className="mod_cover__icon_play js_play" onClick={ () => this.playThis(item) }></i>
                                             </div>
                                             <h4 className="playlist__title">
-                                                <span className="playlist__title_txt">{item.dissname}</span>	
+                                                <span className="playlist__title_txt">{item.name}</span>	
                                             </h4>
-                                            <div className="playlist__other">
-                                                播放量：{formatNum(item.visitnum)}
+                                            <div className="playlist__other" style={{ overflow:'hidden',whiteSpace:'nowrap',textOverflow:"ellipsis"}}>
+                                                { item.desc }
                                             </div>
                                         </div>
                                     </div>
@@ -168,10 +177,10 @@ class MyClassifid extends Component{
                     >
                     <Form>
                         <Form.Item label="歌单名称">
-                            <Input placeholder="请输入歌单名称." onChange={ (input) => this.setParam('name',input) } ></Input>
+                            <Input placeholder="请输入歌单名称." onChange={ (input) => this.setParam('name',input) } value={name}></Input>
                         </Form.Item>
                         <Form.Item label="歌单简介">
-                            <Input.TextArea onChange={ val => this.setParam('desc',val) } placeholder="请输入歌单简介."/>
+                            <Input.TextArea onChange={ val => this.setParam('desc',val) } placeholder="请输入歌单简介." value={desc}/>
                         </Form.Item>
                         <Form.Item label="歌单封面">
                             <Upload
@@ -191,5 +200,6 @@ class MyClassifid extends Component{
     }
 }
 export default connect(
-    state=>({loveSheet:state.loveSheet})
+    state=>({userSheet:state.userSheet}),
+    { setUserSheets }
 )(MyClassifid)
