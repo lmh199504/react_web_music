@@ -4,7 +4,7 @@ import React,{ Component } from 'react'
 import './mymusic.less'
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
-import { setLoveLists,setUserSheets } from '../../redux/actions'
+import { setLoveLists,setUserSheets,setLoveSingers } from '../../redux/actions'
 
 import { Route,Redirect,Switch } from 'react-router-dom'
 import MyLove from './myLove/myLove'
@@ -21,11 +21,12 @@ class MyMusic extends Component{
 	componentDidMount = () => {
 		this.props.setLoveLists()
 		this.props.setUserSheets()
+		this.props.setLoveSingers()
 	}
 	
 	
 	render(){
-		const { user } = this.props
+		const { user,loveSinger } = this.props
 		
 		
 		return(
@@ -43,7 +44,9 @@ class MyMusic extends Component{
 					<ul className="mod_user_statistic">
 						<li className="user_statistic__item">
 							<span className="js_tab">
-								<strong className="user_statistic__number js_num_follow">0</strong>
+								<strong className="user_statistic__number js_num_follow">
+									{loveSinger.length}
+								</strong>
 								<span className="user_statistic__tit">关注</span>
 							</span>
 						</li>
@@ -88,7 +91,8 @@ class MyMusic extends Component{
 
 export default connect(
 	state=>({loveList:state.loveList,
-		user:state.user
+		user:state.user,
+		loveSinger:state.loveSinger
 	}),
-	{setLoveLists,setUserSheets}
+	{setLoveLists,setUserSheets,setLoveSingers}
 )(MyMusic)

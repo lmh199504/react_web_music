@@ -7,6 +7,8 @@ import { formatSongTime,formatNum,dwonFromSongMid } from '../../../utils'
 import { connect } from 'react-redux';
 import { setIndex,setCurrentSongs,resetPlaylist,addSongToPlay,setLoveSheets,setLoveLists } from '../../../redux/actions'
 import { reqDelLoveSong,reqAddLoveSong } from '../../../api'
+import NoData from '../../../components/noData/noData'
+import Share from 'social-share-react'
 import './myLove.less'  
 class MyLove extends Component{
 
@@ -149,7 +151,14 @@ class MyLove extends Component{
                 <div key={item.sheetId} className="mylove_sheetItem" onClick={ () => this.addToSheet(item,record) }> {item.name} </div>
             ))
         )
-
+        const shareContent = (
+            <div>
+                <Share 
+                    title='音乐分享'
+                    disabled={['google', 'facebook', 'twitter']} >
+                </Share>
+            </div>
+        )
         const columns = [
             {
               title: '歌曲',
@@ -174,7 +183,10 @@ class MyLove extends Component{
                                         <Button shape="circle" icon={<PlusOutlined />}></Button>
                                     </Popover>
                                     <Button shape="circle" icon={<VerticalAlignBottomOutlined />}  onClick={ () => this.dowonMusic(record) }></Button>
-                                    <Button shape="circle" icon={<ShareAltOutlined />}></Button>
+                                    <Popover content={ shareContent } titel="分享" trigger="click" placement="top">
+                                        <Button shape="circle" icon={<ShareAltOutlined />}></Button>
+                                    </Popover>
+                                    
                               </Space>
                           </div>
                           
@@ -265,16 +277,10 @@ class MyLove extends Component{
                             </div>
                         </div>
                         <div className={`js_sub ${index === 3?'':'hidden'}`}>
-                            <div className="none_txt">
-                                <i className="none_txt__symbol"></i>
-                                <p style={{ color:'#000',fontSize:18 }}>什么也没有，去<a href="/musichall">音乐馆</a>发现好音乐！</p>
-                            </div>
+                            <NoData></NoData> 
                         </div>
                         <div className={`js_sub ${index === 4?'':'hidden'}`}>
-                            <div className="none_txt">
-                                <i className="none_txt__symbol"></i>
-                                <p style={{ color:'#000',fontSize:18 }}>什么也没有，去<a href="/musichall">音乐馆</a>发现好音乐！</p>
-                            </div>
+                            <NoData></NoData>  
                         </div>
 
                     </div>
