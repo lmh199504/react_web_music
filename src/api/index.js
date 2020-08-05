@@ -91,3 +91,5 @@ export const reqDelLoveSheet = (data) => request('/user/delLoveSheet',data)
 export const reqAddUserSheet = (data) => request('/user/addUserSheet',data)
 //获取创建的歌单
 export const reqGetUserSheet = (data) => request('/user/getUserSheet',data,"GET")
+//删除创建的跟单 
+export const reqDelUserSheet = (data) => request('/user/delUserSheet',data)

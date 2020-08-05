@@ -1,13 +1,13 @@
 
 import React,{ Component } from 'react'
 import './player.less'
-import { Slider,message } from 'antd'
+import { Slider,message,Modal } from 'antd'
 import { connect } from 'react-redux'
 import { formatSongTime,isLoveSong,downFile } from '../../utils'
 import { setCurrentSongs,showBigplayer,hideBigPlayer,playing,resetPlaylist,setIndex,stopPlay,setLoveLists } from '../../redux/actions'
 import { reqGetLyric,reqAddLoveSong,reqDelLoveSong } from '../../api'
 import  Lyric  from 'lyric-parser'
-
+import { CheckOutlined } from '@ant-design/icons'
 
 
 class Player extends Component{
@@ -22,7 +22,9 @@ class Player extends Component{
 		defaultTime:0, //提示框当前时间
 		defaultVolume:50,
 		playMode: 0, // 列表循环-0 顺序播放-1 随机播放-2 单曲循环-3
-		showType:false //纯净模式
+		showType:false, //纯净模式,
+		visible:false,
+		selectSheet:""//选择放入的歌单
 	}
 	selectAll = () => {
 		const { checkall } =  this.state
@@ -249,7 +251,7 @@ class Player extends Component{
 		this.refs.myAudio.currentTime = (value/100)*currentSong.interval
 		currentLyric.seek(this.refs.myAudio.currentTime * 1000)
 	}
-	
+	//暂停播放切换
 	toggelPlay = () => {
 		const { currentLyric } = this.state
 		const { isPlay } = this.props
@@ -269,6 +271,7 @@ class Player extends Component{
 	changeVolumn = (value) => {
 		this.refs.myAudio.volume = value/100
 	}
+	//设置播放模式
 	setPlayMode = () => {
 		const { playMode } = this.state
 		if(playMode === 3){
@@ -281,16 +284,19 @@ class Player extends Component{
 			})
 		}
 	}
+	//纯净模式切换
 	setShowType = () => {
 		const { showType } = this.state
 		this.setState({
 			showType:!showType
 		})
 	}
+	//下载
 	downMusic = () => {
 		const { currentSong } = this.props
 		downFile(currentSong.src,currentSong.title)
 	}
+	//喜欢
 	addLoveSong = () => {
 		const { currentSong,user } = this.props
 		let songList = []
@@ -300,6 +306,7 @@ class Player extends Component{
 			this.props.setLoveLists()
 		})
 	}
+	//删除喜欢
 	delLoveSong = () => {
 
 		const { currentSong,user } = this.props
@@ -309,7 +316,7 @@ class Player extends Component{
 			this.props.setLoveLists()
 		})
 	}
-	
+	//歌曲收藏
 	toggleLove = () => {
 		const { currentSong,loveList } = this.props
 		console.log(isLoveSong(currentSong,loveList))
@@ -320,9 +327,61 @@ class Player extends Component{
 		}
 		
 	}
+	//显示对话框
+	showModel = () => {
+		const { playList } = this.props
+		let list = [];
+		playList.forEach(item=>{
+			if(item.checked){
+				list.push(item)
+			}
+		})
+		if(list.length === 0){
+			message.info('请先选择歌曲.')
+		}else{
+			console.log(list)
+			this.setState({
+				visible:true
+			})
+		}
+	}
+	//添加对话框取消
+	handleCancel = () => {
+		this.setState({visible:false,selectSheet:''})
+	}
+	handleOk = () => {
+		// console.log('ok')
+		const { selectSheet } = this.state
+		const { playList,user } = this.props
+		let addList = []
+		playList.forEach(item => {
+			if(item.checked === true){
+				addList.push(item)
+			}
+		})
+		if(selectSheet === 'love'){
+			console.log(addList)
+			reqAddLoveSong({userId:user._id,songList:playList}).then(res => {
+				message.success('添加成功.')
+				this.props.setLoveLists()
+				this.handleCancel()
+			})
+		}else{
+
+		}
+
+		console.log(addList)
+	} 
+	//设置选中的歌单
+	setSelect = (val) => {
+		console.log(val)
+		this.setState({
+			selectSheet:val
+		})
+	} 
 	render(){
-		const { cSong,checkall,currentLyric,currentLineNum,currentTime,defaultTime,defaultVolume,playMode,showType } = this.state
-		const { bigPlayer,isPlay,playList,currentSong,loveList } = this.props
+		const { cSong,checkall,currentLyric,currentLineNum,currentTime,defaultTime,defaultVolume,playMode,showType,visible,selectSheet } = this.state
+		const { bigPlayer,isPlay,playList,currentSong,loveList,userSheet } = this.props
 		return (
 			<div className="player">
 				<div className="smallPlayer">
@@ -369,7 +428,7 @@ class Player extends Component{
 										<i className="mod_btn_green__icon_like"></i>收藏
 										<span className="mod_btn__border"></span>
 									</li>
-									<li className="mod_btn js_all_fav">
+									<li className="mod_btn js_all_fav" onClick={ () => this.showModel() }>
 										<i className="mod_btn_green__icon_add"></i>添加到
 										<span className="mod_btn__border"></span>
 									</li>
@@ -542,9 +601,32 @@ class Player extends Component{
 								</div>
 							</div>
 						</div>
+
+
+						
 					</div>
 				</div>
 				<audio  src="" ref="myAudio" autoPlay={false}></audio >
+				<Modal 
+					forceRender={true}
+					visible={visible}
+					title="添加歌曲到"
+					onOk={this.handleOk}
+					onCancel={this.handleCancel}
+				>	
+					<div className="player_sheetItem" onClick={() => this.setSelect('love')}>
+						<CheckOutlined style={{ color:"#31c27c",opacity:selectSheet === 'love' ? 1:0 }}/>
+						<p className="player_sheetName">我喜欢</p>
+					</div>
+					{
+						userSheet.map(item => (
+						<div key={item.sheetId} className="player_sheetItem" onClick={() => this.setSelect(item.sheetId)}>
+							<CheckOutlined style={{ color:"#31c27c",opacity:selectSheet === item.sheetId ? 1:0}} />
+							<p className="player_sheetName">{item.name}</p>
+						</div>))
+					}
+				</Modal>
+				
 			</div>
 		)
 	}
@@ -557,7 +639,8 @@ export default connect(
 		bigPlayer:state.bigPlayer,
 		isPlay:state.isPlay,
 		currentIndex:state.currentIndex,
-		loveList:state.loveList
+		loveList:state.loveList,
+		userSheet:state.userSheet
 	}),
 	{ setCurrentSongs,showBigplayer,hideBigPlayer,playing,resetPlaylist,setIndex,stopPlay,setLoveLists }
 )(Player)

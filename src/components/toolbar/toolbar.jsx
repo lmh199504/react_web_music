@@ -1,6 +1,6 @@
 
 import React,{ Component } from 'react';
-import { Button,Space,Popover } from 'antd';
+import { Button,Space,Popover, message } from 'antd';
 import PropTypes from 'prop-types'
 import { PlayCircleOutlined,PlusSquareOutlined,VerticalAlignBottomOutlined,FormOutlined,HeartOutlined, CommentOutlined ,MoreOutlined} from '@ant-design/icons';
 import './toolbar.less'
@@ -20,11 +20,11 @@ export default class Toolbar extends Component{
 	render(){
 		const { showRowSelection,setShowRow,islove,shoucan,add,down,piliang,comment,more } = this.props
 		const content = (
-		  <div onClick={ () => this.handleClick() }>
+		  <div>
 		    <ul className="addMenu">
-				<li>播放队列</li>
-				<li>我喜欢</li>
-				<li><PlusSquareOutlined style={{ position:'absolute' ,left:6,top:12}}/>添加到新歌单</li>
+				<li onClick={ () => this.props.addToPlay() }>播放队列</li>
+				<li onClick={ () => this.props.addToMyLove() }>我喜欢</li>
+				<li onClick={ () => message.info('乱点什么') }><PlusSquareOutlined style={{ position:'absolute' ,left:6,top:12}}/>添加到新歌单</li>
 			</ul>
 		  </div>
 		);

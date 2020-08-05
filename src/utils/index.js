@@ -1,6 +1,7 @@
 
-
-
+import moment from 'moment'
+import { message } from 'antd'
+import { reqGetMusicVKey } from '../api'
 //格式化数字
 export const formatNum = (num) => {
 	if(num>10000){
@@ -138,4 +139,16 @@ export const downFile = (url,filename) => {
 }
 
 
+export const formatMoment = (timestamp, pattern = 'YYYY-MM-DD HH:mm:ss') => {
+    return moment(timestamp).format(pattern)
+}
 
+
+export const dwonFromSongMid = async (item) => {
+    const res = await reqGetMusicVKey({songmid:item.songmid})
+    if(res.response.req.data.vkey !== ""){
+        downFile(res.response.playLists[0],item.title)
+    }else{
+        message.error('会员才可下载.')
+    }
+}
