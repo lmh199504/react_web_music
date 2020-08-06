@@ -4,8 +4,8 @@ import './player.less'
 import { Slider,message,Modal } from 'antd'
 import { connect } from 'react-redux'
 import { formatSongTime,isLoveSong,downFile } from '../../utils'
-import { setCurrentSongs,showBigplayer,hideBigPlayer,playing,resetPlaylist,setIndex,stopPlay,setLoveLists } from '../../redux/actions'
-import { reqGetLyric,reqAddLoveSong,reqDelLoveSong } from '../../api'
+import { setCurrentSongs,showBigplayer,hideBigPlayer,playing,resetPlaylist,setIndex,stopPlay,setLoveLists,setCurrentSong } from '../../redux/actions'
+import { reqGetLyric,reqAddLoveSong,reqDelLoveSong,reqAddSongToSheet } from '../../api'
 import  Lyric  from 'lyric-parser'
 import { CheckOutlined } from '@ant-design/icons'
 
@@ -177,7 +177,7 @@ class Player extends Component{
 		
 		const { cSong,currentLyric } = this.state
 		const { currentSong,bigPlayer,isPlay } = this.props
-		if(currentSong.songmid !== cSong.songmid){
+		if(currentSong.songmid && currentSong.songmid !== cSong.songmid){
 			console.log("播放新歌曲了")
 			
 			this.setState({
@@ -209,6 +209,8 @@ class Player extends Component{
 				}
 			})
 			
+		}else{
+			// this.refs.myAudio.pause()
 		}
 		
 		if(bigPlayer){
@@ -339,7 +341,6 @@ class Player extends Component{
 		if(list.length === 0){
 			message.info('请先选择歌曲.')
 		}else{
-			console.log(list)
 			this.setState({
 				visible:true
 			})
@@ -349,6 +350,7 @@ class Player extends Component{
 	handleCancel = () => {
 		this.setState({visible:false,selectSheet:''})
 	}
+	//确认添加
 	handleOk = () => {
 		// console.log('ok')
 		const { selectSheet } = this.state
@@ -360,25 +362,88 @@ class Player extends Component{
 			}
 		})
 		if(selectSheet === 'love'){
-			console.log(addList)
-			reqAddLoveSong({userId:user._id,songList:playList}).then(res => {
+			
+			reqAddLoveSong({userId:user._id,songList:addList}).then(res => {
 				message.success('添加成功.')
 				this.props.setLoveLists()
 				this.handleCancel()
 			})
 		}else{
 
+			reqAddSongToSheet({sheetId:selectSheet,songList:addList}).then(() => {
+				message.success('添加成功.')
+				this.handleCancel()
+			})
 		}
-
-		console.log(addList)
 	} 
 	//设置选中的歌单
 	setSelect = (val) => {
-		console.log(val)
 		this.setState({
 			selectSheet:val
 		})
-	} 
+	}
+	//删除播放列表的歌曲
+	delSongFromPlayList = () => {
+		const { playList,currentSong,isPlay } = this.props
+		const { currentLyric } = this.state
+		let list = [];
+		//筛选出需要留下的歌曲
+		playList.forEach(item => {
+			if(item.checked === false){
+				list.push(item)
+			}
+		})
+		
+		if(list.length === 0){
+			this.props.hideBigPlayer()
+			this.props.stopPlay()
+			this.refs.myAudio.pause()
+			this.props.resetPlaylist(list)
+			if(currentLyric){
+				currentLyric.stop()
+			}
+			this.setState({
+				currentLyric:null
+			})
+			this.props.setCurrentSong({})
+			
+			return
+		}
+		if(list.length === playList.length){
+			message.info('请选择需要删除的歌曲.')
+			return
+		}
+
+		const index = list.findIndex(item => item.songmid === currentSong.songmid)
+		if(index !== -1){ //正在播放的歌曲不在删除的歌曲之中
+			
+			if(isPlay){
+				this.props.setIndex(index)
+			}
+			this.props.resetPlaylist(list)
+		}else{
+			this.props.resetPlaylist(list)
+			if(isPlay){
+				this.props.setCurrentSongs(list[0])
+				this.props.setIndex(0)
+			}
+		}
+
+	}
+	clearAll = () => {
+		const { currentLyric } = this.state
+		this.props.hideBigPlayer()
+		this.props.stopPlay()
+		this.refs.myAudio.pause()
+		this.props.resetPlaylist([])
+		if(currentLyric){
+			currentLyric.stop()
+		}
+		this.setState({
+			currentLyric:null
+		})
+		this.props.setCurrentSong({})
+	}
 	render(){
 		const { cSong,checkall,currentLyric,currentLineNum,currentTime,defaultTime,defaultVolume,playMode,showType,visible,selectSheet } = this.state
 		const { bigPlayer,isPlay,playList,currentSong,loveList,userSheet } = this.props
@@ -386,8 +451,8 @@ class Player extends Component{
 			<div className="player">
 				<div className="smallPlayer">
 					{
-						cSong.cover ?
-						<img  src={cSong.cover ? cSong.cover:require('../../assets/images/cd.jpg') } alt="mini" onClick={ () => this.props.showBigplayer() } className={`cover rotate ${ !isPlay?'rotate-pause':''}`}/>
+						currentSong.cover!==undefined ?
+						<img  src={currentSong.cover ? currentSong.cover:require('../../assets/images/cd.jpg') } alt="mini" onClick={ () => this.props.showBigplayer() } className={`cover rotate ${ !isPlay?'rotate-pause':''}`}/>
 						:null
 					}
 				</div>
@@ -413,7 +478,7 @@ class Player extends Component{
 								<span className="player_login__txt">敷衍、</span>
 							</span>
 							
-							<span  className="player_login__out js_logout" onClick={ () => this.delLoveSong() }>退出</span>
+							<span  className="player_login__out js_logout" onClick={ () => this.props.hideBigPlayer() }>退出</span>
 						</span>
 						
 						<span className="player_login__link player_login__link--set js_opts_unlogin" ><span className="player_login__txt">设置</span></span>
@@ -436,11 +501,11 @@ class Player extends Component{
 										<i className="mod_btn_green__icon_down"></i>下载
 										<span className="mod_btn__border"></span>
 									</li>
-									<li className="mod_btn js_all_delete">
+									<li className="mod_btn js_all_delete" onClick={ () => this.delSongFromPlayList() }>
 										<i className="mod_btn_green__icon_delete"></i>删除
 										<span className="mod_btn__border"></span>
 									</li>
-									<li className="mod_btn js_all_deleted">
+									<li className="mod_btn js_all_deleted" onClick={ () => this.clearAll() }>
 										<i className="mod_btn_green__icon_clear"></i>清空列表
 										<span className="mod_btn__border"></span>
 									</li>
@@ -642,5 +707,5 @@ export default connect(
 		loveList:state.loveList,
 		userSheet:state.userSheet
 	}),
-	{ setCurrentSongs,showBigplayer,hideBigPlayer,playing,resetPlaylist,setIndex,stopPlay,setLoveLists }
+	{ setCurrentSongs,showBigplayer,hideBigPlayer,playing,resetPlaylist,setIndex,stopPlay,setLoveLists,setCurrentSong }
 )(Player)

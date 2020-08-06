@@ -3,11 +3,13 @@
 import React,{ Component } from 'react'
 import './myclassfid.less'
 import { connect } from 'react-redux'
-import { Modal,Button,Input,Form,Upload,message,Space,Table ,Popconfirm, Spin } from 'antd'
+import { Modal,Button,Input,Form,Upload,message,Space,Table ,Popconfirm, Spin,Popover } from 'antd'
 import { LoadingOutlined, PlusOutlined,CaretRightOutlined,VerticalAlignBottomOutlined,ShareAltOutlined } from '@ant-design/icons';
-import { reqAddUserSheet,reqDelUserSheet } from '../../../api'
-import { setUserSheets } from '../../../redux/actions'
+import { reqAddUserSheet,reqDelUserSheet,reqGetUserSheetSong } from '../../../api'
+import { setUserSheets,setIndex,setCurrentSongs,resetPlaylist,addSongToPlay } from '../../../redux/actions'
 import { formatMoment } from '../../../utils'
+import NoData from '../../../components/noData/noData';
+import Share from 'social-share-react'
 class MyClassifid extends Component{
     state = {
         loading: false,
@@ -114,6 +116,22 @@ class MyClassifid extends Component{
             this.setState({delLoading:false})
         })
     }
+
+    toClassDetail = (item) => {
+        this.props.history.push(`/musichall/userSheetDetail/${item.sheetId}`)
+    }
+
+    playThisSheet = async (record) => {
+
+        const res = await reqGetUserSheetSong({sheetId:record.sheetId})
+        if(res.data.songList.length === 0){
+            message.info("该歌单暂无歌曲.")
+        }else{
+            this.props.setIndex(0)
+            this.props.setCurrentSongs(res.data.songList[0])
+            this.props.resetPlaylist(res.data.songList)
+        }
+    }
     render(){
 
         const { userSheet } = this.props
@@ -137,16 +155,17 @@ class MyClassifid extends Component{
                       
                       <div className="song_msg">
                           <div className="mod_songlist--edit songlist__number" style={{ color: "#000" }}>{ index + 1 }</div>
-                          <img src={ record.sheetCover } alt="封面" className="song_cover" onError={(e) => this.replaceImg(e) } style={{ width:60,height:60 }}/>
+                          <img src={ record.sheetCover } alt="封面" className="song_cover" onError={(e) => this.replaceImg(e) } style={{ width:80,height:80 }}/>
                           <div className="song_name">
                               {text}
                           </div>
-                          <div className="mod_list_menu mytoolbtn">
+                          <div className="mod_list_menu">
                               <Space>
-                                  <Button shape="circle" icon={<CaretRightOutlined />}  onClick={() =>this.playThis(record,index) }></Button>
-                                  <Button shape="circle" icon={<PlusOutlined />}></Button>
-                                  <Button shape="circle" icon={<VerticalAlignBottomOutlined />}></Button>
-                                  <Button shape="circle" icon={<ShareAltOutlined />}></Button>
+                                  <Button shape="circle" icon={<CaretRightOutlined />}  onClick={() =>this.playThisSheet(record,index) }></Button>
+                                  <Button shape="circle" icon={<VerticalAlignBottomOutlined />} ></Button>
+                                  <Popover content={<Share title={text} sites={["qzone","qq","weibo","wechat"]} image={`${record.sheetCover}`}></Share>}>
+                                    <Button shape="circle" icon={<ShareAltOutlined />}></Button>
+                                  </Popover>
                               </Space>
                           </div>
                       </div>
@@ -216,7 +235,7 @@ class MyClassifid extends Component{
                     
 
                     {
-                        showType === 0?
+                        userSheet.length!==0?(showType === 0?
                         <div style={{ position:'relative',width:'100%',display:'flex',flexWrap:'wrap' }}>
                                 {
                                     userSheet.map(item => (
@@ -225,7 +244,7 @@ class MyClassifid extends Component{
                                                 <div className="playlist__cover ">
                                                     <img className="playlist__pic" src={item.sheetCover} alt="封面" style={{width:'100%',height:'100%'}} onError={ (e) => this.replaceImg(e) }/>
                                                     <i className="mod_cover__mask"  onClick={ () => this.toClassDetail(item) }></i>
-                                                    <i className="mod_cover__icon_play js_play" onClick={ () => this.playThis(item) }></i>
+                                                    <i className="mod_cover__icon_play js_play" onClick={ () => this.playThisSheet(item) }></i>
                                                 </div>
                                                 <h4 className="playlist__title">
                                                     <span className="playlist__title_txt">{item.name}</span>	
@@ -244,7 +263,7 @@ class MyClassifid extends Component{
                             <div className="mod_songlist">
                                 <Table columns={columns} dataSource={userSheet}  pagination={false} rowClassName={'rowClassName'}/>
                             </div>
-                        </Spin>
+                        </Spin>):<NoData/>
                         
                     }
                 </div>
@@ -289,6 +308,10 @@ class MyClassifid extends Component{
     }
 }
 export default connect(
-    state=>({userSheet:state.userSheet}),
-    { setUserSheets }
+    state=>({
+        userSheet:state.userSheet,
+        playList:state.playList,
+        currentIndex:state.currentIndex
+    }),
+    { setUserSheets,setCurrentSongs,setIndex,resetPlaylist,addSongToPlay }
 )(MyClassifid)

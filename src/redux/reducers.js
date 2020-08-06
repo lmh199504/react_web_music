@@ -54,7 +54,12 @@ const initCurrentSong = {}
 function currentSong(state = initCurrentSong,action){
 	switch (action.type){
 		case SET_CURRENT_SONG:
-			return {...state,...action.data}	
+			if(action.data.songmid){
+				return {...state,...action.data}	
+			}else{
+				return action.data
+			}
+			
 		default:
 			return state
 	}

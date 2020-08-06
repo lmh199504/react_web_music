@@ -1,56 +1,16 @@
 
 import React,{ Component } from 'react'
-import { Button,Space,Table,Spin } from 'antd';
+import { Button,Space,Table,Spin,message,Popover } from 'antd';
 import { VerticalAlignBottomOutlined,CaretRightOutlined,PlusOutlined,ShareAltOutlined } from '@ant-design/icons';
 import './ranking.less'
 import {tags} from './tags.js'
-import { reqGetRanks } from '../../../api'
+import { reqGetRanks,reqAddLoveSong } from '../../../api'
 import  Song  from '../../../utils/Song'
 import Toolbar from '../../../components/toolbar/toolbar'
 import { connect } from 'react-redux'
-import { setIndex,setCurrentSongs,resetPlaylist } from '../../../redux/actions'
-const columns = [
-  {
-    title: '歌曲',
-    dataIndex: 'singerName',
-	render:(text, record, index) => {
-		return (
-			
-			<div className="song_msg" key={record.rank}>
-				<div className="mod_songlist--edit songlist__number" style={{ color: index<3 ?'red' :'' }}>{ record.rank }</div>
-				<div className="songlist__rank">
-					<i className="icon_rank_popular"></i>
-					{ record.rankValue }
-				</div>
-				<img src={`https://y.gtimg.cn/music/photo_new/T002R90x90M000${record.album.mid}.jpg?max_age=2592000`} alt="封面" className="song_cover"/>
-				<div className="song_name">
-					{record.title}
-				</div>
-				<div className="mod_list_menu mytoolbtn">
-					<Space>
-						<Button shape="circle" icon={<CaretRightOutlined />}></Button>
-						<Button shape="circle" icon={<PlusOutlined />}></Button>
-						<Button shape="circle" icon={<VerticalAlignBottomOutlined />}></Button>
-						<Button shape="circle" icon={<ShareAltOutlined />}></Button>
-					</Space>
-				</div>
-			</div>
-		)
-	}
-
-  },
-  {
-    title: '歌手',
-    dataIndex: 'singerName',
-	width:"15%"
-  },
-  {
-    title: '时长',
-    dataIndex: 'interval',
-	width:"15%"
-  },
-];
-
+import { setIndex,setCurrentSongs,resetPlaylist,addSongToPlay } from '../../../redux/actions'
+import { dwonFromSongMid } from '../../../utils'
+import Share from 'social-share-react'
 
 
 class RankingList extends Component{
@@ -138,7 +98,70 @@ class RankingList extends Component{
 		this.props.resetPlaylist(playList)
 
 	}
+	playThisOne = (record) => {
+		const { currentIndex,playList } = this.props
+		// console.log(record)
+		let song = new Song(record)
+		const i = playList.findIndex(listItem => {
+			return listItem.songmid === song.songmid
+		})
+		if(i === -1){
+			if(currentIndex === -1){
+				this.props.setIndex(0)
+				this.props.addSongToPlay({index:0,song})
+				this.props.setCurrentSongs(song)
+			}else{
+				this.props.setIndex(currentIndex+1)
+				this.props.addSongToPlay({index:currentIndex+1,song})
+				this.props.setCurrentSongs(song)
+			}
+		}else{
+			message.info('歌曲已在播放列表中.')
+			this.props.setCurrentSongs(song)
+			this.props.setIndex(i)
+		}
+	}
+	addToPlay = () => {
+		const { playList,isPlay } = this.props
+		const { selectedRowKeys,data } =  this.state
+		if(selectedRowKeys.length === 0){
+			message.info("请先选择歌曲.")
+		}else{
+			selectedRowKeys.forEach(i => {
+				const index = playList.findIndex(item => item.songmid === new Song(data[i]).songmid)
+				if(index === -1){
+					playList.push(new Song(data[i]))
+				}
+			})			
+			if(isPlay){
+				console.log("歌曲已经播放了...")
+				
+			}else{
+				console.log("歌曲还未播放...")
+				this.props.setCurrentSongs(playList[0])
+				this.props.setIndex(0)
+			}
+			this.props.resetPlaylist(playList)
+		}
+	}
 
+	addToMyLove = () => {
+		const { selectedRowKeys,data } = this.state
+		const { user } = this.props
+		const songList = []
+
+		if(selectedRowKeys.length === 0){
+			message.info('请先选择歌曲')
+			return
+		}
+		selectedRowKeys.forEach(i => {
+			songList.push(new Song(data[i]))
+		})
+		reqAddLoveSong({songList,userId:user._id}).then(() => {
+			message.success("歌曲添加成功.")
+		})
+
+	}
 	render(){
 		
 		const { selectedRowKeys,showRowSelection,topId,data,loading } = this.state;
@@ -146,8 +169,52 @@ class RankingList extends Component{
 		    selectedRowKeys,
 		    onChange: this.onSelectChange,
 		};
-
-		
+		data.forEach((item,index) => {
+			item.key = index
+		})
+		const columns = [
+			{
+			  title: '歌曲',
+			  dataIndex: 'singerName',
+			  render:(text, record, index) => {
+				  return (
+					  
+					  <div className="song_msg" key={record.rank}>
+						  <div className="mod_songlist--edit songlist__number" style={{ color: index<3 ?'red' :'' }}>{ record.rank }</div>
+						  <div className="songlist__rank">
+							  <i className="icon_rank_popular"></i>
+							  { record.rankValue }
+						  </div>
+						  <img src={`https://y.gtimg.cn/music/photo_new/T002R90x90M000${record.album.mid}.jpg?max_age=2592000`} alt="封面" className="song_cover"/>
+						  <div className="song_name">
+							  {record.title}
+						  </div>
+						  <div className="mod_list_menu ">
+							  <Space>
+								  <Button shape="circle" icon={<CaretRightOutlined />} onClick={ () => this.playThisOne(record)}></Button>
+								  <Button shape="circle" icon={<PlusOutlined />}></Button>
+								  <Button shape="circle" icon={<VerticalAlignBottomOutlined />} onClick={ () => dwonFromSongMid({songmid:record.mid,title:record.title}) }></Button>
+								  <Popover content={<Share title={record.title} sites={["qzone","qq","weibo","wechat"]} image={`https://y.gtimg.cn/music/photo_new/T002R90x90M000${record.album.mid}.jpg?max_age=2592000`}></Share>}>
+                                    <Button shape="circle" icon={<ShareAltOutlined />}></Button>
+                                  </Popover>
+							  </Space>
+						  </div>
+					  </div>
+				  )
+			  }
+		  
+			},
+			{
+			  title: '歌手',
+			  dataIndex: 'singerName',
+			  width:"15%"
+			},
+			{
+			  title: '时长',
+			  dataIndex: 'interval',
+			  width:"15%"
+			},
+		];
 		
 		return (
 			<div className="main" style={{ paddingTop: 60 }}>
@@ -207,7 +274,7 @@ class RankingList extends Component{
 						</span>
 						<p className="toplist__rule js_desc">榜单规则</p>
 					</div>
-					<Toolbar showRowSelection={showRowSelection} setShowRow={this.setShowRow} playAll={this.playAll} piliang={true} down={true} add={true}></Toolbar>
+					<Toolbar showRowSelection={showRowSelection} setShowRow={this.setShowRow} playAll={this.playAll} piliang={true} down={true} add={true} shoucan={false} addToPlay={this.addToPlay} addToMyLove={ this.addToMyLove }></Toolbar>
 					<Spin spinning={loading}>
 						<div className="mod_songlist mod_songlist--edit">
 							<Table rowSelection={ showRowSelection ? rowSelection:false } columns={columns} dataSource={data}  pagination={false} rowClassName={'rowClassName'}/>
@@ -220,7 +287,10 @@ class RankingList extends Component{
 }
 export default connect(
 	state=>({
-
+		playList:state.playList,
+		currentIndex:state.currentIndex,
+		isPlay:state.isPlay,
+		user:state.user
 	}),
-	{setIndex,setCurrentSongs,resetPlaylist}
+	{setIndex,setCurrentSongs,resetPlaylist,addSongToPlay}
 )(RankingList)

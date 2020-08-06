@@ -19,7 +19,6 @@ class Main extends React.Component{
 	render(){
 		
 		
-		
 		const { username } = this.props.user 
 		const koaSess = Cookies.get('userKey')
 		if(koaSess && !username){

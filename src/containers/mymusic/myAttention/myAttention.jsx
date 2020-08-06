@@ -16,6 +16,9 @@ class Attention extends Component{
     replaceImg = (e) => {
         e.target.src = require('../../../assets/images/timg.jpg')
     }
+    toSingerDetail = (item) => {
+        this.props.history.push(`/musichall/singerDetail/${item.singermid}`)
+    }
     render(){
         const { loading } = this.state
         const { loveSinger } = this.props
@@ -29,7 +32,7 @@ class Attention extends Component{
                                 <ul className="singer_list__list js_avtar_list">
                                     {
                                         loveSinger.map(item => (
-                                            <li className="singer_list__item" key={item.singer_id} onClick={ () => this.toSingerDetail(item) }>
+                                            <li className="singer_list__item" key={item.singermid} onClick={ () => this.toSingerDetail(item) }>
                                                 <div className="singer_list__item_box">
                                                     <div className="singer_list__cover js_singer">
                                                         <img className="singer_list__pic" src={ `http://y.gtimg.cn/music/photo_new/T001R150x150M000${item.singermid}.webp` } alt={item.singerName} onError={ $event => this.replaceImg($event) } />

@@ -94,48 +94,57 @@ export const isLoveSheet = (sheet,list) => {
 
 export const downFile = (url,filename) => {
     
-    var downUrl = url.replace('http://ws.stream.qqmusic.qq.com','/apc')
-    // window.open(downUrl)
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', downUrl);
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.responseType = "blob";
-    xhr.onprogress = function (event) {
-        if (event.lengthComputable) {
-            var load_process = ((event.loaded/event.total)*100).toFixed(1)
-            console.log(load_process)
+    return new Promise((resolve,reject) => {
+        var downUrl = url.replace('http://ws.stream.qqmusic.qq.com','/apc')
+        // window.open(downUrl)
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', downUrl);
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.responseType = "blob";
+        xhr.onprogress = function (event) {
+            if (event.lengthComputable) {
+                // var load_process = ((event.loaded/event.total)*100).toFixed(1)
+                // console.log(load_process)
+            }
+        };
+        xhr.onloadstartchange = function(){
+            console.log('onloadstartchange')
         }
-    };
-    xhr.onloadstartchange = function(){
-        console.log('onloadstartchange')
-    }
-    xhr.onloadedmetadata = function(){
-        console.log('onloadedmetadata')
-    }
-    xhr.onload = function (oEvent) {
-
-
-        if (xhr.readyState === 4 && xhr.status === 200) {
-
-
-
-            var blob = new Blob([xhr.response], {type: 'audio/mp3'});
-            var csvUrl = URL.createObjectURL(blob);
-            var link = document.createElement('a');
-            link.href = csvUrl;
-            link.download = filename;
-            var event = document.createEvent('MouseEvents');
-            event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-            link.dispatchEvent(event);
-            URL.revokeObjectURL(csvUrl);  
-
-
+        xhr.onloadedmetadata = function(){
+            console.log('onloadedmetadata')
         }
-    }
-    xhr.onerror = function(){
-        console.log("下载失败")
-    }
-    xhr.send();
+        xhr.onload = async function (oEvent) {
+
+
+            if (xhr.readyState === 4 && xhr.status === 200) {
+
+                
+
+                var blob = new Blob([xhr.response], {type: 'audio/mp3'});
+                var csvUrl = URL.createObjectURL(blob);
+                var link = document.createElement('a');
+                link.href = csvUrl;
+                link.download = filename;
+                var event = document.createEvent('MouseEvents');
+                event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                link.dispatchEvent(event);
+                URL.revokeObjectURL(csvUrl);  
+                // await sleep(3000)
+                resolve('success')
+            }else{
+                reject('error')
+            }
+        }
+        xhr.onerror = function(){
+            // console.log("下载失败")
+            reject("down fail")
+        }
+        xhr.send();
+    })
+
+
+
+    
 }
 
 
@@ -147,8 +156,19 @@ export const formatMoment = (timestamp, pattern = 'YYYY-MM-DD HH:mm:ss') => {
 export const dwonFromSongMid = async (item) => {
     const res = await reqGetMusicVKey({songmid:item.songmid})
     if(res.response.req.data.vkey !== ""){
-        downFile(res.response.playLists[0],item.title)
+        const result = await downFile(res.response.playLists[0],item.title)
+        console.log(result)
     }else{
         message.error('会员才可下载.')
     }
 }
+
+export const sleep = async (time) => {
+    return new Promise((resolve,reject) => {
+        setTimeout(() => {
+            resolve()
+        },time)
+    })
+}
+
+

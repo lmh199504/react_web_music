@@ -1,10 +1,11 @@
 
 import React,{ Component } from 'react';
-import { Button,Space,Popover, message } from 'antd';
+import { Button,Space,Popover } from 'antd';
 import PropTypes from 'prop-types'
 import { PlayCircleOutlined,PlusSquareOutlined,VerticalAlignBottomOutlined,FormOutlined,HeartOutlined, CommentOutlined ,MoreOutlined} from '@ant-design/icons';
 import './toolbar.less'
-export default class Toolbar extends Component{
+import { connect } from 'react-redux'
+class Toolbar extends Component{
 	static propTypes = {
 		showRowSelection:PropTypes.bool,
 		setShowRow:PropTypes.func,
@@ -14,17 +15,22 @@ export default class Toolbar extends Component{
 		down:PropTypes.bool.isRequired,
 		piliang:PropTypes.bool.isRequired,
 		setLove:PropTypes.func,
-		comment:PropTypes.bool
+		comment:PropTypes.bool,
+		downSelect:PropTypes.func
 	}
-	
+	getSheetId = (sheetId) => {
+		return sheetId
+	}
 	render(){
-		const { showRowSelection,setShowRow,islove,shoucan,add,down,piliang,comment,more } = this.props
+		const { showRowSelection,setShowRow,islove,shoucan,add,down,piliang,comment,more,userSheet } = this.props
 		const content = (
 		  <div>
 		    <ul className="addMenu">
 				<li onClick={ () => this.props.addToPlay() }>播放队列</li>
 				<li onClick={ () => this.props.addToMyLove() }>我喜欢</li>
-				<li onClick={ () => message.info('乱点什么') }><PlusSquareOutlined style={{ position:'absolute' ,left:6,top:12}}/>添加到新歌单</li>
+				{
+					userSheet.map(item => (<li key={item.sheetId} onClick={ () => this.getSheetId(item.sheetId)}>{item.name}</li>))
+				}
 			</ul>
 		  </div>
 		);
@@ -39,7 +45,7 @@ export default class Toolbar extends Component{
 						</Popover>:null
 					}
 					{
-						down?<Button size="large" icon={<VerticalAlignBottomOutlined />}>下载</Button>:null
+						down?<Button size="large" icon={<VerticalAlignBottomOutlined />} onClick={ () => this.props.downSelect() }>下载</Button>:null
 					}
 					{
 						comment?<Button size="large" icon={ <CommentOutlined /> }>评论</Button>:null
@@ -58,3 +64,9 @@ export default class Toolbar extends Component{
 	}
 	
 }
+
+export default connect(
+	state=>({
+		userSheet:state.userSheet
+	})
+)(Toolbar)

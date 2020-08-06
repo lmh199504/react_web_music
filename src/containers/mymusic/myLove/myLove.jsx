@@ -6,10 +6,11 @@ import { VerticalAlignBottomOutlined,CaretRightOutlined,PlusOutlined,ShareAltOut
 import { formatSongTime,formatNum,dwonFromSongMid } from '../../../utils'
 import { connect } from 'react-redux';
 import { setIndex,setCurrentSongs,resetPlaylist,addSongToPlay,setLoveSheets,setLoveLists } from '../../../redux/actions'
-import { reqDelLoveSong,reqAddLoveSong } from '../../../api'
+import { reqDelLoveSong,reqAddLoveSong,reqGetSongListDetail,reqAddSongToSheet } from '../../../api'
 import NoData from '../../../components/noData/noData'
 import Share from 'social-share-react'
 import './myLove.less'  
+import Song from '../../../utils/Song'
 class MyLove extends Component{
 
     state = {
@@ -133,11 +134,78 @@ class MyLove extends Component{
         }
     }
 
+    toClassDetail = (item) => {
+		this.props.history.push(`/musichall/classDetail/${item.disstid}`)
+	} 
     addToSheet = (sheet,record) => {
         console.log(sheet,record)
+        const songList = []
+        songList.push(record)
+        reqAddSongToSheet({sheetId:sheet.sheetId,songList}).then( res => {
+            if(res.data.num === 0){
+                message.info('歌曲已存在')
+            }else{
+                message.success("收藏成功.")
+            }
+
+        })
     }
+
+
     dowonMusic = (item) => {
         dwonFromSongMid(item)
+    }
+    playThisSheet = (item) => {
+        reqGetSongListDetail({disstid:item.disstid}).then(res => {
+			const list = res.response.cdlist[0].songlist
+			let playList = []
+			list.forEach((item,index) => {
+				let song = new Song(item)
+				playList.push(song)
+				if(index === 0){
+					this.props.setIndex(0)
+					this.props.setCurrentSongs(song)
+				}
+			})
+			this.props.resetPlaylist(playList)
+
+		})
+    }
+
+    downSelect = async () => {
+        const { selectedRowKeys } = this.state
+        const { loveList } = this.props
+        const downList = []
+        if(selectedRowKeys.length === 0){
+            message.info("请先选择要下载的歌曲.")
+        }else{
+            selectedRowKeys.forEach(i=>{
+                downList.push(loveList[i])
+            })
+
+            for(let item of downList){
+                try{
+                    await dwonFromSongMid(item)
+                }catch(e){
+
+                }
+            }
+            
+        }
+    }
+
+    getSheetId = (sheetId) => {
+        const { selectedRowKeys,data } = this.state
+        if(selectedRowKeys.length === 0){
+            message.info("请先选择各歌曲.")
+            return
+        }
+        const addList = []
+        selectedRowKeys.forEach(i => {
+            addList.push(data[i])
+        })
+        console.log(sheetId)
+        reqAddSongToSheet({songList:addList,sheetId})
     }
     render(){
         const { loveList,loveSheet,userSheet } = this.props
@@ -176,7 +244,7 @@ class MyLove extends Component{
                           <div className="song_name">
                               {text}
                           </div>
-                          <div className="mod_list_menu mytoolbtn">
+                          <div className="mod_list_menu ">
                               <Space>
                                     <Button shape="circle" icon={<CaretRightOutlined />}  onClick={() =>this.playThis(record,index) }></Button>
                                     <Popover content= {getContent(record)} titel="添加歌单到" trigger="click" placement="rightBottom">
@@ -189,7 +257,6 @@ class MyLove extends Component{
                                     
                               </Space>
                           </div>
-                          
                       </div>
                   )
               }
@@ -242,14 +309,20 @@ class MyLove extends Component{
                 <Spin spinning={loading}>
                     <div className="profile_cont">
                         <div className={`js_sub ${index === 1?'':'hidden'}`}id="like_song_box">
-                            <Toolbar setShowRow={this.setShowRow} showRowSelection={showRowSelection} 
-                                playAll={ this.playAll } piliang={true} down={true} add={true} shoucan={false}
-                                addToPlay={ this.addToPlay }
-                                addToMyLove={ this.addToMyLove }
-                            ></Toolbar>
-                            <div className="mod_songlist mod_songlist--edit">
-                                <Table rowSelection={ showRowSelection ? rowSelection:false } columns={columns} dataSource={loveList}  pagination={false} rowClassName={'rowClassName'}/>
-                            </div>
+                            {
+                                loveList.length!==0?
+                                <div>
+                                    <Toolbar setShowRow={this.setShowRow} showRowSelection={showRowSelection} 
+                                        playAll={ this.playAll } piliang={true} down={true} add={true} shoucan={false}
+                                        addToPlay={ this.addToPlay }
+                                        addToMyLove={ this.addToMyLove }
+                                        downSelect = {this.downSelect}
+                                    ></Toolbar>
+                                    <div className="mod_songlist mod_songlist--edit">
+                                        <Table rowSelection={ showRowSelection ? rowSelection:false } columns={columns} dataSource={loveList}  pagination={false} rowClassName={'rowClassName'}/>
+                                    </div>
+                                </div>:<NoData/>
+                            }
                         </div>
 
 
@@ -262,7 +335,7 @@ class MyLove extends Component{
                                                     <div className="playlist__cover ">
                                                         <img className="playlist__pic" src={item.logo} alt="封面" />
                                                         <i className="mod_cover__mask"  onClick={ () => this.toClassDetail(item) }></i>
-                                                        <i className="mod_cover__icon_play js_play" onClick={ () => this.playThis(item) }></i>
+                                                        <i className="mod_cover__icon_play js_play" onClick={ () => this.playThisSheet(item) }></i>
                                                     </div>
                                                     <h4 className="playlist__title">
                                                         <span className="playlist__title_txt">{item.dissname}</span>	
@@ -289,6 +362,7 @@ class MyLove extends Component{
             
         )
     }
+
 }
 
 export default connect(

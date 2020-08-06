@@ -12,7 +12,6 @@ class Ranking extends Component{
 	
 	
 	playThisRank = (item) => {
-		console.log(item)
 		reqGetRanks({topId:item.topId}).then(res => {
 			let list = res.response.detail.data.songInfoList
 			let playList = []

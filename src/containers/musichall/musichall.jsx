@@ -15,6 +15,7 @@ import Ticketing from './ticketing/ticketing'
 import { getHomeData,setLoveLists,setLoveSingers,setLoveSheets,setUserSheets } from '../../redux/actions'
 import SingerDetail from '../singerDetail/singerDetail'
 import ClassDetail from '../classDetail/classDetail'
+import UserSheetDetail from '../userSheetDetail/userSheetDetail'
 class MusicHall extends Component{
 	
 	componentDidMount= () => {
@@ -75,6 +76,7 @@ class MusicHall extends Component{
 					<Route path='/musichall/ticketing' component={Ticketing}/>
 					<Route path='/musichall/singerDetail/:singermid' component={SingerDetail}/>
 					<Route path='/musichall/classDetail/:disstid' component={ClassDetail}/>
+					<Route path='/musichall/userSheetDetail/:sheetId' component={UserSheetDetail}/>
 					<Redirect to='/musichall/home'/>
 				</Switch>
 				

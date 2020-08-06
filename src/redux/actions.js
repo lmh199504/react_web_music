@@ -109,7 +109,7 @@ export const resetPlaylists = (item) => {
 }
 
 // 设置当前播放歌曲的同步action
-const setCurrentSong = (data) => ({type:SET_CURRENT_SONG,data})
+export const setCurrentSong = (data) => ({type:SET_CURRENT_SONG,data})
 // 设置当前播放歌曲的异步action
 export const setCurrentSongs = (data) => {
 

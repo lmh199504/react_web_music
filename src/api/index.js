@@ -93,3 +93,7 @@ export const reqAddUserSheet = (data) => request('/user/addUserSheet',data)
 export const reqGetUserSheet = (data) => request('/user/getUserSheet',data,"GET")
 //删除创建的跟单 
 export const reqDelUserSheet = (data) => request('/user/delUserSheet',data)
+//添加歌曲到指定的歌单
+export const reqAddSongToSheet = (data) => request('/user/addSongToSheet',data)
+//获取用户歌单的详情
+export const reqGetUserSheetSong = (data) => request('/user/getUserSheetSong',data)
