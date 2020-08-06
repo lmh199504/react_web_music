@@ -3,11 +3,12 @@
 import React,{ Component } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Input } from 'antd'
-import { reqGetHotkey,reqGetSmartbox } from '../../api'
+import { reqGetHotkey,reqGetSmartbox,reqGetMusicVKey } from '../../api'
 import { formatNum } from '../../utils'
 import './index.less'
 import { connect } from 'react-redux'
 import { logout } from '../../redux/actions'
+import { withRouter } from 'react-router-dom'
 const { Search } = Input
 
 let timer = null
@@ -63,6 +64,12 @@ class NavHeader extends Component{
 		})
 	}
 	
+	playThisOne = (item) => {
+		// console.log(item)
+		reqGetMusicVKey({songmid:item.mid}).then(res => {
+			console.log(res)
+		})
+	}
 	render(){
 		const { hotKeyArr,inIput,searchValue,resultSong,resultAblum,resultSinger,resultMv } = this.state
 		const { user } = this.props
@@ -153,7 +160,7 @@ class NavHeader extends Component{
 											
 											{
 												resultSong.map((item,index) => (
-													index < 5 ?<li key={index}>
+													index < 5 ?<li key={index} onClick={ () => this.playThisOne(item) }>
 														<p className="search_result__link js_smartbox_song">
 															<span className="search_result__name">{item.name}</span>-
 															<span className="search_result__singer">
@@ -176,7 +183,7 @@ class NavHeader extends Component{
 
 												{
 													resultSinger.map((item,index) => (
-														<li key={index}>
+														<li key={index}  onClick={ () => this.props.history.push(`/musichall/singerDetail/${item.mid}`) }>
 															<p className="search_result__link js_smartbox_singer" >
 																<span className="search_result__name"><span className="search_result__keyword">{item.name}</span></span>
 															</p>
@@ -247,7 +254,7 @@ class NavHeader extends Component{
 }
 
 
-export default connect(
+export default withRouter(connect(
 	state=>({user:state.user}),
 	{ logout }
-)(NavHeader)
+)(NavHeader))
