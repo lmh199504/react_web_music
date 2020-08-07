@@ -27,7 +27,7 @@
     "redux-thunk": "^2.3.0",
     "slick-carousel": "^1.8.1",
     "social-share-react": "^1.1.2",
-    "swiper": "^6.0.4",
+    "swiper": "^6.1.1",
     "xml2js": "^0.4.23"
   },
   "scripts": {

@@ -1,0 +1,742 @@
+.client {
+    min-width: 1200px;
+    .swiper-wrapper{
+        transition-delay:.3s;
+    }
+    .swiper-container {
+        width: 100%;
+        height: calc(100vh - 90px);
+        margin: auto;
+    }
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #fff;
+        width: 100%;
+        height: 100%;
+        
+        /* Center slide text vertically */
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+        background-color: #000;
+    }
+
+    .swiper-slide p{
+        transform:translateX(-200px);
+        opacity:0;
+        transition:all .4s;
+    }
+    .ani-slide p{
+        transform:translateX(0);
+        opacity:1;
+    }
+    .swiper-pagination-bullet{
+        width: 12px;
+        height: 12px;
+        background:#fff;
+        opacity: 0.4;
+    }
+    .swiper-pagination-bullet-active{
+        opacity: 1;
+    }
+
+
+    .mod_banner__star {
+        position: absolute;
+        width: 171px;
+        height: 168px;
+        -webkit-animation: star 4.5s both infinite linear;
+        animation: star 4.5s both infinite linear;
+        text-indent: -99em;
+        overflow: hidden;
+    }
+    .mod_banner__star::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 108px;
+        height: 152px;
+        background: url(./images/star.png) 0 0 no-repeat;
+        background-size: cover;
+    }
+    .mod_banner__star1 {
+        top: 380px;
+        left: 20px;
+        -webkit-animation-delay: .3s;
+        animation-delay: .3s;
+    }
+
+    .mod_banner__star2 {
+        top: 320px;
+        right: 100px;
+        -webkit-animation-delay: 1s;
+        animation-delay: 1s;
+    }
+
+    .mod_banner__star3 {
+        top: 260px;
+        left: 50%;
+        margin-left: 200px;
+        -webkit-animation-delay: 1.4s;
+        animation-delay: 1.4s;
+    }
+    .mod_banner__star4 {
+        top: 200px;
+        left: 50%;
+        margin-left: -200px;
+        -webkit-animation-delay: 2s;
+        animation-delay: 2s;
+    }
+    .mod_banner__star5 {
+        top: 640px;
+        left: 50%;
+        margin-left: -400px;
+        -webkit-animation-delay: 3s;
+        animation-delay: 3s;
+    }
+    .mod_banner__star6 {
+        top: 400px;
+        left: 50%;
+        margin-left: 400px;
+        -webkit-animation-delay: 4s;
+        animation-delay: 4s;
+    }
+    .mod_banner_list{
+        width: 100%;
+        height: 100%;
+        margin-bottom: 0;
+    }
+    .mod_banner_list__item{
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+    .mod_banner_pc{
+        display: block;
+        background: url(./images/banner_pc.jpg) 50% no-repeat;
+        background-size: cover;
+    }
+
+    .mod_banner_mac {
+        background: url(./images/banner_mac.jpg) 50% no-repeat;
+        background-size: cover;
+    }
+
+    .mod_banner_pc__tit {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -294px;
+        margin-top: -195px;
+        width: 587px;
+        height: 145px;
+        text-indent: -99em;
+        overflow: hidden;
+        background-image: url(./images//img_index_6bc275f9.png);
+        background-position: 0 -312px;
+        z-index: 3;
+    }
+
+    .btn_banner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: 12px;
+        margin-left: -2px;
+        width: 293px;
+        height: 69px;
+        text-indent: -99em;
+        overflow: hidden;
+        z-index: 9;
+        background-image: url(./images//img_index_6bc275f9.png);
+        background-position: -416px -859px;
+    }
+    .mod_banner_pc .btn_banner {
+        margin-left: -146px;
+    }
+
+
+    .download_list {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 190px;
+        text-align: center;
+    }
+    .download_list__br {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: #fff;
+        opacity: .12;
+        filter: alpha(opacity=12);
+        overflow: hidden;
+    }
+
+    .download_list__item {
+        display: inline-block;
+        *display: inline;
+        *zoom: 1;
+        line-height: 999px;
+        overflow: hidden;
+        width: 110px;
+        height: 170px;
+        margin-right: 185px;
+        position: relative;
+        opacity: .4;
+        filter: alpha(opacity=40);
+        vertical-align: top;
+        cursor: pointer;
+    }
+
+    .download_list__item--pc {
+        background-image: url(./images/img_index_6bc275f9.png);
+        background-position: -366px -940px;
+    }
+
+    .download_list__item--current {
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
+
+    .download_list__item--current i {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: #fff;
+        overflow: hidden;
+    }
+    .download_list__item--mac {
+        background-image: url(./images/img_index_6bc275f9.png);
+        background-position: -244px -940px;
+    }
+    .download_list__item--iphone {
+        background-image: url(./images//img_index_6bc275f9.png);
+        background-position: -122px -940px;
+
+    }
+    .download_list__item--android {
+        background-image: url(./images/img_index_6bc275f9.png);
+        background-position: 0 -940px;
+    }
+    .active .icon_arrow {
+        -webkit-animation: iconArrow 1.5s infinite both 2s;
+        animation: iconArrow 1.5s infinite both 2s;
+    }
+    .icon_arrow {
+        position: absolute;
+        bottom: 32px;
+        left: 50%;
+        margin-left: -18px;
+        width: 36px;
+        height: 20px;
+        background-image: url(./images/img_index_6bc275f9.png);
+        background-position: -1091px -161px;
+        z-index: 9;
+        _display: none;
+    }
+
+
+    .mod_banner_list__macbg1 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -205px;
+        width: 623px;
+        height: 145px;
+        text-indent: -99em;
+        overflow: hidden;
+        background-image: url(./images//img_index_6bc275f9.png);
+        background-position: 0 0;
+        z-index: 3;
+    }
+    .iphone_play__list--1, .iphone_play__list--2, .iphone_play__list--3 {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 1;
+    }
+    .iphone_play__list img{
+        opacity: 0;
+        transition: all 3s ease;
+        width: 100%;
+        height: 100%;
+    }
+    .iphone_play__list.active img{
+        opacity: 1;
+    }
+    .iphone_intro {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -185px;
+        margin-left: -2px;
+        width: 370px;
+        height: 159px;
+        text-indent: -99em;
+        overflow: hidden;
+        z-index: 9;
+        background-image: url(./images/img_index_6bc275f9.png);
+        background-position: -636px -323px;
+    }
+
+
+    .mod_banner_list__androidbg1 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -205px;
+        width: 520px;
+        height: 149px;
+        text-indent: -99em;
+        overflow: hidden;
+        background-image: url(./images/img_index_6bc275f9.png);
+        background-position: -636px 0;
+        z-index: 3;
+    }
+    @keyframes star{
+        0%{
+            opacity:0;
+            transform:translate(216px,-304px)
+        }
+        12%{
+            opacity:1;
+            transform:translate(108px,-152px)
+        }
+        100%,24%{
+            opacity:0;transform:translate(0,0)
+        }
+    }
+
+    @keyframes iconArrow{
+        0%{
+            opacity:0;transform:translate3d(0,-8px,0)
+        }
+        60%{
+            opacity:1;transform:translate3d(0,0,0)
+        }
+        100%{
+            opacity:0;transform:translate3d(0,8px,0)
+        }
+    }
+
+    // swiper 2
+
+    .hide {
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        text-indent: -99em;
+        display: block;
+    }
+
+    .part_singer .section__inner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -534px -960px;
+        width: 1920px;
+        height: 1069px;
+    }
+    .part_singer__tit {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -283px;
+        margin-top: -100px;
+        width: 566px;
+        height: 74px;
+        background-image: url(./images/img_index_6bc275f9.png);
+        background-position: -556px -630px;
+        z-index: 2;
+    }
+
+
+    .part_singer__desc {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: 0;
+        margin-left: -202px;
+        width: 404px;
+        height: 69px;
+        background-image: url(./images/img_index_6bc275f9.png);
+        background-position: 0 -859px;
+        z-index: 2;
+    }
+
+
+    .part_singer__item {
+        width: 211px;
+        height: 211px;
+        position: relative;
+        float: left;
+    }
+    .part_singer__pic {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 211px;
+        transform: scale(1.2);
+        opacity: 0;
+    }
+
+    .ani-slide .part_singer__pic1, .ani-slide .part_singer__pic10, .ani-slide .part_singer__pic11, .ani-slide .part_singer__pic14, .ani-slide .part_singer__pic15, .ani-slide .part_singer__pic16, .ani-slide .part_singer__pic18, .ani-slide .part_singer__pic2, .ani-slide .part_singer__pic22, .ani-slide .part_singer__pic3, .ani-slide .part_singer__pic4, .ani-slide .part_singer__pic5, .ani-slide .part_singer__pic6, .ani-slide .part_singer__pic7, .ani-slide .part_singer__pic8, .ani-slide .part_singer__pic9 {
+        background: url(./images/sprite1.jpg) no-repeat;
+    }
+
+
+    .ani-slide .part_singer__pic23, .ani-slide .part_singer__pic24, .ani-slide .part_singer__pic26, .ani-slide .part_singer__pic27, .ani-slide .part_singer__pic28, .ani-slide .part_singer__pic29, .ani-slide .part_singer__pic31, .ani-slide .part_singer__pic33, .ani-slide .part_singer__pic34, .ani-slide .part_singer__pic36, .ani-slide .part_singer__pic37, .ani-slide .part_singer__pic38, .ani-slide .part_singer__pic39, .ani-slide .part_singer__pic40, .ani-slide .part_singer__pic41, .ani-slide .part_singer__pic42, .ani-slide .part_singer__pic43, .ani-slide .part_singer__pic44, .ani-slide .part_singer__pic45 {
+        background: url(./images/sprite2.jpg) no-repeat;
+    }
+    .ani-slide .part_singer__pic1 {
+        background-position: 0 0;
+    }
+    .ani-slide .part_singer__pic {
+        // animation: fadeIn 1.2s both;
+        opacity: 1;
+        transform: scale(1);
+        transition: all 1.2s ease;
+    }
+
+    .ani-slide .part_singer__pic1, .ani-slide .part_singer__pic11, .ani-slide .part_singer__pic6 {
+        transition-delay: 2s;
+        // animation-delay: 2s;
+    }
+
+    .ani-slide .part_singer__pic12, .ani-slide .part_singer__pic2, .ani-slide .part_singer__pic23, .ani-slide .part_singer__pic7 {
+        transition-delay: 1.5s;
+        // animation-delay: 1.5s;
+    }
+
+    .ani-slide .part_singer__pic3, .ani-slide .part_singer__pic38, .ani-slide .part_singer__pic40, .ani-slide .part_singer__pic8 {
+        transition-delay: 1s;
+        // animation-delay: 1s;
+    }
+    .ani-slide .part_singer__pic14, .ani-slide .part_singer__pic4, .ani-slide .part_singer__pic9 {
+        transition-delay: 3s;
+        // animation-delay: 3s;
+    }
+
+    .ani-slide .part_singer__pic36, .ani-slide .part_singer__pic44, .ani-slide .part_singer__pic5 {
+        transition-delay: 2.5s;
+        // animation-delay: 2.5s;
+    }
+
+    .ani-slide .part_singer__pic1, .ani-slide .part_singer__pic11, .ani-slide .part_singer__pic6 {
+        transition-delay: 2s;
+        // animation-delay: 2s;
+    }
+
+    @keyframes fadeIn{
+        0%{
+            opacity:0;transform:scale(1.2)
+        }100%{
+            opacity:1;transform:scale(1)
+        }
+    }
+
+    //seriper 3
+    .part_lyric{
+        background: url(./images/bg_lyric.jpg) 50% no-repeat;
+        background-size: cover;
+    }
+
+    .part_lyric__tit {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -504px;
+        margin-top: -130px;
+        width: 554px;
+        height: 149px;
+        background-image: url(./images/img_index_6bc275f9.png);
+        background-position: 0 -469px;
+        z-index: 2;
+    }
+
+    .part_lyric__desc {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -504px;
+        margin-top: 50px;
+        width: 468px;
+        height: 69px;
+        background-image: url(./images/img_index_6bc275f9.png);
+        background-position: -636px -493px;
+        z-index: 2;
+
+    }
+    .part_lyric__phone {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: 50px;
+        margin-top: -430px;
+        width: 580px;
+        height: 892px;
+    }
+    .ani-slide .part_lyric__phone {
+        animation: lyricPhone 2s both;
+        transform-origin: 0 50%;
+    }    
+    .lyric_phone {
+        position: absolute;
+        top: 138px;
+        left: 99px;
+        width: 350px;
+        height: 604px;
+        background: url(./images/lyric_phone1.jpg);
+        -webkit-transform: rotate(7.5deg);
+        transform: rotate(7.5deg);
+    }
+
+    .lyric_phone2 {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 350px;
+        height: 604px;
+        background: url(./images/lyric_phone2.jpg);
+        opacity: 0;
+    }
+    .ani-slide .lyric_phone2 {
+        // animation: lyricPhone2 1.5s linear both 2.2s;
+        opacity: 1;
+        transition: all 1.5s linear;
+        transition-delay: 2.2s;
+    }
+    @keyframes lyricPhone2{
+        0%{opacity:0}
+        100%{opacity:1}
+    }
+    .lyric_phonebox {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 580px;
+        height: 892px;
+        background-image: url(./images/lyric_phonebox.png);
+    }
+
+
+    //swiper 4
+    .part_like{
+        background: url(./images/bg_like.jpg) 50% no-repeat;
+        background-size: cover;
+    }
+    .part_like__tit {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -50px;
+        margin-top: -113px;
+        width: 615px;
+        height: 143px;
+        background-image: url(./images/img_index_6bc275f9.png);
+        background-position: 0 -157px;
+        z-index: 2;
+    }
+
+    .part_like__desc {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -50px;
+        margin-top: 68px;
+        width: 550px;
+        height: 69px;
+        background-image: url(./images//img_index_6bc275f9.png);
+        background-position: 0 -778px;
+        z-index: 2;
+    }
+
+    .part_like__phone {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -556px;
+        margin-top: -349px;
+        width: 520px;
+        height: 807px;
+        display: none;
+    }
+
+    .ani-slide .part_like__phone {
+        display: block;
+        animation: likePhone 2s both .5s;
+        transform-origin: 90% 50%;
+    }
+
+    @keyframes likePhone{
+        0%{
+            opacity:0;transform:translateX(-60px)
+        }
+        80%{
+            opacity:1
+        }
+        100%{
+            opacity:1;transform:translateX(0)
+        }
+    }
+
+
+    .like_phone {
+        position: absolute;
+        top: 176px;
+        left: 61px;
+        width: 374px;
+        height: 500px;
+        background: url(./images/like_phone.jpg) no-repeat;
+        -webkit-transform: rotate(-5.5deg);
+        transform: rotate(-5.5deg);
+        display: none;
+    }
+
+    .ani-slide .like_phone {
+        display: block;
+        animation: likePhone2 1.5s linear forwards 2.5s;
+    }
+    @keyframes likePhone2{
+        0%{
+            background-position:0 0
+        }
+        100%{
+            background-position:0 -210px
+        }
+    }
+    .like_phonebox {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 450px;
+        height: 778px;
+        background: url(./images/like_phonebox.png) no-repeat;
+    }
+
+    //最后一个
+    .part_synchro {
+        background: url(./images/bg_synchro.jpg) 50% no-repeat;
+        background-size: cover;
+    }
+    .part_synchro__tit {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -580px;
+        margin-top: -270px;
+        width: 544px;
+        height: 136px;
+        background-image: url(./images/img_index_6bc275f9.png);
+        background-position: 0 -630px;
+        z-index: 2;
+    }
+
+    .part_synchro__desc {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -580px;
+        margin-top: -108px;
+        width: 454px;
+        height: 63px;
+        background-image: url(./images/img_index_6bc275f9.png);
+        background-position: -562px -778px;
+        z-index: 2;
+    }
+    .part_synchro__mac {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -392px;
+        width: 620px;
+        height: 784px;
+        background: url(./images/synchro_mac1.png) 0 0 no-repeat;
+        z-index: 2;
+        display: none;
+    }
+    .ani-slide .part_synchro__mac {
+        display: block;
+        -webkit-animation: lyricPhone 2s both 0s;
+        animation: lyricPhone 2s both 0s;
+    }
+    .part_synchro__mac2 {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 620px;
+        height: 376px;
+        background: url(./images/synchro_mac1.png) 0 0 no-repeat;
+    }
+    
+    .part_synchro__phone {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -400px;
+        margin-top: 0;
+        width: 255px;
+        height: 329px;
+        background-image: url(./images/synchro_mac2.png);
+        display: none;
+    }
+    .ani-slide .part_synchro__phone {
+        -webkit-animation: likePhone 3s both .5s;
+        animation: likePhone 3s both .5s;
+        -webkit-transform-origin: 90% 50%;
+        transform-origin: 90% 50%;
+        display: block;
+    }
+
+    .mod_footer {
+        height: 66px;
+        padding: 14px 0;
+        font-size: 12px;
+        font-family: Tahoma,Arial;
+        width: 100%;
+        clear: both;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 44px;
+        filter: progid:DXImageTransform.Microsoft.gradient(enabled='true', startColorstr='#4C000000', endColorstr='#4C000000');
+        background: rgba(0,0,0,.3);
+        z-index: 3;
+        color: #fff;
+    }
+    .mod_footer a {
+        font-size: 12px;
+        text-decoration: none;
+        outline: 0;
+    }
+    .mod_footer p {
+        height: 22px;
+        line-height: 22px;
+        text-align: center;
+    }
+    .mod_footer .copyrightzh a {
+        margin: 0 0 0 6px;
+    }
+    .mod_footer, .mod_footer a {
+        color: #fff;
+    }
+
+}
