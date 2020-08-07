@@ -18,9 +18,7 @@ class Toolbar extends Component{
 		comment:PropTypes.bool,
 		downSelect:PropTypes.func
 	}
-	getSheetId = (sheetId) => {
-		return sheetId
-	}
+	
 	render(){
 		const { showRowSelection,setShowRow,islove,shoucan,add,down,piliang,comment,more,userSheet } = this.props
 		const content = (
@@ -29,7 +27,7 @@ class Toolbar extends Component{
 				<li onClick={ () => this.props.addToPlay() }>播放队列</li>
 				<li onClick={ () => this.props.addToMyLove() }>我喜欢</li>
 				{
-					userSheet.map(item => (<li key={item.sheetId} onClick={ () => this.getSheetId(item.sheetId)}>{item.name}</li>))
+					userSheet.map(item => (<li key={item.sheetId} onClick={ () => this.props.getSheetId(item.sheetId)}>{item.name}</li>))
 				}
 			</ul>
 		  </div>
