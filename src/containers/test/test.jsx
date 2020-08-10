@@ -5,7 +5,7 @@ export default class Test extends Component{
 	render(){
 		return (
 			<div>
-				<span>{document.write(navigator.userAgent)}</span>
+				<span>{navigator.userAgent}</span>
 			</div>
 		)
 	}
