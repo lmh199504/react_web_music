@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react'
 import "./client.less"
+let interval = null
 export default class MusicHall extends Component {
 
 	state = {
@@ -40,13 +41,17 @@ export default class MusicHall extends Component {
 				}
 			});
 		})
-		setInterval(() => {
+		interval = setInterval(() => {
 			const { iphone_play__list } = this.state
 			this.setState({
 				iphone_play__list:iphone_play__list>=3?1:iphone_play__list+1
 			})
 		},4000)
 	}
+	componentWillUnmount = () => {
+		clearInterval(interval)
+	}
+	
 
 	render() {
 		const { type,iphone_play__list } = this.state

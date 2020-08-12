@@ -4,7 +4,7 @@ import React,{ Component } from 'react'
 import './mymusic.less'
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
-import { setLoveLists,setUserSheets,setLoveSingers } from '../../redux/actions'
+import { setLoveLists,setUserSheets,setLoveSingers,logout,getUserInfo } from '../../redux/actions'
 
 import { Route,Redirect,Switch } from 'react-router-dom'
 import MyLove from './myLove/myLove'
@@ -12,28 +12,108 @@ import MyClassifid from './myclassifid/myclassifid'
 import MyAttention from './myAttention/myAttention'
 import MyFans from './myfans/myfans'
 import MyVideo from './myvideo/myvideo'
-
-
+import { Modal,Form,Input,message,Upload } from 'antd'
+import { LoadingOutlined,PlusOutlined } from '@ant-design/icons'
+import { reqUpdateUserInfo } from '../../api'
 class MyMusic extends Component{
 	
 	
-	
+	state = {
+		visible:false,
+		username:'',
+		loading:false,
+		imageUrl:"", //预览的图片
+		password:"",  
+		file:'' //要上传的图片
+	}
 	componentDidMount = () => {
 		this.props.setLoveLists()
 		this.props.setUserSheets()
 		this.props.setLoveSingers()
 	}
+	handleOk = () => {
+		const { username,password,file } = this.state 
+		this.setState({loading:true})
+		if(password && password.length<6){
+			message.info("密码长度不能小于6.")
+		}
+
+		var forms = new FormData()
+		forms.append('newUsername',username)
+        forms.append('newPassword',password)
+        forms.append('file',file)
+		reqUpdateUserInfo(forms).then(res => {
+			this.setState({
+				visible:false,
+				loading:false
+			})
+
+			if(password || username){
+				message.info('即将退出.')
+				setTimeout(() => {
+					this.props.logout()
+				},3000)
+			}else{
+				this.setState({
+					username:'',
+					password:'',
+					file:'',
+					imageUrl:''
+				})
+				this.props.getUserInfo()
+			}
+		})
+		
+	}
 	
-	
+	handleCancel = () => {
+		this.setState({visible:false})
+	}
+	getBase64(img, callback) {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => callback(reader.result));
+        reader.readAsDataURL(img);
+    }
+	beforeUpload = (file) => {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isJpgOrPng) {
+            message.error('You can only upload JPG/PNG file!');
+        }
+        else if (!isLt2M) {
+            message.error('Image must smaller than 2MB!');
+        }else{
+            this.getBase64(file,imageUrl => {
+                var base64Data = imageUrl.replace(/^data:image\/\w+;base64,/, '')
+                this.setState({
+                    imageUrl,
+                    file:base64Data
+                })
+            })
+        }
+        return false
+        // return isJpgOrPng && isLt2M;
+	}
+	setParam = (name,event) => {
+        this.setState({
+            [name]:event.target.value
+        })
+    }
 	render(){
 		const { user,loveSinger } = this.props
-		
+		const { username,imageUrl,password } = this.state
+		const uploadButton = (
+            <div>
+                {this.state.loading ? <LoadingOutlined /> : <PlusOutlined />}
+                <div className="ant-upload-text">Upload</div>
+            </div>
+        );
 		
 		return(
 			<div className="mod_profile js_user_data" style={{ height:380 }}>
 				<div className="section_inner">
-					<div className="profile__cover_link">
-						<img className="profile__cover" src={user.headerImg} alt="头像"/>
+					<div className="profile__cover_link" onClick={ () => this.setState({visible:true}) } >
+						<img className="profile__cover" src={`${user.headerImg}?t=${Math.random()}`} alt="头像"/>
 					</div>
 					<div className="profile__tit">
 						<span className="profile__name">
@@ -83,7 +163,34 @@ class MyMusic extends Component{
 
 					
 				</div>
-				
+				<Modal
+					title="更换头像"
+					visible={this.state.visible}
+					onOk={this.handleOk}
+					onCancel={this.handleCancel}
+					cancelText="取消"
+					okText="确认"
+				>
+					<Form>
+                        <Form.Item label="账号">
+                            <Input placeholder="账号." onChange={ (input) => this.setParam('username',input) } value={username}></Input>
+                        </Form.Item>
+                        <Form.Item label="密码">
+							<Input placeholder="密码." onChange={ (input) => this.setParam('password',input) } value={password}></Input>
+                        </Form.Item>
+                        <Form.Item label="头像">
+                            <Upload
+                                name="avatar"
+                                listType="picture-card"
+                                className="avatar-uploader"
+                                showUploadList={false}
+                                beforeUpload={this.beforeUpload}
+                            >
+                                {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                            </Upload>
+                        </Form.Item>   
+                    </Form>
+				</Modal>
 			</div>
 		)
 	}
@@ -94,5 +201,5 @@ export default connect(
 		user:state.user,
 		loveSinger:state.loveSinger
 	}),
-	{setLoveLists,setUserSheets,setLoveSingers}
+	{setLoveLists,setUserSheets,setLoveSingers,logout,getUserInfo}
 )(MyMusic)

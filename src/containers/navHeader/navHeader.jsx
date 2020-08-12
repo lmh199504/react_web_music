@@ -3,12 +3,13 @@
 import React,{ Component } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Input } from 'antd'
-import { reqGetHotkey,reqGetSmartbox,reqGetMusicVKey,reqGetMvPlay } from '../../api'
+import { reqGetHotkey,reqGetSmartbox,reqGetMvPlay,reqGetSearchByKey } from '../../api'
 import { formatNum } from '../../utils'
 import './index.less'
 import { connect } from 'react-redux'
-import { logout,showMvPlayer,setCurrentMv } from '../../redux/actions'
+import { logout,showMvPlayer,setCurrentMv,setCurrentSongs,addSongToPlay,setIndex } from '../../redux/actions'
 import { withRouter } from 'react-router-dom'
+import Song from '../../utils/Song'
 const { Search } = Input
 
 
@@ -114,9 +115,20 @@ class NavHeader extends Component{
 	}
 	
 	playThisOne = (item) => {
-		// console.log(item)
-		reqGetMusicVKey({songmid:item.mid}).then(res => {
-			console.log(res)
+		console.log(item)
+		reqGetSearchByKey({key:item.name}).then(res => {
+			const songList = res.response.data.song.list
+			songList.forEach(song => {
+				if(song.mid === item.mid){
+					
+					const cSong =  new Song(song)
+					// console.log({index:0,song:cSong})
+					this.props.addSongToPlay({index:0,song:cSong})
+					this.props.setCurrentSongs(cSong)
+					this.props.setIndex(0)
+				}
+			})
+			console.log(songList)
 		})
 	}
 	clearSearchHistory = () => {
@@ -144,7 +156,7 @@ class NavHeader extends Component{
 		
 	}
 	setWidth = () => {
-		if(window.innerWidth<1240){
+		if(window.innerWidth<1160){
 			this.setState({
 				width:50
 			})
@@ -164,6 +176,11 @@ class NavHeader extends Component{
 			this.props.setCurrentMv({url:mvUrl})
 			
 		})
+	}
+	onBlurInput = () => {
+		setTimeout(() => {
+			this.setState({inIput:false,width:window.innerWidth>1240?220:50})
+		},100)
 	}
 	render(){
 		const { hotKeyArr,inIput,searchValue,resultSong,resultAblum,resultSinger,resultMv,searchHistory,width } = this.state
@@ -188,7 +205,7 @@ class NavHeader extends Component{
 							<NavLink className="top_nav__link" activeClassName="top_nav__link--current" to='/client'>客户端</NavLink>
 							
 						</li>
-						<li className="top_nav__item">
+						<li className="top_nav__item" style={{ display:"none" }}>
 							<NavLink className="top_nav__link" activeClassName="top_nav__link--current" to='/platform'>开放平台</NavLink>
 						</li>
 						<li className="top_nav__item">
@@ -201,7 +218,7 @@ class NavHeader extends Component{
 							<Search
 							  placeholder="搜索音乐、MV、歌单、用户"
 							  onSearch={value => this.search(value) }
-							  onBlur={ () => this.setState({inIput:false,width:window.innerWidth>1240?220:50}) }
+							  onBlur={ () => this.onBlurInput() }
 							  onFocus={ () => this.setState({inIput:true,width:220}) }
 							  onInput={ (event) => this.searchOnInput(event) }
 							  value={searchValue}
@@ -340,8 +357,8 @@ class NavHeader extends Component{
 						</div>
 					</div>
 					<div className="header__opt">
-						<div className="top_login__link js_logined">
-							<img src={user.headerImg} alt="头像" className="top_login__cover js_user_img"/>	
+						<div className="top_login__link js_logined" onClick={ () => this.props.history.push('/mymusic') }>
+							<img src={`${user.headerImg}?t=${Math.random()}`} alt="头像" className="top_login__cover js_user_img"/>	
 						</div>	
 						<div className="mod_btn_green top_login__btn_vip js_openvip" >开通绿钻豪华版</div>	
 						<div className="mod_btn top_login__btn_vip js_openmusic" onClick={ () => this.props.logout() }>退出登录</div>
@@ -354,6 +371,11 @@ class NavHeader extends Component{
 
 
 export default withRouter(connect(
-	state=>({user:state.user}),
-	{ logout,setCurrentMv,showMvPlayer }
+	state=>({
+		currentIndex:state.currentIndex,
+		user:state.user,
+		playList:state.playList
+
+	}),
+	{ logout,setCurrentMv,showMvPlayer,setCurrentSongs,setIndex,addSongToPlay }
 )(NavHeader))

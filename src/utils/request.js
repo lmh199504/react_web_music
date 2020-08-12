@@ -25,9 +25,9 @@ Service.interceptors.request.use(config => {
 // 添加响应拦截器
 Service.interceptors.response.use(response => {
 	try{
-		if(response.data.code !== 0 && response.data.data.code !== 0){
-		    message.error(response.data.msg)
-		}
+		// if(response.data.code !== 0 && response.data.data.code !== 0){
+		//     message.error(response.data.msg)
+		// }
 		
 		if(response.data.code === 10000){
 			message.error(response.data.msg)

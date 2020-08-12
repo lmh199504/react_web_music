@@ -97,3 +97,5 @@ export const reqDelUserSheet = (data) => request('/user/delUserSheet',data)
 export const reqAddSongToSheet = (data) => request('/user/addSongToSheet',data)
 //获取用户歌单的详情
 export const reqGetUserSheetSong = (data) => request('/user/getUserSheetSong',data)
+//更新用户资料
+export const reqUpdateUserInfo = (data) => request('/user/updateUserInfo',data)

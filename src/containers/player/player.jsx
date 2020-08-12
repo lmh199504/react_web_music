@@ -430,6 +430,24 @@ class Player extends Component{
 		}
 
 	}
+	//将选择歌曲加入喜欢的列表
+	addSelToLve = () => {
+		const { playList,user } = this.props
+		const list = []
+		playList.forEach(item => {
+			if(item.checked){
+				list.push(item)
+			}
+		})
+		if(list.length === 0){
+			message.info("请先选择歌曲")
+		}
+
+		reqAddLoveSong({userId:user._id,songList:list}).then(() => {
+			this.props.setLoveLists()
+			message.info("收藏成功")
+		})
+	}
 	clearAll = () => {
 		const { currentLyric } = this.state
 		this.props.hideBigPlayer()
@@ -489,7 +507,7 @@ class Player extends Component{
 						<div className="player__bd ">
 							<div className={ `player_style_normal js_box js_full_box ` }>
 								<div className={`mod_songlist_toolbar ${showType?'hidden':''}` }>
-									<li className="mod_btn js_all_like">
+									<li className="mod_btn js_all_like" onClick={ () => this.addSelToLve() }>
 										<i className="mod_btn_green__icon_like"></i>收藏
 										<span className="mod_btn__border"></span>
 									</li>
