@@ -7,7 +7,7 @@ import { reqGetHotkey,reqGetSmartbox,reqGetMvPlay,reqGetSearchByKey } from '../.
 import { formatNum } from '../../utils'
 import './index.less'
 import { connect } from 'react-redux'
-import { logout,showMvPlayer,setCurrentMv,setCurrentSongs,addSongToPlay,setIndex } from '../../redux/actions'
+import { logout,showMvPlayer,setCurrentMv,setCurrentSongs,addSongToPlay,setIndex,showBigplayer } from '../../redux/actions'
 import { withRouter } from 'react-router-dom'
 import Song from '../../utils/Song'
 const { Search } = Input
@@ -126,9 +126,10 @@ class NavHeader extends Component{
 					this.props.addSongToPlay({index:0,song:cSong})
 					this.props.setCurrentSongs(cSong)
 					this.props.setIndex(0)
+					this.props.showBigplayer()
 				}
 			})
-			console.log(songList)
+			// console.log(songList)
 		})
 	}
 	clearSearchHistory = () => {
@@ -377,5 +378,5 @@ export default withRouter(connect(
 		playList:state.playList
 
 	}),
-	{ logout,setCurrentMv,showMvPlayer,setCurrentSongs,setIndex,addSongToPlay }
+	{ logout,setCurrentMv,showMvPlayer,setCurrentSongs,setIndex,addSongToPlay,showBigplayer }
 )(NavHeader))

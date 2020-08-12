@@ -88,7 +88,7 @@ class Player extends Component{
 	playNext = () => {
 		console.log("下一首")
 		const { currentIndex,playList } = this.props
-		const { playMode } = this.state 
+		const { playMode,currentLyric } = this.state 
 		if(playMode === 0 || playMode === 3){ //列表循环
 			if(currentIndex<playList.length - 1){
 				this.props.setIndex(currentIndex + 1)
@@ -97,13 +97,23 @@ class Player extends Component{
 			}else{
 				this.props.setIndex(0)
 				this.props.setCurrentSongs(playList[0])
-				
+				if(playList.length === 1){
+					this.refs.myAudio.currentTime = 0
+					this.refs.myAudio.play()
+					currentLyric.seek(this.refs.myAudio.currentTime * 1000)
+					this.reset()
+				}
 			}
 		}else if(playMode === 1){ //顺序播放
 			if(currentIndex<playList.length - 1){
 				this.props.setIndex(currentIndex + 1)
 				this.props.setCurrentSongs(playList[currentIndex + 1])
-				
+				// if(playList.length === 1){
+				// 	this.refs.myAudio.currentTime = 0
+				// 	this.refs.myAudio.play()
+				// 	currentLyric.seek(this.refs.myAudio.currentTime * 1000)
+				// 	this.reset()
+				// }
 			}else{
 				this.props.setIndex(0)
 				this.props.setCurrentSongs(playList[0])
