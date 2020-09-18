@@ -63,7 +63,7 @@ class Suggest extends Component{
 
 	toClassDetail = (item) => {
 		console.log(item)
-		this.props.history.push(`/musichall/classDetail/${item.content_id}`)
+		this.props.history.push(`/musichall/classDetail/${item.content_id ? item.content_id : item.tid}`)
 	}
 	render(){
 		const suggestionNav = [
