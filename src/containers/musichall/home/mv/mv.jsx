@@ -93,7 +93,7 @@ class Mv extends Component{
 						<Slider {...settings}>
 						    {
 								mvList.map(item => (
-									<div className="mv_list__item" key={item.mv_id}>
+									<div className="mv_list__item"  key={item.mv_id}>
 										<div className="mv_list__item_box">
 											<div className="mv_list__cover mod_cover js_mv" onClick={ () => this.playThisMv(item) }>
 												<img className="mv_list__pic" src={item.picurl} alt="mv"/>
