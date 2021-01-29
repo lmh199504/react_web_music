@@ -451,12 +451,14 @@ class Player extends Component{
 		})
 		if(list.length === 0){
 			message.info("请先选择歌曲")
+		} else {
+			reqAddLoveSong({userId:user._id,songList:list}).then(() => {
+				this.props.setLoveLists()
+				message.info("收藏成功")
+			})
 		}
 
-		reqAddLoveSong({userId:user._id,songList:list}).then(() => {
-			this.props.setLoveLists()
-			message.info("收藏成功")
-		})
+		
 	}
 	clearAll = () => {
 		const { currentLyric } = this.state
@@ -474,7 +476,7 @@ class Player extends Component{
 	}
 	render(){
 		const { cSong,checkall,currentLyric,currentLineNum,currentTime,defaultTime,defaultVolume,playMode,showType,visible,selectSheet } = this.state
-		const { bigPlayer,isPlay,playList,currentSong,loveList,userSheet } = this.props
+		const { bigPlayer,isPlay,playList,currentSong,loveList,userSheet,user } = this.props
 		return (
 			<div className="player">
 				<div className="smallPlayer">
@@ -502,8 +504,8 @@ class Player extends Component{
 						</div>
 						<span id="player_login">
 							<span className="player_login__link">
-								<img className="player_login__cover js_user_img" src="http://thirdqq.qlogo.cn/g?b=sdk&k=5GvhCOicBXrBf50u3StdLRw&s=140&t=1550910887" alt="头像"/>
-								<span className="player_login__txt">敷衍、</span>
+								<img className="player_login__cover js_user_img" src={`${user.headerImg}?t=${Math.random()}`} alt="头像"/>
+								<span className="player_login__txt">{user.username}</span>
 							</span>
 							
 							<span  className="player_login__out js_logout" onClick={ () => this.props.hideBigPlayer() }>退出</span>

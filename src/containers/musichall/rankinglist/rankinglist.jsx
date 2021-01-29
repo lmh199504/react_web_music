@@ -144,7 +144,26 @@ class RankingList extends Component{
 			this.props.resetPlaylist(playList)
 		}
 	}
+	downSelect = async () => {
+		const { selectedRowKeys,data } = this.state
+		console.log(data)
+        const downList = []
+        if(selectedRowKeys.length === 0){
+            message.info("请先选择要下载的歌曲.")
+        }else{
+            selectedRowKeys.forEach(i=>{
+                downList.push(new Song(data[i]))
+            })
 
+            for(let item of downList){
+                try{
+                    await dwonFromSongMid(item)
+                }catch(e){
+
+                }
+            }
+        }
+    }
 	addToMyLove = () => {
 		const { selectedRowKeys,data } = this.state
 		const { user } = this.props
@@ -270,11 +289,11 @@ class RankingList extends Component{
 					<div className="toplist__hd11">
 						<h1 className="toplist__tit">流行指数榜</h1>
 						<span className="toplist_switch">
-							<span className="toplist_switch__data js_chosed_week">2020-07-14</span>
+							<span className="toplist_switch__data js_chosed_week">{ () => new Date() }</span>
 						</span>
 						<p className="toplist__rule js_desc">榜单规则</p>
 					</div>
-					<Toolbar showRowSelection={showRowSelection} setShowRow={this.setShowRow} playAll={this.playAll} piliang={true} down={true} add={true} shoucan={false} addToPlay={this.addToPlay} addToMyLove={ this.addToMyLove }></Toolbar>
+					<Toolbar showRowSelection={showRowSelection} downSelect={this.downSelect} setShowRow={this.setShowRow} playAll={this.playAll} piliang={true} down={true} add={true} shoucan={false} addToPlay={this.addToPlay} addToMyLove={ this.addToMyLove }></Toolbar>
 					<Spin spinning={loading}>
 						<div className="mod_songlist mod_songlist--edit">
 							<Table rowSelection={ showRowSelection ? rowSelection:false } columns={columns} dataSource={data}  pagination={false} rowClassName={'rowClassName'}/>
