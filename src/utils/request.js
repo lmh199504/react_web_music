@@ -3,7 +3,7 @@ import { message } from 'antd'
 import Cookies from 'js-cookie'
 const ConfigBaseURL = '/api'
 const Service = axios.create({
-    timeout: 10000, // 请求超时时间
+    timeout: 10000000, // 请求超时时间
     baseURL: ConfigBaseURL,
     withCredentials:true,
     headers: {

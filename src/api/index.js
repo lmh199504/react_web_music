@@ -99,3 +99,7 @@ export const reqAddSongToSheet = (data) => request('/user/addSongToSheet',data)
 export const reqGetUserSheetSong = (data) => request('/user/getUserSheetSong',data)
 //更新用户资料
 export const reqUpdateUserInfo = (data) => request('/user/updateUserInfo',data)
+//上传视频
+export const uploadVideo = (data) => request('/user/uploadVideo',data)
+//获取上传的视频
+export const getUserVideo = (data) => request('/user/getUserVideo',data,'GET')
