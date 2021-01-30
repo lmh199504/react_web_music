@@ -176,6 +176,7 @@ class MyVideo extends Component{
 							</Col>
 						))
 					}
+					
 				</Row>
 				
 				<Modal title="上传视频" cancelText="取消" okText="确认" visible={isModalVisible} onOk={this.handleOk} onCancel={this.handleCancel}>
