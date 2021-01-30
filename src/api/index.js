@@ -103,3 +103,5 @@ export const reqUpdateUserInfo = (data) => request('/user/updateUserInfo',data)
 export const uploadVideo = (data) => request('/user/uploadVideo',data)
 //获取上传的视频
 export const getUserVideo = (data) => request('/user/getUserVideo',data,'GET')
+//删除视频
+export const delUserVideo = (data) => request('/user/delUserVideo',data)

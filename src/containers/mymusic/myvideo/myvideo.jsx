@@ -1,10 +1,10 @@
 
 
 import React,{ Component } from 'react'
-import { Upload, Button, Row, Col, Modal, Form, Input, message, Spin } from 'antd';
+import { Upload, Button, Row, Col, Modal, Form, Input, message, Spin, Popconfirm } from 'antd';
 import { LoadingOutlined,PlusOutlined } from '@ant-design/icons';
 import NoData from '../../../components/noData/noData'
-import { uploadVideo,getUserVideo } from '../../../api'
+import { uploadVideo,getUserVideo,delUserVideo } from '../../../api'
 import { formatMoment } from '../../../utils'
 import { connect } from 'react-redux'
 import { showMvPlayer,setCurrentMv } from '../../../redux/actions'
@@ -41,7 +41,7 @@ class MyVideo extends Component{
 				videoUrl: '',
 				file: ''
 			})
-			this.geList()
+			this.getList()
 		}).catch(() => {
 			this.setState({
 				loading: false
@@ -103,10 +103,10 @@ class MyVideo extends Component{
 	}
 		
 	componentDidMount = () => {
-		this.geList()
+		this.getList()
 	}
 	
-	geList = () => {
+	getList = () => {
 		getUserVideo().then(res => {
 			if (res.code === 0) {
 				this.setState({
@@ -115,12 +115,21 @@ class MyVideo extends Component{
 			}
 		})
 	}
-	
+	cancel = () => {
+		message.info('取消')
+	}
 	playVideo = (item) => {
 		this.props.showMvPlayer()
 		this.props.setCurrentMv({url:item.url})
 	}
-	
+	delVideo = (item) => {
+		delUserVideo({videoId:item._id}).then(res => {
+			if(res.code === 0){
+				message.success('删除成功')
+				this.getList()
+			}
+		}) 
+	}
     render(){
 		const { isModalVisible, desc, title,videoUrl,list } = this.state
 		const uploadButton = (
@@ -136,9 +145,9 @@ class MyVideo extends Component{
 					{
 						list.map(item => (
 							<Col xs={2} sm={4} md={6} lg={6} xl={6} key={item._id}>
-								<div className="mv_list__item" style={{ width:'100%',textAlign:'left' }} onClick={ () =>  this.playVideo(item) }>
+								<div className="mv_list__item" style={{ width:'100%',textAlign:'left' }}>
 									<div className="mv_list__item_box">
-										<div className="mv_list__cover mod_cover js_mv">
+										<div className="mv_list__cover mod_cover js_mv"  onClick={ () =>  this.playVideo(item) }>
 											<img className="mv_list__pic" src={item.picurl} alt="mv"/>
 											<i className="mod_cover__icon_play"></i>
 										</div>
@@ -151,6 +160,17 @@ class MyVideo extends Component{
 										<p className="mv_list__singer">
 											<span className="js_singer">{formatMoment(item.createTime)}</span>
 										</p>
+										<div>
+											<Popconfirm
+											    title="Are you sure to delete this task?"
+											    onConfirm={() => this.delVideo(item)}
+											    onCancel={this.cancel}
+											    okText="Yes"
+											    cancelText="No"
+											  >
+												<Button size="small" type="primary">删除</Button>
+											  </Popconfirm>
+										</div>	
 									</div>
 								</div>	
 							</Col>
