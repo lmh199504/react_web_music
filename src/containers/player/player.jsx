@@ -504,7 +504,7 @@ class Player extends Component{
 						</div>
 						<span id="player_login">
 							<span className="player_login__link">
-								<img className="player_login__cover js_user_img" src={`${user.headerImg}?t=${Math.random()}`} alt="头像"/>
+								<img className="player_login__cover js_user_img" src={`${user.headerImg}`} alt="头像"/>
 								<span className="player_login__txt">{user.username}</span>
 							</span>
 							

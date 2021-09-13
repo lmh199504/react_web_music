@@ -113,7 +113,7 @@ class MyMusic extends Component{
 			<div className="mod_profile js_user_data" style={{ height:380 }}>
 				<div className="section_inner">
 					<div className="profile__cover_link" onClick={ () => this.setState({visible:true}) } >
-						<img className="profile__cover" src={`${user.headerImg}?t=${Math.random()}`} alt="头像"/>
+						<img className="profile__cover" src={`${user.headerImg}`} alt="头像"/>
 					</div>
 					<div className="profile__tit">
 						<span className="profile__name">

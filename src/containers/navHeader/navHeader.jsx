@@ -359,7 +359,7 @@ class NavHeader extends Component{
 					</div>
 					<div className="header__opt">
 						<div className="top_login__link js_logined" onClick={ () => this.props.history.push('/mymusic') }>
-							<img src={`${user.headerImg}?t=${Math.random()}`} alt="头像" className="top_login__cover js_user_img"/>	
+							<img src={user.headerImg} alt="头像" className="top_login__cover js_user_img"/>	
 						</div>	
 						<div className="mod_btn_green top_login__btn_vip js_openvip" >开通绿钻豪华版</div>	
 						<div className="mod_btn top_login__btn_vip js_openmusic" onClick={ () => this.props.logout() }>退出登录</div>
