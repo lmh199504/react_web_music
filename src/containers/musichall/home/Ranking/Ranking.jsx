@@ -35,7 +35,13 @@ class Ranking extends Component{
 		if(!homeData.toplist){
 			return null
 		}
-		const topList = homeData.toplist.data.group[0].toplist
+		const topList = homeData.toplist.data.group[0].toplist.filter((_, index) => {
+			if (index < 5) {
+				return true
+			} else {
+				return false
+			}
+		})
 		
 		return (
 			<div className="mod_index mod_index--top  mod_slide_box mod_bg">
